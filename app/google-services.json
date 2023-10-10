@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "156015254808",
+    "project_id": "chipiolo-c6c7c",
+    "storage_bucket": "chipiolo-c6c7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156015254808:android:6d0095518bf98d0bce526d",
+        "android_client_info": {
+          "package_name": "com.aragang.chipiolo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156015254808-ogsgadi8svcqjqn9792vn3oh9i7aa9bl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aragang.chipiolo",
+            "certificate_hash": "51c276abf411b537e058d034a4fa836fb1b1ee92"
+          }
+        },
+        {
+          "client_id": "156015254808-94kht33taq5lvknuf5bj5dcen71vfpcm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKWVgiA_IqM5-CGs1yk6KHriWU8OY-Ybo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156015254808-94kht33taq5lvknuf5bj5dcen71vfpcm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
