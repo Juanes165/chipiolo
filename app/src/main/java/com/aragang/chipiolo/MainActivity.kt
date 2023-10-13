@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "Game") {
+                    NavHost(navController = navController, startDestination = "sign_in") {
                         composable("Home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -68,7 +68,8 @@ class MainActivity : ComponentActivity() {
 
                                         navController.popBackStack()
                                     }
-                                })
+                                },
+                                onPlay = {navController.navigate("Game")})
                             //ProfileHome()
                         }
 

@@ -39,40 +39,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aragang.chipiolo.R
 import com.aragang.chipiolo.TabViewModel
 import com.aragang.chipiolo.views.Achievements
-import androidx.activity.viewModels
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.layout.BoxWithConstraints
+
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material3.ButtonDefaults
+
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFontLoader
-import androidx.compose.ui.text.Paragraph
+
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isUnspecified
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
 import com.aragang.chipiolo.views.Statistics
@@ -92,7 +82,8 @@ class Xd: ComponentActivity() {
 fun ProfileHome(
     viewModel: TabViewModel,
     userData: UserData?,
-    onSignOut: () -> Unit) {
+    onSignOut: () -> Unit,
+    onPlay: () -> Unit) {
 
     var showDialog by remember { mutableStateOf(false) }
     fun exit() {
@@ -161,6 +152,19 @@ fun ProfileHome(
                             textAlign = TextAlign.Center,
                             fontSize = 20.sp
                         )
+                    }
+
+                    Button(
+                        onClick = onPlay,
+                        shape = CircleShape,
+                        modifier= Modifier
+                            .size(60.dp)
+                            .align(Alignment.CenterHorizontally),
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.play_icon),
+                            contentDescription = "jfjf",
+                            modifier = Modifier.size(80.dp).fillMaxSize())
                     }
 
                 }
