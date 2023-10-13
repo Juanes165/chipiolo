@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.aragang.chipiolo.Home.Home
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
@@ -48,6 +49,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "sign_in") {
+                        composable("Home") {
+                            Home()
+                        }
+
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
