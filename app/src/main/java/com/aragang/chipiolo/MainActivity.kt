@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "sign_in") {
+                    NavHost(navController = navController, startDestination = "Game") {
                         composable("Home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -72,6 +72,9 @@ class MainActivity : ComponentActivity() {
                             //ProfileHome()
                         }
 
+                        composable("Game") {
+                            GameScreen()
+                        }
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
