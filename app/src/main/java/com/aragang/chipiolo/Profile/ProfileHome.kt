@@ -1,8 +1,5 @@
 package com.aragang.chipiolo.Profile
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,11 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
@@ -51,32 +44,14 @@ import androidx.compose.ui.unit.sp
 import com.aragang.chipiolo.R
 import com.aragang.chipiolo.TabViewModel
 import com.aragang.chipiolo.views.Achievements
-
 import androidx.compose.foundation.layout.Spacer
-
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
-
-import androidx.compose.ui.draw.drawWithContent
-
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.isUnspecified
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
 import com.aragang.chipiolo.views.Statistics
 
-/*
-class Xd: ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ProfileHome()
-        }
-    }
-}
-*/
 
 @Composable
 fun ProfileHome(
@@ -86,10 +61,7 @@ fun ProfileHome(
     onPlay: () -> Unit) {
 
     var showDialog by remember { mutableStateOf(false) }
-    fun exit() {
-        showDialog = false
-        onSignOut
-    }
+
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -136,7 +108,7 @@ fun ProfileHome(
                 ) {
                     if (userData?.name != null) {
                         Text(
-                            text = userData?.name!!,
+                            text = userData.name,
                             modifier = Modifier
                                 .padding(top = 50.dp)
                                 .align(Alignment.CenterHorizontally),
@@ -157,8 +129,9 @@ fun ProfileHome(
                     Button(
                         onClick = onPlay,
                         shape = CircleShape,
-                        modifier= Modifier
-                            .size(60.dp)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+                        modifier = Modifier
+                            .size(80.dp)
                             .align(Alignment.CenterHorizontally),
                     ) {
                         Image(
@@ -308,48 +281,6 @@ fun Tabs(viewModel: TabViewModel) {
 }
 
 
-@Composable
-fun AutoResizedText(
-    text: String,
-    style: TextStyle = MaterialTheme.typography.body1,
-    modifier: Modifier = Modifier,
-    color: Color = style.color
-) {
-    var resizedTextStyle by remember {
-        mutableStateOf(style)
-    }
-    var shouldDraw by remember {
-        mutableStateOf(false)
-    }
-
-    val defaultFontSize = MaterialTheme.typography.body1.fontSize
-
-    Text(
-        text = text,
-        color = color,
-        modifier = modifier.drawWithContent {
-            if (shouldDraw) {
-                drawContent()
-            }
-        },
-        softWrap = false,
-        style = resizedTextStyle,
-        onTextLayout = { result ->
-            if (result.didOverflowWidth) {
-                if (style.fontSize.isUnspecified) {
-                    resizedTextStyle = resizedTextStyle.copy(
-                        fontSize = defaultFontSize
-                    )
-                }
-                resizedTextStyle = resizedTextStyle.copy(
-                    fontSize = resizedTextStyle.fontSize * 0.95
-                )
-            } else {
-                shouldDraw = true
-            }
-        }
-    )
-}
 
 /*
 @Preview
