@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -20,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aragang.chipiolo.Home.Home
+import com.aragang.chipiolo.Profile.ProfileHome
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
@@ -38,6 +40,8 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val you_view: TabViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,7 +54,22 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "sign_in") {
                         composable("Home") {
-                            Home()
+                            ProfileHome(
+                                viewModel = you_view,
+                                userData = googleAuthUiClient.getSignedInUser(),
+                                onSignOut = {
+                                    lifecycleScope.launch {
+                                        googleAuthUiClient.signOut()
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Signed out",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        navController.popBackStack()
+                                    }
+                                })
+                            //ProfileHome()
                         }
 
                         composable("sign_in") {
@@ -59,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("profile")
+                                    navController.navigate("Home")
                                 }
                             }
 
@@ -85,7 +104,7 @@ class MainActivity : ComponentActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
-                                    navController.navigate("profile")
+                                    navController.navigate("Home")
                                     viewModel.resetState()
                                 }
                             }
