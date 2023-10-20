@@ -124,8 +124,8 @@ fun Home() {
     }
 }
 
-/*@Preview
+@Preview
 @Composable
 fun Juju() {
     Home()
-}*/
+}
