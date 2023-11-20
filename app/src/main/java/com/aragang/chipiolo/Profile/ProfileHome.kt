@@ -1,5 +1,11 @@
 package com.aragang.chipiolo.Profile
 
+import android.Manifest
+import android.view.ViewGroup
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,12 +51,28 @@ import com.aragang.chipiolo.R
 import com.aragang.chipiolo.TabViewModel
 import com.aragang.chipiolo.views.Achievements
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
 import com.aragang.chipiolo.views.Statistics
+
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.isGranted
+import java.io.File
+import java.util.concurrent.Executor
 
 
 @Composable
@@ -58,24 +80,27 @@ fun ProfileHome(
     viewModel: TabViewModel,
     userData: UserData?,
     onSignOut: () -> Unit,
-    onPlay: () -> Unit) {
+    onPlay: () -> Unit
+) {
 
     var showDialog by remember { mutableStateOf(false) }
 
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(43, 168, 74))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(43, 168, 74))
+    ) {
 
         Image(
             painter = painterResource(R.drawable.logo_chipiolo),
             contentDescription = "Logo de fondo",
             colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
-                    modifier = Modifier
-                        .padding(
-                            start = 150.dp
-                        )
-                        .size(250.dp)
+            modifier = Modifier
+                .padding(
+                    start = 150.dp
+                )
+                .size(250.dp)
         )
 
         Column(
@@ -90,10 +115,12 @@ fun ProfileHome(
                 .fillMaxHeight()
                 .fillMaxWidth()
         ) {
-            Box(modifier = Modifier
-                .padding(top = 100.dp)
-                .fillMaxWidth()
-                .height(255.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 100.dp)
+                    .fillMaxWidth()
+                    .height(255.dp)
+            ) {
                 ElevatedCard(
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 6.dp
@@ -110,12 +137,12 @@ fun ProfileHome(
                         Text(
                             text = userData.name,
                             modifier = Modifier
-                                .padding(top = 50.dp)
+                                .padding(top = 50.dp, start = 20.dp, end = 20.dp)
                                 .align(Alignment.CenterHorizontally),
                             textAlign = TextAlign.Center,
                             fontSize = 20.sp
                         )
-                    }else {
+                    } else {
                         Text(
                             text = "",
                             modifier = Modifier
@@ -137,7 +164,10 @@ fun ProfileHome(
                         Image(
                             painter = painterResource(R.drawable.play_icon),
                             contentDescription = "jfjf",
-                            modifier = Modifier.size(80.dp).fillMaxSize())
+                            modifier = Modifier
+                                .size(80.dp)
+                                .fillMaxSize()
+                        )
                     }
 
                 }
@@ -175,26 +205,32 @@ fun ProfileHome(
                     )
                 }
 
-                Row(modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .width(280.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly) {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .width(280.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
                     ButtonStatistics(
                         Modifier.padding(end = 1.dp),
                         "Estadistica",
-                        RoundedCornerShape(bottomStart = 30.dp))
+                        RoundedCornerShape(bottomStart = 30.dp)
+                    )
                     ButtonStatistics(
                         Modifier.padding(start = 1.dp),
                         "logros",
-                        RoundedCornerShape(bottomEnd = 30.dp))
+                        RoundedCornerShape(bottomEnd = 30.dp)
+                    )
                 }
+
+//                CameraButton(modifier = Modifier)
             }
             Spacer(modifier = Modifier.padding(top = 20.dp))
 
             Tabs(viewModel = viewModel)
 
             if (showDialog) {
-                Dialog(onDismissRequest = {showDialog = false}) {
+                Dialog(onDismissRequest = { showDialog = false }) {
                     // Custom shape, background, and layout for the dialog
                     Surface(
                         shape = RoundedCornerShape(16.dp),
@@ -218,32 +254,105 @@ fun ProfileHome(
                                 }
 
                                 Button(
-                                    onClick = {showDialog = false},
+                                    onClick = { showDialog = false },
                                     modifier = Modifier
                                         .padding(top = 16.dp, start = 5.dp)
                                         .width(115.dp)
                                 ) {
                                     Text("Cancelar", fontSize = 11.sp)
                                 }
-
                             }
-
                         }
                     }
                 }
             }
 
+
         }
     }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun CameraButton(modifier: Modifier) {
+    // Permisos de la camara
+    val permissionState = rememberPermissionState(Manifest.permission.CAMERA)
+
+    // El contexto es el composable en el que la camara esta metida
+    val context = LocalContext.current
+    val cameraController = remember {
+        LifecycleCameraController(context)
+    }
+    // Ciclo de vida para que la camara se cierre si no esta el composable contexto
+    val lifecycle = LocalLifecycleOwner.current
+
+    LaunchedEffect(Unit) {
+        permissionState.launchPermissionRequest()
+    }
+    Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
+        FloatingActionButton(onClick = {
+            val executor = ContextCompat.getMainExecutor(context)
+            takePicture(cameraController, executor)
+        }) {
+            Text(text = "Camera")
+        }
+    }) {
+        if (permissionState.status.isGranted) {
+            CameraComposable(cameraController, lifecycle, modifier = Modifier.padding(it))
+        } else {
+            Text(text = "Camera not granted", modifier = Modifier.padding(it))
+        }
+    }
+
+}
+
+@Composable
+fun CameraComposable(
+    cameraController: LifecycleCameraController,
+    lifecycle: LifecycleOwner,
+    modifier: Modifier = Modifier,
+) {
+
+    cameraController.bindToLifecycle(lifecycle)
+    AndroidView(modifier = Modifier, factory = { context ->
+        val previewView = PreviewView(context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+        previewView.controller = cameraController
+
+        previewView
+    })
+}
+
+private fun takePicture(cameraController: LifecycleCameraController, executor: Executor) {
+    val file = File.createTempFile("profileimage", ".jpg")
+    val outputDirectory = ImageCapture.OutputFileOptions.Builder(file).build()
+    cameraController.takePicture(
+        outputDirectory,
+        executor,
+        object : ImageCapture.OnImageSavedCallback {
+            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                println(outputFileResults.savedUri)
+            }
+
+            override fun onError(exception: ImageCaptureException) {
+                println()
+            }
+
+        })
 }
 
 @Composable
 fun ButtonStatistics(
     modi: Modifier,
     text: String,
-    roundC: RoundedCornerShape) {
+    roundC: RoundedCornerShape
+) {
 
-    var enabled by remember {mutableStateOf(false)}
+    var enabled by remember { mutableStateOf(false) }
     var enable_button = Color.Gray
     var disabled_button = Color.White
 
@@ -279,7 +388,6 @@ fun Tabs(viewModel: TabViewModel) {
         1 -> Achievements(viewModel = viewModel)
     }
 }
-
 
 
 /*
