@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aragang.chipiolo.Home.Home
 import com.aragang.chipiolo.Profile.ProfileHome
+import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
@@ -53,7 +54,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "sign_in") {
-                        composable("Home") {
+                        composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
@@ -69,20 +70,23 @@ class MainActivity : ComponentActivity() {
                                         navController.popBackStack()
                                     }
                                 },
-                                onPlay = {navController.navigate("Game")})
+                                onPlay = {navController.navigate("game")},
+                                onProfile = {navController.navigate("profile")},
+                            )
                             //ProfileHome()
                         }
 
-                        composable("Game") {
+                        composable("game") {
                             GameScreen()
                         }
+
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("Home")
+                                    navController.navigate("profile")
                                 }
                             }
 
@@ -141,8 +145,14 @@ class MainActivity : ComponentActivity() {
 
                                         navController.popBackStack()
                                     }
+                                },
+                                onCamera = {
+                                    navController.navigate("camera")
                                 }
                             )
+                        }
+                        composable("camera") {
+                            CameraScreen()
                         }
                     }
                 }

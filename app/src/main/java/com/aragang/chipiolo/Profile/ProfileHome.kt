@@ -54,6 +54,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
@@ -80,7 +81,8 @@ fun ProfileHome(
     viewModel: TabViewModel,
     userData: UserData?,
     onSignOut: () -> Unit,
-    onPlay: () -> Unit
+    onPlay: () -> Unit,
+    onProfile: () -> Unit,
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
@@ -120,6 +122,7 @@ fun ProfileHome(
                     .padding(top = 100.dp)
                     .fillMaxWidth()
                     .height(255.dp)
+                    .background(Color(66, 79, 88), RoundedCornerShape(30.dp))
             ) {
                 ElevatedCard(
                     elevation = CardDefaults.cardElevation(
@@ -127,11 +130,11 @@ fun ProfileHome(
                     ),
                     modifier = Modifier
                         .size(width = 280.dp, height = 150.dp)
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(topStart = 100.dp, topEnd = 50.dp)
-                        )
-                        .align(Alignment.Center)
+                        .align(Alignment.Center),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(255, 255, 255),
+                    ),
+                    shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                 ) {
                     if (userData?.name != null) {
                         Text(
@@ -163,7 +166,7 @@ fun ProfileHome(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.play_icon),
-                            contentDescription = "jfjf",
+                            contentDescription = "Play Button",
                             modifier = Modifier
                                 .size(80.dp)
                                 .fillMaxSize()
@@ -171,6 +174,8 @@ fun ProfileHome(
                     }
 
                 }
+
+                // FOTO DE PERFIL
                 if (userData?.profileImage != null) {
                     AsyncImage(
                         model = userData.profileImage,
@@ -185,13 +190,13 @@ fun ProfileHome(
                             .padding(4.dp)
                             .clip(CircleShape)
                             .align(Alignment.TopCenter)
-                            .clickable { showDialog = true },
+                            .clickable { onProfile() },
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Image(
                         painter = painterResource(R.drawable.juanes_prueba),
-                        contentDescription = "Image for profile",
+                        contentDescription = "Default profile picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(100.dp)
@@ -222,8 +227,6 @@ fun ProfileHome(
                         RoundedCornerShape(bottomEnd = 30.dp)
                     )
                 }
-
-//                CameraButton(modifier = Modifier)
             }
             Spacer(modifier = Modifier.padding(top = 20.dp))
 
@@ -235,33 +238,12 @@ fun ProfileHome(
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text("¿Deseas Salir?")
-
-                            Row {
-                                Button(
-                                    onClick = onSignOut,
-                                    modifier = Modifier
-                                        .padding(top = 16.dp)
-                                        .width(115.dp)
-                                ) {
-                                    Text("Salir", fontSize = 11.sp)
-                                }
-
-                                Button(
-                                    onClick = { showDialog = false },
-                                    modifier = Modifier
-                                        .padding(top = 16.dp, start = 5.dp)
-                                        .width(115.dp)
-                                ) {
-                                    Text("Cancelar", fontSize = 11.sp)
-                                }
-                            }
+                        if (userData != null) {
+                            ProfilePopup(
+                                userData = userData,
+                                onSignOut = onSignOut,
+                                updateShowDialog = { showDialog = false }
+                            )
                         }
                     }
                 }
@@ -272,78 +254,6 @@ fun ProfileHome(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun CameraButton(modifier: Modifier) {
-    // Permisos de la camara
-    val permissionState = rememberPermissionState(Manifest.permission.CAMERA)
-
-    // El contexto es el composable en el que la camara esta metida
-    val context = LocalContext.current
-    val cameraController = remember {
-        LifecycleCameraController(context)
-    }
-    // Ciclo de vida para que la camara se cierre si no esta el composable contexto
-    val lifecycle = LocalLifecycleOwner.current
-
-    LaunchedEffect(Unit) {
-        permissionState.launchPermissionRequest()
-    }
-    Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
-        FloatingActionButton(onClick = {
-            val executor = ContextCompat.getMainExecutor(context)
-            takePicture(cameraController, executor)
-        }) {
-            Text(text = "Camera")
-        }
-    }) {
-        if (permissionState.status.isGranted) {
-            CameraComposable(cameraController, lifecycle, modifier = Modifier.padding(it))
-        } else {
-            Text(text = "Camera not granted", modifier = Modifier.padding(it))
-        }
-    }
-
-}
-
-@Composable
-fun CameraComposable(
-    cameraController: LifecycleCameraController,
-    lifecycle: LifecycleOwner,
-    modifier: Modifier = Modifier,
-) {
-
-    cameraController.bindToLifecycle(lifecycle)
-    AndroidView(modifier = Modifier, factory = { context ->
-        val previewView = PreviewView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        }
-        previewView.controller = cameraController
-
-        previewView
-    })
-}
-
-private fun takePicture(cameraController: LifecycleCameraController, executor: Executor) {
-    val file = File.createTempFile("profileimage", ".jpg")
-    val outputDirectory = ImageCapture.OutputFileOptions.Builder(file).build()
-    cameraController.takePicture(
-        outputDirectory,
-        executor,
-        object : ImageCapture.OnImageSavedCallback {
-            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                println(outputFileResults.savedUri)
-            }
-
-            override fun onError(exception: ImageCaptureException) {
-                println()
-            }
-
-        })
-}
 
 @Composable
 fun ButtonStatistics(
@@ -380,6 +290,83 @@ fun ButtonStatistics(
 
 
 @Composable
+fun ProfilePopup(userData: UserData, onSignOut: () -> Unit, updateShowDialog: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        // FOTO DE PERFIL
+        if (userData?.profileImage != null) {
+            AsyncImage(
+                model = userData.profileImage,
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .border(
+                        BorderStroke(4.dp, Color.White),
+                        CircleShape
+                    )
+                    .padding(4.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Image(
+                painter = painterResource(R.drawable.juanes_prueba),
+                contentDescription = "Default profile picture",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .border(
+                        BorderStroke(4.dp, Color.White),
+                        CircleShape
+                    )
+                    .padding(4.dp)
+                    .clip(CircleShape)
+            )
+        }
+
+        if (userData != null) {
+            Text(
+                text = userData.name ?: "",
+                fontSize = 15.sp,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = userData.email ?: "",
+                fontSize = 10.sp,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+        }
+
+        Text(
+            text = "Cambiar foto de perfil",
+            fontSize = 15.sp,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+
+        Divider(
+            color = Color.Red,
+            thickness = 2.dp,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+
+        Text(
+            text = "Cerrar sesión",
+            fontSize = 15.sp,
+            modifier = Modifier.padding(top = 8.dp),
+            color = Color.Red
+        )
+
+
+    }
+}
+
+@Composable
 fun Tabs(viewModel: TabViewModel) {
     val tabI = viewModel.tabIndex.observeAsState()
 
@@ -390,9 +377,8 @@ fun Tabs(viewModel: TabViewModel) {
 }
 
 
-/*
-@Preview
-@Composable
-fun Juju() {
-    ProfileHome()
-}*/
+//@Preview
+//@Composable
+//fun Juju() {
+//    ProfileHome(null, null, {}, {})
+//}
