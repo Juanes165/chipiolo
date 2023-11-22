@@ -24,6 +24,7 @@ import com.aragang.chipiolo.Home.Home
 import com.aragang.chipiolo.Profile.ProfileHome
 import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
+import com.aragang.chipiolo.SignInChipiolo.LoginScreen
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
@@ -86,7 +87,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("profile")
+                                    navController.navigate("login_screen")
                                 }
                             }
 
@@ -153,6 +154,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("camera") {
                             CameraScreen()
+                        }
+
+                        composable("login_screen"){
+                            val viewModel = viewModel<SignInViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            LoginScreen()
                         }
                     }
                 }

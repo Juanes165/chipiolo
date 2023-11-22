@@ -270,11 +270,10 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
                             .padding(top = 16.dp, start = 5.dp)
                             .width(115.dp)
                     ) {
-                        Text("Cerrar Sesión", fontSize = 14.sp)
+                        Text("Salir", fontSize = 14.sp)
                     }
                 }
             }
-
         }
     }
 }

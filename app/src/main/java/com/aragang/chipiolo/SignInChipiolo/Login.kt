@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdToken
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
@@ -37,28 +38,40 @@ class Login(
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
-        return try {
+        var result: SignInResult
+        try {
             val user = auth.signInWithCredential(googleCredentials).await().user
-            SignInResult(
+            result = SignInResult(
                 data = user?.run {
                     UserData(
                         id = uid,
                         name = displayName,
                         profileImage = photoUrl?.toString(),
                         email = email ?: ""
-
                     )
                 },
                 errorMessage = null
             )
+            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).get().addOnSuccessListener {
+                if (!it.exists()) {
+                    val newUser = hashMapOf(
+                        "name" to user?.displayName,
+                        "email" to user?.email,
+                        "profileImage" to user?.photoUrl.toString(),
+                        "uid" to user?.uid
+                    )
+                    FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).set(newUser)
+                }
+            }
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            SignInResult(
+            result = SignInResult(
                 data = null,
                 errorMessage = e.message
             )
         }
+        return result
     }
 
     suspend fun signOut() {

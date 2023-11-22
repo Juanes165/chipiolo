@@ -53,6 +53,7 @@ android {
 
 dependencies {
 
+    implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
     // CAMERA
     val cameraxVersion = "1.3.0-rc01"
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
@@ -81,6 +82,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.5.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
