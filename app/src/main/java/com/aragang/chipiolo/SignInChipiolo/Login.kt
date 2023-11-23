@@ -3,6 +3,7 @@ package com.aragang.chipiolo.SignInChipiolo
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.aragang.chipiolo.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -35,6 +36,7 @@ class Login(
     }
 
     suspend fun createUserWithEmailAndPassword(email: String, password: String): SignInResult {
+
         var result: SignInResult
         try {
             val user = auth.createUserWithEmailAndPassword(email, password).await().user

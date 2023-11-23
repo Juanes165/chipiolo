@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +29,9 @@ import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.SignInState
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
@@ -45,6 +50,7 @@ fun CreateUserScreen(
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val coroutineScope = rememberCoroutineScope()
 
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
@@ -124,7 +130,9 @@ fun CreateUserScreen(
             )
 
             androidx.compose.material3.Button(onClick = {
-                client.createUserWithEmailAndPassword(email.value, password.value)
+                coroutineScope.launch {
+                    client.createUserWithEmailAndPassword(email.value, password.value)
+                }
             }) {
                 androidx.compose.material3.Text(text = "Iniciar sesión")
             }
