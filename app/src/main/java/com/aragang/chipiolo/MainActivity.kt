@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.aragang.chipiolo.Home.Home
+import com.aragang.chipiolo.CreateUserScreen.CreateUserScreen
 import com.aragang.chipiolo.Profile.ProfileHome
 import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
@@ -79,7 +79,32 @@ class MainActivity : ComponentActivity() {
 
                         composable("game") {
                             GameScreen()
+                            val viewModel = viewModel<SignInViewModel>()
+
+
+                            LaunchedEffect(key1 = Unit) {
+                                if(googleAuthUiClient.getSignedInUser() != null) {
+                                    navController.navigate("sign_in ")
+                                }
+                            }
+
+
                         }
+
+                        composable("create_user"){
+                            CreateUserScreen(
+                                client = googleAuthUiClient
+                            )
+
+                        }
+
+//                            onCreate(
+//                                googleAuthUiClient.createUserWithEmailAndPassword(
+//                                    email = email.value,
+//                                    password = password.value
+//                                )
+//                            )
+//                        }
 
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
@@ -87,9 +112,11 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("login_screen")
+                                    navController.navigate("create_user")
                                 }
                             }
+
+
 
                             val launcher = rememberLauncherForActivityResult(
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),

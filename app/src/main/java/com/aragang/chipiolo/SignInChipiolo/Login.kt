@@ -34,6 +34,43 @@ class Login(
         return result?.pendingIntent?.intentSender
     }
 
+    suspend fun createUserWithEmailAndPassword(email: String, password: String): SignInResult {
+        var result: SignInResult
+        try {
+            val user = auth.createUserWithEmailAndPassword(email, password).await().user
+            result = SignInResult(
+                data = user?.run {
+                    UserData(
+                        id = uid,
+                        name = displayName,
+                        profileImage = photoUrl?.toString(),
+                        email = email ?: ""
+                    )
+                },
+                errorMessage = null
+            )
+            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).get().addOnSuccessListener {
+                if (!it.exists()) {
+                    val newUser = hashMapOf(
+                        "name" to user?.displayName,
+                        "email" to user?.email,
+                        "profileImage" to user?.photoUrl.toString(),
+                        "uid" to user?.uid
+                    )
+                    FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).set(newUser)
+                }
+            }
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+            result = SignInResult(
+                data = null,
+                errorMessage = e.message
+            )
+        }
+        return result
+    }
+
     suspend fun signInWithIntent(intent: Intent): SignInResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
