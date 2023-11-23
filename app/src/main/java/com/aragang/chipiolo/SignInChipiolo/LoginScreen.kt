@@ -17,9 +17,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -41,6 +43,10 @@ fun LoginScreen(
     client: Login,
     onSuccess: () -> Unit
 ) {
+
+
+    var showCreateNameDialog by remember { mutableStateOf(false) }
+
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -103,14 +109,31 @@ fun LoginScreen(
             )
             Button(onClick = {
                 coroutineScope.launch {
-                    client.signInWithEmailAndPassword(email.value, password.value)
-                    if (client.getSignedInUser() != null) {
-                        onSuccess()
+                    val signInResult = client.signInWithEmailAndPassword(email.value, password.value)
+                    if (signInResult.data != null) {
+                        val user = signInResult.data
+                        if (user.name.isNullOrEmpty()) {
+                            showCreateNameDialog = true
+                        } else {
+                            onSuccess()
+                        }
                     }
                 }
             }) {
                 Text(text = "Iniciar sesión")
             }
+        }
+
+        if (showCreateNameDialog) {
+            CreateNameDialog(
+                onNameEntered = { name ->
+                    coroutineScope.launch {
+                        client.updateName(name)
+                        onSuccess()
+                    }
+                },
+                onDialogDismissed = { showCreateNameDialog = false }
+            )
         }
     }
 }
