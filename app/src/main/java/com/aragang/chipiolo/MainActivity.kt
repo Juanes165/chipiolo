@@ -25,6 +25,7 @@ import com.aragang.chipiolo.Profile.ProfileHome
 import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.LoginScreen
+import com.aragang.chipiolo.SignInChipiolo.RecoverScreen
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "create_user") {
+                    NavHost(navController = navController, startDestination = "recover_password") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -89,6 +90,10 @@ class MainActivity : ComponentActivity() {
                             }
 
 
+                        }
+
+                        composable("recover_password") {
+                            RecoverScreen()
                         }
 
                         composable("create_user"){
