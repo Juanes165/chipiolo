@@ -1,6 +1,7 @@
 package com.aragang.chipiolo
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "create_user") {
+                    NavHost(navController = navController, startDestination = "login_screen") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -84,7 +85,8 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("sign_in ")
+                                    Log.d("TAG", "onCreate: " + googleAuthUiClient.getSignedInUser())
+                                    navController.navigate("sign_in")
                                 }
                             }
 
@@ -97,13 +99,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-//                            onCreate(
-//                                googleAuthUiClient.createUserWithEmailAndPassword(
-//                                    email = email.value,
-//                                    password = password.value
-//                                )
-//                            )
-//                        }
 
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
@@ -111,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("create_user")
+                                    navController.navigate("login_screen")
                                 }
                             }
 
@@ -170,7 +165,7 @@ class MainActivity : ComponentActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
 
-                                        navController.popBackStack()
+                                        navController.navigate("login_screen")
                                     }
                                 },
                                 onCamera = {
@@ -185,7 +180,12 @@ class MainActivity : ComponentActivity() {
                         composable("login_screen"){
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
-                            LoginScreen()
+                            LoginScreen(
+                                client = googleAuthUiClient,
+                                onSuccess = {
+                                    navController.navigate("home")
+                                },
+                            )
                         }
                     }
                 }

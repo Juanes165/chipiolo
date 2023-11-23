@@ -19,6 +19,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -32,17 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aragang.chipiolo.R
 import com.google.android.gms.auth.api.identity.SignInClient
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-//    viewModel: SignInViewModel,
-//    oneTapClient: SignInClient,
-//    onLoginSuccess: (UserData) -> Unit,
-//    onLoginFailure: (String) -> Unit
+    client: Login,
+    onSuccess: () -> Unit
 ) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val coroutineScope = rememberCoroutineScope()
 
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
@@ -101,7 +101,14 @@ fun LoginScreen(
                     focusedTextColor = Color.White
                 ),
             )
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {
+                coroutineScope.launch {
+                    client.signInWithEmailAndPassword(email.value, password.value)
+                    if (client.getSignedInUser() != null) {
+                        onSuccess()
+                    }
+                }
+            }) {
                 Text(text = "Iniciar sesión")
             }
         }

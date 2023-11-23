@@ -3,6 +3,7 @@ package com.aragang.chipiolo.SignInChipiolo
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.aragang.chipiolo.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -33,6 +34,36 @@ class Login(
             null
         }
         return result?.pendingIntent?.intentSender
+    }
+
+
+    suspend fun signInWithEmailAndPassword(email: String, password: String): SignInResult {
+        var result: SignInResult
+        try {
+            val user = auth.signInWithEmailAndPassword(email, password).await().user
+            Log.d("Login", "signInWithEmailAndPassword: $user")
+
+
+            result = SignInResult(
+                data = user?.run {
+                    UserData(
+                        id = uid,
+                        name = displayName,
+                        profileImage = photoUrl?.toString(),
+                        email = email ?: ""
+                    )
+                },
+                errorMessage = null
+            )
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+            result = SignInResult(
+                data = null,
+                errorMessage = e.message
+            )
+        }
+        return result
     }
 
     suspend fun createUserWithEmailAndPassword(email: String, password: String): SignInResult {

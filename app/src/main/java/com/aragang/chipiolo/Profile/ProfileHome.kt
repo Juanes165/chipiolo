@@ -207,6 +207,7 @@ fun ProfileHome(
                             .padding(4.dp)
                             .clip(CircleShape)
                             .align(Alignment.TopCenter)
+                            .clickable { onProfile() }
                     )
                 }
 
