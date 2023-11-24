@@ -51,6 +51,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
+import com.aragang.chipiolo.avatarList
+import com.aragang.chipiolo.returnImageResource
 import com.aragang.chipiolo.views.Statistics
 
 
@@ -155,25 +157,47 @@ fun ProfileHome(
 
                 // FOTO DE PERFIL
                 if (userData?.profileImage != null) {
-                    AsyncImage(
-                        model = userData.profileImage,
-                        contentDescription = "Profile picture",
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .border(
-                                BorderStroke(4.dp, Color.White),
-                                CircleShape
-                            )
-                            .padding(4.dp)
-                            .clip(CircleShape)
-                            .align(Alignment.TopCenter)
-                            .clickable { onProfile() },
-                        contentScale = ContentScale.Crop
-                    )
+                    if(userData.profileImage !in avatarList){
+                        AsyncImage(
+                            model = userData.profileImage,
+                            contentDescription = "Profile picture",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    BorderStroke(4.dp, Color.White),
+                                    CircleShape
+                                )
+                                .padding(4.dp)
+                                .clip(CircleShape)
+                                .align(Alignment.TopCenter)
+                                .background(Color.White)
+                                .clickable { onProfile() },
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        val image = returnImageResource(userData.profileImage)
+                        Image(
+                            painter = painterResource(image),
+                            contentDescription = "Default profile picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(
+                                    BorderStroke(4.dp, Color.White),
+                                    CircleShape
+                                )
+                                .padding(4.dp)
+                                .clip(CircleShape)
+                                .align(Alignment.TopCenter)
+                                .background(Color.White)
+                                .clickable { onProfile() }
+                        )
+                    }
+
                 } else {
                     Image(
-                        painter = painterResource(R.drawable.juanes_prueba),
+                        painter = painterResource(R.drawable.avatar0),
                         contentDescription = "Default profile picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -185,6 +209,7 @@ fun ProfileHome(
                             .padding(4.dp)
                             .clip(CircleShape)
                             .align(Alignment.TopCenter)
+                            .background(Color.White)
                             .clickable { onProfile() }
                     )
                 }
@@ -210,25 +235,6 @@ fun ProfileHome(
             Spacer(modifier = Modifier.padding(top = 20.dp))
 
             Tabs(viewModel = viewModel)
-
-            if (showDialog) {
-                Dialog(onDismissRequest = { showDialog = false }) {
-                    // Custom shape, background, and layout for the dialog
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        if (userData != null) {
-                            ProfilePopup(
-                                userData = userData,
-                                onSignOut = onSignOut,
-                                updateShowDialog = { showDialog = false }
-                            )
-                        }
-                    }
-                }
-            }
-
-
         }
     }
 }
@@ -264,84 +270,6 @@ fun ButtonStatistics(
             color = if (enabled) Color.White else Color.Black.copy(alpha = 0.4f),
             fontWeight = FontWeight.Bold
         )
-    }
-}
-
-
-@Composable
-fun ProfilePopup(userData: UserData, onSignOut: () -> Unit, updateShowDialog: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        // FOTO DE PERFIL
-        if (userData?.profileImage != null) {
-            AsyncImage(
-                model = userData.profileImage,
-                contentDescription = "Profile picture",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(
-                        BorderStroke(4.dp, Color.White),
-                        CircleShape
-                    )
-                    .padding(4.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Image(
-                painter = painterResource(R.drawable.juanes_prueba),
-                contentDescription = "Default profile picture",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(100.dp)
-                    .border(
-                        BorderStroke(4.dp, Color.White),
-                        CircleShape
-                    )
-                    .padding(4.dp)
-                    .clip(CircleShape)
-            )
-        }
-
-        if (userData != null) {
-            Text(
-                text = userData.name ?: "",
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 16.dp)
-            )
-            Text(
-                text = userData.email ?: "",
-                fontSize = 10.sp,
-                modifier = Modifier.padding(top = 16.dp)
-            )
-        }
-
-        Text(
-            text = "Cambiar foto de perfil",
-            fontSize = 15.sp,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        Divider(
-            color = Color.Red,
-            thickness = 2.dp,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        Text(
-            text = "Cerrar sesión",
-            fontSize = 15.sp,
-            modifier = Modifier.padding(top = 8.dp),
-            color = Color.Red
-        )
-
-
     }
 }
 

@@ -19,27 +19,25 @@ import com.aragang.chipiolo.R
 
 @Composable
 fun FirstScreen() {
-    Box(modifier = Modifier) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0, 97, 23, 255))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0, 97, 23, 255))
+    ) {
+        // formulario de email y password
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // formulario de email y password
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.logo_chipiolo),
-                    contentDescription = "logo",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .size(325.dp)
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.logo_chipiolo),
+                contentDescription = "logo",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(325.dp)
+            )
         }
     }
 }
