@@ -2,16 +2,24 @@ package com.aragang.chipiolo.CreateUserScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,9 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import com.aragang.chipiolo.R
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.SignInState
@@ -32,6 +43,9 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import kotlinx.coroutines.CoroutineScope
 
 
 @Composable
@@ -128,13 +142,158 @@ fun CreateUserScreen(
                     focusedTextColor = Color.White
                 ),
             )
+            PopupWindowDialog(client, email.value, password.value, coroutineScope)
 
-            androidx.compose.material3.Button(onClick = {
-                coroutineScope.launch {
-                    client.createUserWithEmailAndPassword(email.value, password.value)
+        }
+    }
+}
+
+@Composable
+fun PopupWindowDialog(
+    client: Login,
+    email: String,
+    password: String,
+    coroutineScope: CoroutineScope
+) {
+    // on below line we are creating variable for button title
+    // and open dialog.
+    val openDialog = remember { mutableStateOf(false) }
+    val register = stringResource(R.string.register)
+    val buttonTitle = remember {
+        mutableStateOf(register)
+    }
+
+    // on the below line we are creating a column
+    Column(
+
+        // in this column we are specifying
+        // modifier to add padding and fill
+        // max size
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
+
+        // on below line we are adding horizontal alignment
+        // and vertical arrangement
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        // on the below line we are creating a button
+        Button(
+
+            // on below line we are adding modifier.
+            // and padding to it,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+
+            // on below line we are adding
+            // on click to our button
+            onClick = {
+
+                // on below line we are updating
+                // boolean value of open dialog.
+                openDialog.value = !openDialog.value
+
+                // on below line we are checking if dialog is close
+                if (!openDialog.value) {
+
+                    // on below line we are updating value
+                    buttonTitle.value = register
                 }
-            }) {
-                androidx.compose.material3.Text(text = "Iniciar sesión")
+            }
+        ) {
+
+            // on the below line we are creating a text for our button.
+            Text(text = buttonTitle.value, modifier = Modifier.padding(3.dp))
+        }
+
+        // on below line we are creating a box to display box.
+        Box {
+            // on below line we are specifying height and width
+            val popupWidth = 900.dp
+            val popupHeight = 200.dp
+
+            // on below line we are checking if dialog is open
+            if (openDialog.value) {
+                // on below line we are adding pop up
+                Popup(
+                    // on below line we are adding
+                    // alignment and properties.
+                    alignment = Alignment.TopCenter,
+                    properties = PopupProperties()
+                ) {
+
+                    // on the below line we are creating a box.
+                    Box(
+                        // adding modifier to it.
+                        Modifier
+                            .size(popupWidth, popupHeight)
+                            .padding(top = 5.dp)
+                            // on below line we are adding background color
+                            .background(colorResource(R.color.black), RoundedCornerShape(10.dp))
+                            // on below line we are adding border.
+                            .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
+                    ) {
+
+                        // on below line we are adding column
+
+                        Column(
+                            // on below line we are adding modifier to it.
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .fillMaxSize()
+                                .padding(horizontal = 20.dp),
+                            // on below line we are adding horizontal and vertical
+                            // arrangement to it.
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            // on below line we are adding text for our pop up
+                            Text(
+                                // on below line we are specifying text
+                                text = stringResource(R.string.conditions_text),
+                                // on below line we are specifying color.
+                                color = Color.White,
+                                // on below line we are adding padding to it
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp),
+                                // on below line we are adding font size.
+                                fontSize = 16.sp
+                            )
+                            Button(
+
+                                // on below line we are adding modifier.
+                                // and padding to it,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp),
+
+                                // on below line we are adding
+                                // on click to our button
+                                onClick = {
+
+                                    // on below line we are updating
+                                    // boolean value of open dialog.
+                                    openDialog.value = !openDialog.value
+                                    if (!openDialog.value) {
+
+                                        // on below line we are updating value
+                                        buttonTitle.value = register
+                                    }
+                                    coroutineScope.launch {
+                                        client.createUserWithEmailAndPassword(email, password)
+                                    }
+                                }
+                            ){
+
+                                // on the below line we are creating a text for our button.
+                                Text(text = stringResource(R.string.accept), modifier = Modifier.padding(3.dp))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
