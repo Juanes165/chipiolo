@@ -176,5 +176,15 @@ class Login(
             .build()
     }
 
+    // Update the user name in Firebase Auth
+    suspend fun updateName(name: String) {
+        val user = auth.currentUser ?: return
+        user.updateProfile(
+            com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+        )
+    }
+
     companion object
 }
