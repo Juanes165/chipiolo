@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -99,8 +101,8 @@ fun RecoverScreen(
                 }
                 Button(
                     onClick = {
-                        recoverPassword(emailRecover.value)
-                        onCodeSent()
+                        //recoverPassword(emailRecover.value)
+                        //onCodeSent() Por ahora necesito que se abra la alerta
 
                     }
                 ) {
@@ -110,6 +112,20 @@ fun RecoverScreen(
 
 
         }
+    }
+}
+
+@Composable
+fun PopVerifyCode(
+    closeDialog: () -> Unit = {}
+) {
+    val openDialog = remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = {closeDialog},
+        modifier = Modifier
+            .fillMaxWidth()) {
+
     }
 }
 
