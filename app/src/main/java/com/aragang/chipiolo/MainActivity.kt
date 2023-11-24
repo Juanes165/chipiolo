@@ -177,7 +177,7 @@ class MainActivity : ComponentActivity() {
                                 onCodeSent = {
                                     navController.navigate("verify_code")
                                 },
-                                client = googleAuthUiClient
+                                client = googleAuthUiClient,
                             )
                         }
 

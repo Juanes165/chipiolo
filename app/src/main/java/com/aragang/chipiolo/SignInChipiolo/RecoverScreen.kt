@@ -1,6 +1,7 @@
 package com.aragang.chipiolo.SignInChipiolo
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -228,7 +230,7 @@ fun PopVerifyCode(
                             cursorColor = Color.Black,
                             focusedLabelColor = Color.White,
                             unfocusedLabelColor = Color.White,
-                            focusedTextColor = Color.White,
+                            focusedTextColor = Color.Black,
                         ),
                         modifier = Modifier.padding(bottom = 20.dp),
                     )
@@ -428,6 +430,8 @@ fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, clie
     val api = apiBuilder.create(FireStoreAPI::class.java)
     val data = BodyRequestModelVerify(email, code)
     val call: Call<ResponseVerifyCode?>? = api.VerifyCode(data);
+    val context = LocalContext
+
 
     call!!.enqueue(object: retrofit2.Callback<ResponseVerifyCode?> {
         override fun onResponse(
@@ -439,6 +443,7 @@ fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, clie
                     client.sendPasswordResetEmail(email)
                 }
                 Log.d("Respuesta: ", response.body().toString())
+
             } else {
                 Log.e("Error", response.message())
             }
