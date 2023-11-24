@@ -1,7 +1,7 @@
 package com.aragang.chipiolo
 
+import OtpTextFieldScreen
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,6 +26,7 @@ import com.aragang.chipiolo.Profile.ProfileHome
 import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.LoginScreen
+import com.aragang.chipiolo.SignInChipiolo.RecoverScreen
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = "verify_code") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -85,12 +86,19 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    Log.d("TAG", "onCreate: " + googleAuthUiClient.getSignedInUser())
-                                    navController.navigate("sign_in")
+                                    navController.navigate("sign_in ")
                                 }
                             }
 
 
+                        }
+
+                        composable("recover_password") {
+                            RecoverScreen()
+                        }
+
+                        composable("verify_code") {
+                            OtpTextFieldScreen(client = googleAuthUiClient)
                         }
 
                         composable("create_user"){
@@ -99,6 +107,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+//                            onCreate(
+//                                googleAuthUiClient.createUserWithEmailAndPassword(
+//                                    email = email.value,
+//                                    password = password.value
+//                                )
+//                            )
+//                        }
 
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
@@ -106,7 +121,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("profile")
+                                    navController.navigate("create_user")
                                 }
                             }
 
@@ -165,7 +180,7 @@ class MainActivity : ComponentActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
 
-                                        navController.navigate("login_screen")
+                                        navController.popBackStack()
                                     }
                                 },
                                 onCamera = {
@@ -180,12 +195,7 @@ class MainActivity : ComponentActivity() {
                         composable("login_screen"){
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
-                            LoginScreen(
-                                client = googleAuthUiClient,
-                                onSuccess = {
-                                    navController.navigate("home")
-                                },
-                            )
+                            LoginScreen()
                         }
                     }
                 }

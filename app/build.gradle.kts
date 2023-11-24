@@ -61,6 +61,10 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
+    // RETROFIT
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.5.0")
+
     // PERMISSIONS
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
 

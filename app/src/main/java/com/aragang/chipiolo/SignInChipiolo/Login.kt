@@ -154,6 +154,18 @@ class Login(
         }
     }
 
+    suspend fun sendPasswordResetEmail(email: String): Boolean {
+        var result = false
+        try {
+            auth.sendPasswordResetEmail(email).await()
+            result = true
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+        }
+        return result
+    }
+
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             id = uid,
