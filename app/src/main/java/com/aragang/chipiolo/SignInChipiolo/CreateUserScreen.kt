@@ -5,11 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aragang.chipiolo.R
@@ -41,15 +47,9 @@ fun CreateUserScreen(
 //    onLoginSuccess: (UserData) -> Unit,
 //    onLoginFailure: (String) -> Unit
     client: Login,
+    onLogin: () -> Unit = {},
 ) {
 
-    val auth = FirebaseAuth.getInstance()
-
-
-
-
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
 
     var email = remember { mutableStateOf("") }
@@ -78,7 +78,7 @@ fun CreateUserScreen(
                     .size(325.dp)
             )
 
-            androidx.compose.material3.Text(
+            Text(
                 text = "Crea Tu ChipiUser",
                 color = Color.White,
                 fontSize = 30.sp,
@@ -87,7 +87,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { androidx.compose.material3.Text(text = "Correo", fontSize = 16.sp) },
+                label = { Text(text = "Correo", fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
                     unfocusedBorderColor = Color.White,
@@ -101,7 +101,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { androidx.compose.material3.Text("Contraseña", fontSize = 16.sp) },
+                label = { Text("Contraseña", fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -117,7 +117,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { androidx.compose.material3.Text("Repite la contraseña", fontSize = 16.sp) },
+                label = { Text("Repite la contraseña", fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -129,12 +129,42 @@ fun CreateUserScreen(
                 ),
             )
 
-            androidx.compose.material3.Button(onClick = {
+            Button(onClick = {
                 coroutineScope.launch {
-                    client.createUserWithEmailAndPassword(email.value, password.value)
+                    val registerResult =
+                        client.createUserWithEmailAndPassword(email.value, password.value)
+                    if (registerResult.data != null) {
+                        val user = registerResult.data
+                        if (user.name.isNullOrEmpty()) {
+                            //showCreateNameDialog = true
+                        } else {
+                            //onSuccess()
+                        }
+                    }
                 }
             }) {
-                androidx.compose.material3.Text(text = "Iniciar sesión")
+                Text(text = "Registrarse")
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(top = 20.dp),
+            ) {
+                Text(
+                    text = "¿Ya tienes cuenta?",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+                ClickableText(
+                    text = AnnotatedString("Inicia Sesión"),
+                    onClick = { onLogin() },
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                )
             }
         }
     }

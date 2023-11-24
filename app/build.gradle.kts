@@ -23,13 +23,20 @@ android {
     }
 
     buildTypes {
+        val apiEndpointValue = project.findProperty("apiEndpoint") ?: "https://chipioloapi.vercel.app"
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_ENDPOINT", "$apiEndpointValue")
         }
+        debug {
+            buildConfigField("String", "API_ENDPOINT", "$apiEndpointValue")
+        }
+
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -2,13 +2,9 @@ package com.aragang.chipiolo
 
 import OtpTextFieldScreen
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -23,13 +19,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aragang.chipiolo.CreateUserScreen.CreateUserScreen
+import com.aragang.chipiolo.Home.FirstScreen
+import com.aragang.chipiolo.Home.HomeScreen
 import com.aragang.chipiolo.Profile.ProfileHome
 import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.LoginScreen
 import com.aragang.chipiolo.SignInChipiolo.RecoverScreen
-import com.aragang.chipiolo.profileUser.ProfileScreen
-import com.aragang.chipiolo.SignInChipiolo.SignInScreen
+import com.aragang.chipiolo.Profile.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
 import com.aragang.chipiolo.ui.theme.ChipioloTheme
 import com.google.android.gms.auth.api.identity.Identity
@@ -57,8 +54,36 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "verify_code") {
+                    NavHost(navController = navController, startDestination = "first_screen") {
+
+                        // FIRST SCREEN - LOGO CHIPIOLO
+                        composable("first_screen") {
+                            // Logo chipiolo
+                            FirstScreen()
+                            // Revisar si esta logeado y redirigir
+                            LaunchedEffect(key1 = Unit) {
+                                if(googleAuthUiClient.getSignedInUser() != null) {
+                                    navController.navigate("home")
+                                } else {
+                                    navController.navigate("login_screen")
+                                }
+                            }
+                        }
+
+                        // HOME SCREEN - BOTONES DE UN JUGADOR Y MULTIJUGADOR
                         composable("home") {
+                            val viewModel = viewModel<SignInViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            HomeScreen(
+                                onProfile = {navController.navigate("profile_home")},
+                                onSinglePlayer = {navController.navigate("game")},
+                                onMultiPlayer = {navController.navigate("game")},
+                            )
+                        }
+
+                        // PROFILE HOME - PERFIL Y ESTADISTICAS
+                        composable("profile_home") {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
@@ -77,98 +102,9 @@ class MainActivity : ComponentActivity() {
                                 onPlay = {navController.navigate("game")},
                                 onProfile = {navController.navigate("profile")},
                             )
-                            //ProfileHome()
                         }
 
-                        composable("game") {
-                            GameScreen()
-                            val viewModel = viewModel<SignInViewModel>()
-
-
-                            LaunchedEffect(key1 = Unit) {
-                                if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("sign_in ")
-                                }
-                            }
-
-
-                        }
-
-                        composable("recover_password") {
-                            RecoverScreen()
-                        }
-
-                        composable("verify_code") {
-                            OtpTextFieldScreen(client = googleAuthUiClient)
-                        }
-
-                        composable("create_user"){
-                            CreateUserScreen(
-                                client = googleAuthUiClient
-                            )
-                        }
-
-//                            onCreate(
-//                                googleAuthUiClient.createUserWithEmailAndPassword(
-//                                    email = email.value,
-//                                    password = password.value
-//                                )
-//                            )
-//                        }
-
-                        composable("sign_in") {
-                            val viewModel = viewModel<SignInViewModel>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            LaunchedEffect(key1 = Unit) {
-                                if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("profile")
-                                }
-                            }
-
-
-
-                            val launcher = rememberLauncherForActivityResult(
-                                contract = ActivityResultContracts.StartIntentSenderForResult(),
-                                onResult = { result ->
-                                    if(result.resultCode == RESULT_OK) {
-                                        lifecycleScope.launch {
-                                            val signInResult = googleAuthUiClient.signInWithIntent(
-                                                intent = result.data ?: return@launch
-                                            )
-                                            viewModel.onSignInResult(signInResult)
-                                        }
-                                    }
-                                }
-                            )
-
-                            LaunchedEffect(key1 = state.isSignInSuccessful) {
-                                if(state.isSignInSuccessful) {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "Sign in successful",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    navController.navigate("Home")
-                                    viewModel.resetState()
-                                }
-                            }
-
-                            SignInScreen(
-                                state = state,
-                                onSignInClick = {
-                                    lifecycleScope.launch {
-                                        val signInIntentSender = googleAuthUiClient.signIn()
-                                        launcher.launch(
-                                            IntentSenderRequest.Builder(
-                                                signInIntentSender ?: return@launch
-                                            ).build()
-                                        )
-                                    }
-                                }
-                            )
-                        }
+                        // PERFIL DEL USUARIO
                         composable("profile") {
                             ProfileScreen(
                                 userData = googleAuthUiClient.getSignedInUser(),
@@ -189,19 +125,73 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable("camera") {
-                            CameraScreen()
+
+                        composable("verify_code") {
+                            OtpTextFieldScreen(client = googleAuthUiClient)
                         }
 
+                        // PANTALLA DE LOGIN
                         composable("login_screen"){
-                            val viewModel = viewModel<SignInViewModel>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
                             LoginScreen(
                                 client = googleAuthUiClient,
                                 onSuccess = {
                                     navController.navigate("home")
                                 },
+                                onRegister = {
+                                    navController.navigate("create_user")
+                                },
+                                onRecoverPassword = {
+                                    navController.navigate("recover_password")
+                                }
                             )
+                        }
+
+                        // PANTALLA DE REGISTRO
+                        composable("create_user"){
+                            CreateUserScreen(
+                                client = googleAuthUiClient
+                            )
+                        }
+
+                        // PANTALLA DE RECUPERAR CONTRASEÑA
+                        composable("recover_password") {
+                            RecoverScreen(
+                                onGoBack = {
+                                    navController.popBackStack()
+                                },
+                                onCodeSent = {
+                                    navController.navigate("verify_code")
+                                }
+                            )
+                        }
+
+                        composable("sign_in") {
+                            val viewModel = viewModel<SignInViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            LaunchedEffect(key1 = state.isSignInSuccessful) {
+                                if(state.isSignInSuccessful) {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Sign in successful",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    navController.navigate("Home")
+                                    viewModel.resetState()
+                                }
+                            }
+                        }
+
+                        composable("camera") {
+                            CameraScreen()
+                        }
+
+
+
+                        // GAME SCREEN - JUEGO
+                        composable("game") {
+                            GameScreen()
                         }
                     }
                 }

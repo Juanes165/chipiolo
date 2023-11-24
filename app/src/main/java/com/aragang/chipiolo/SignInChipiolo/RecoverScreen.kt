@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.aragang.chipiolo.API.BodyRequestModel
 import com.aragang.chipiolo.API.FireStoreAPI
 import com.aragang.chipiolo.API.ResponseGenerateCode
+import com.aragang.chipiolo.BuildConfig
 import com.aragang.chipiolo.R
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -37,7 +39,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 //@Preview
 @Composable
 fun RecoverScreen(
-    //navController: NavController
+    onGoBack: () -> Unit = {},
+    onCodeSent: () -> Unit = {}
 ) {
     var emailRecover = remember { mutableStateOf("") }
 
@@ -90,17 +93,30 @@ fun RecoverScreen(
                 modifier = Modifier.padding(bottom = 20.dp),
             )
 
-            Button(onClick = { recoverPassword(emailRecover.value) }) {
-                Text(text = stringResource(R.string.send_recover))
+            Row {
+                Button(onClick = { onGoBack() }) {
+                    Text(text = "Cancelar")
+                }
+                Button(
+                    onClick = {
+                        onCodeSent()
+                        //recoverPassword(emailRecover.value)
+                    }
+                ) {
+                    Text(text = stringResource(R.string.send_recover))
+                }
             }
+
+
         }
     }
 }
 
 
 fun recoverPassword(email: String) {
+    val apiUrl = BuildConfig.API_ENDPOINT
     val apiBuilder  = Retrofit.Builder()
-        .baseUrl("https://bffc-181-234-146-197.ngrok-free.app/")
+        .baseUrl(apiUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -113,15 +129,13 @@ fun recoverPassword(email: String) {
             call: Call<ResponseGenerateCode?>,
             response: retrofit2.Response<ResponseGenerateCode?>
         ) {
-            if (response.isSuccessful()) {
+            if (response.isSuccessful) {
                 //val data: ResponseGenerateCode? = response.body()
-                //println(data)
                 Log.d("Respuesta: ", response.body().toString())
             }
         }
 
         override fun onFailure(call: Call<ResponseGenerateCode?>?, t: Throwable) {
-            //println(t.message)
             Log.e("Error respuesta: ", t.message.toString())
         }
     })
