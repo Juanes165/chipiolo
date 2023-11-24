@@ -46,6 +46,7 @@ import com.aragang.chipiolo.API.BodyRequestModelVerify
 import com.aragang.chipiolo.API.FireStoreAPI
 import com.aragang.chipiolo.API.ResponseGenerateCode
 import com.aragang.chipiolo.API.ResponseVerifyCode
+import com.aragang.chipiolo.BuildConfig
 import com.aragang.chipiolo.SignInChipiolo.Login
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -338,8 +339,9 @@ private fun OtpTextFieldBox(text:String) {
 
 fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, client: Login) {
 
+    val apiUrlRecover = BuildConfig.API_ENDPOINT
     val apiBuilder  = Retrofit.Builder()
-        .baseUrl("https://90fe-181-234-146-197.ngrok-free.app/")
+        .baseUrl(apiUrlRecover)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -352,13 +354,13 @@ fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, clie
             call: Call<ResponseVerifyCode?>,
             response: retrofit2.Response<ResponseVerifyCode?>
         ) {
-            if (response.isSuccessful()) {
+            if (response.isSuccessful) {
                 coroutineScope.launch {
                     client.sendPasswordResetEmail(email)
                 }
                 Log.d("Respuesta: ", response.body().toString())
             } else {
-                Log.e("No estas autorizado", "El Codigo que has proporcionado no es correcto")
+                Log.e("Error", response.message())
             }
         }
 

@@ -1,28 +1,39 @@
 package com.aragang.chipiolo.CreateUserScreen
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +42,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import com.aragang.chipiolo.R
 import com.aragang.chipiolo.SignInChipiolo.Login
@@ -55,21 +69,16 @@ fun CreateUserScreen(
 //    onLoginSuccess: (UserData) -> Unit,
 //    onLoginFailure: (String) -> Unit
     client: Login,
+    onRegisterSuccess: () -> Unit = {},
+    onLogin: () -> Unit = {},
+    goToHome: () -> Unit = {}
 ) {
 
-    val auth = FirebaseAuth.getInstance()
-
-
-
-
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val coroutineScope = rememberCoroutineScope()
 
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
 
-
+    var showConditionsDialog by remember { mutableStateOf(false) }
 
 
     Box(
@@ -92,7 +101,7 @@ fun CreateUserScreen(
                     .size(325.dp)
             )
 
-            androidx.compose.material3.Text(
+            Text(
                 text = "Crea Tu ChipiUser",
                 color = Color.White,
                 fontSize = 30.sp,
@@ -101,7 +110,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { androidx.compose.material3.Text(text = "Correo", fontSize = 16.sp) },
+                label = { Text(text = "Correo", fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
                     unfocusedBorderColor = Color.White,
@@ -115,7 +124,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { androidx.compose.material3.Text("Contraseña", fontSize = 16.sp) },
+                label = { Text("Contraseña", fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -127,11 +136,11 @@ fun CreateUserScreen(
                 ),
             )
 
-//            RepassWord
+            //  RepassWord
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { androidx.compose.material3.Text("Repite la contraseña", fontSize = 16.sp) },
+                label = { Text("Repite la contraseña", fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -142,18 +151,68 @@ fun CreateUserScreen(
                     focusedTextColor = Color.White
                 ),
             )
-            PopupWindowDialog(client, email.value, password.value, coroutineScope)
 
+            // Button
+            Button(
+                onClick = {
+                    showConditionsDialog = true
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(66, 79, 88)
+                ),
+                shape = RoundedCornerShape(5.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.register),
+                    fontSize = 20.sp,
+                )
+            }
+
+
+            Row(
+                modifier = Modifier
+                    .padding(top = 20.dp),
+            ) {
+                Text(
+                    text = "¿Ya tienes cuenta?",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+                ClickableText(
+                    text = AnnotatedString("Inicia Sesión"),
+                    onClick = { onLogin() },
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                )
+            }
+
+            if (showConditionsDialog){
+                PopupWindowDialog(
+                    client = client,
+                    email = email.value,
+                    password = password.value,
+                    coroutineScope = rememberCoroutineScope(),
+                    closeDialog = { showConditionsDialog = false },
+                    onRegisterSuccess = onRegisterSuccess
+                )
+            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PopupWindowDialog(
     client: Login,
     email: String,
     password: String,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    closeDialog: () -> Unit = {},
+    onRegisterSuccess: () -> Unit = {},
 ) {
     // on below line we are creating variable for button title
     // and open dialog.
@@ -163,138 +222,107 @@ fun PopupWindowDialog(
         mutableStateOf(register)
     }
 
-    // on the below line we are creating a column
-    Column(
-
-        // in this column we are specifying
-        // modifier to add padding and fill
-        // max size
+    AlertDialog(
+        // on below line we are adding
+        // alignment and properties.
+        onDismissRequest = closeDialog,
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp),
-
-        // on below line we are adding horizontal alignment
-        // and vertical arrangement
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .fillMaxWidth()
+            .padding(top = 20.dp, bottom = 20.dp),
     ) {
 
-        // on the below line we are creating a button
-        Button(
-
-            // on below line we are adding modifier.
-            // and padding to it,
-            modifier = Modifier
+        // on the below line we are creating a box.
+        Box(
+            // adding modifier to it.
+            Modifier
+                // on below line we are adding background color
+                .background(Color.White, RoundedCornerShape(20.dp))
+                // on below line we are adding border.
+                .border(1.dp, color = Color.Black, RoundedCornerShape(20.dp))
+                .padding(top = 15.dp, bottom = 15.dp)
                 .fillMaxWidth()
-                .padding(10.dp),
-
-            // on below line we are adding
-            // on click to our button
-            onClick = {
-
-                // on below line we are updating
-                // boolean value of open dialog.
-                openDialog.value = !openDialog.value
-
-                // on below line we are checking if dialog is close
-                if (!openDialog.value) {
-
-                    // on below line we are updating value
-                    buttonTitle.value = register
-                }
-            }
         ) {
 
-            // on the below line we are creating a text for our button.
-            Text(text = buttonTitle.value, modifier = Modifier.padding(3.dp))
-        }
+            // on below line we are adding column
 
-        // on below line we are creating a box to display box.
-        Box {
-            // on below line we are specifying height and width
-            val popupWidth = 900.dp
-            val popupHeight = 200.dp
+            Column(
+                // on below line we are adding modifier to it.
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                // on below line we are adding horizontal and vertical
+                // arrangement to it.
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    // on below line we are adding text to
+                    // our dialog.
+                    text = stringResource(R.string.conditions),
+                    // on below line we are adding color
+                    // to our text.
+                    color = Color.Black,
+                    // on below line we are adding padding
+                    // to our text.
+                    modifier = Modifier.padding(vertical = 5.dp),
+                    // on below line we are adding font size
+                    // to our text.
+                    fontSize = 20.sp
+                )
+                // on below line we are adding text for our pop up
+                Text(
+                    // on below line we are specifying text
+                    text = stringResource(R.string.conditions_text),
+                    // on below line we are specifying color.
+                    color = Color.Black,
+                    // on below line we are adding padding to it
+                    modifier = Modifier
+                        .padding(vertical = 5.dp),
+                    // on below line we are adding font size.
+                    fontSize = 14.sp
+                )
+                Button(
 
-            // on below line we are checking if dialog is open
-            if (openDialog.value) {
-                // on below line we are adding pop up
-                Popup(
+                    // on below line we are adding modifier.
+                    // and padding to it,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+
                     // on below line we are adding
-                    // alignment and properties.
-                    alignment = Alignment.TopCenter,
-                    properties = PopupProperties()
-                ) {
+                    // on click to our button
+                    onClick = {
 
-                    // on the below line we are creating a box.
-                    Box(
-                        // adding modifier to it.
-                        Modifier
-                            .size(popupWidth, popupHeight)
-                            .padding(top = 5.dp)
-                            // on below line we are adding background color
-                            .background(colorResource(R.color.black), RoundedCornerShape(10.dp))
-                            // on below line we are adding border.
-                            .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
-                    ) {
+                        // on below line we are updating
+                        // boolean value of open dialog.
+                        openDialog.value = !openDialog.value
+                        if (!openDialog.value) {
 
-                        // on below line we are adding column
-
-                        Column(
-                            // on below line we are adding modifier to it.
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                                .fillMaxSize()
-                                .padding(horizontal = 20.dp),
-                            // on below line we are adding horizontal and vertical
-                            // arrangement to it.
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            // on below line we are adding text for our pop up
-                            Text(
-                                // on below line we are specifying text
-                                text = stringResource(R.string.conditions_text),
-                                // on below line we are specifying color.
-                                color = Color.White,
-                                // on below line we are adding padding to it
-                                modifier = Modifier
-                                    .padding(vertical = 5.dp),
-                                // on below line we are adding font size.
-                                fontSize = 16.sp
-                            )
-                            Button(
-
-                                // on below line we are adding modifier.
-                                // and padding to it,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp),
-
-                                // on below line we are adding
-                                // on click to our button
-                                onClick = {
-
-                                    // on below line we are updating
-                                    // boolean value of open dialog.
-                                    openDialog.value = !openDialog.value
-                                    if (!openDialog.value) {
-
-                                        // on below line we are updating value
-                                        buttonTitle.value = register
-                                    }
-                                    coroutineScope.launch {
-                                        client.createUserWithEmailAndPassword(email, password)
-                                    }
+                            // on below line we are updating value
+                            buttonTitle.value = register
+                        }
+                        coroutineScope.launch {
+                            val signInResult = client.createUserWithEmailAndPassword(email, password)
+                            if (signInResult.data != null) {
+                                val user = signInResult.data
+                                if (user.name.isNullOrEmpty()) {
+                                    onRegisterSuccess()
+                                } else {
+                                    closeDialog()
+                                    Log.e("Error", "Error al crear usuario $signInResult")
                                 }
-                            ){
-
-                                // on the below line we are creating a text for our button.
-                                Text(text = stringResource(R.string.accept), modifier = Modifier.padding(3.dp))
                             }
                         }
                     }
+                ){
+
+                    // on the below line we are creating a text for our button.
+                    Text(text = stringResource(R.string.accept), modifier = Modifier.padding(3.dp))
                 }
             }
         }
     }
-}
+    }
+
+
