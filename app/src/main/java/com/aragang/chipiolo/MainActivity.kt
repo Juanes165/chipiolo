@@ -1,12 +1,15 @@
 package com.aragang.chipiolo
 
+import OtpTextFieldScreen
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -19,7 +22,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.aragang.chipiolo.CreateUserScreen.CreateUserScreen
+import com.aragang.chipiolo.Profile.ProfileHome
+import com.aragang.chipiolo.ProfilePicUpdate.CameraScreen
 import com.aragang.chipiolo.SignInChipiolo.Login
+import com.aragang.chipiolo.SignInChipiolo.LoginScreen
+import com.aragang.chipiolo.SignInChipiolo.RecoverScreen
 import com.aragang.chipiolo.profileUser.ProfileScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
@@ -37,6 +45,8 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val you_view: TabViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -47,7 +57,65 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "sign_in") {
+                    NavHost(navController = navController, startDestination = "verify_code") {
+                        composable("home") {
+                            ProfileHome(
+                                viewModel = you_view,
+                                userData = googleAuthUiClient.getSignedInUser(),
+                                onSignOut = {
+                                    lifecycleScope.launch {
+                                        googleAuthUiClient.signOut()
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Signed out",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        navController.popBackStack()
+                                    }
+                                },
+                                onPlay = {navController.navigate("game")},
+                                onProfile = {navController.navigate("profile")},
+                            )
+                            //ProfileHome()
+                        }
+
+                        composable("game") {
+                            GameScreen()
+                            val viewModel = viewModel<SignInViewModel>()
+
+
+                            LaunchedEffect(key1 = Unit) {
+                                if(googleAuthUiClient.getSignedInUser() != null) {
+                                    navController.navigate("sign_in ")
+                                }
+                            }
+
+
+                        }
+
+                        composable("recover_password") {
+                            RecoverScreen()
+                        }
+
+                        composable("verify_code") {
+                            OtpTextFieldScreen(client = googleAuthUiClient)
+                        }
+
+                        composable("create_user"){
+                            CreateUserScreen(
+                                client = googleAuthUiClient
+                            )
+                        }
+
+//                            onCreate(
+//                                googleAuthUiClient.createUserWithEmailAndPassword(
+//                                    email = email.value,
+//                                    password = password.value
+//                                )
+//                            )
+//                        }
+
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -57,6 +125,8 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("profile")
                                 }
                             }
+
+
 
                             val launcher = rememberLauncherForActivityResult(
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -80,7 +150,7 @@ class MainActivity : ComponentActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
-                                    navController.navigate("profile")
+                                    navController.navigate("Home")
                                     viewModel.resetState()
                                 }
                             }
@@ -111,9 +181,26 @@ class MainActivity : ComponentActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
 
-                                        navController.popBackStack()
+                                        navController.navigate("login_screen")
                                     }
+                                },
+                                onCamera = {
+                                    navController.navigate("camera")
                                 }
+                            )
+                        }
+                        composable("camera") {
+                            CameraScreen()
+                        }
+
+                        composable("login_screen"){
+                            val viewModel = viewModel<SignInViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            LoginScreen(
+                                client = googleAuthUiClient,
+                                onSuccess = {
+                                    navController.navigate("home")
+                                },
                             )
                         }
                     }

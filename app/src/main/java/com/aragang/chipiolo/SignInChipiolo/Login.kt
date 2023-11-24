@@ -3,12 +3,15 @@ package com.aragang.chipiolo.SignInChipiolo
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.util.Log
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.aragang.chipiolo.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
@@ -33,20 +36,21 @@ class Login(
         return result?.pendingIntent?.intentSender
     }
 
-    suspend fun signInWithIntent(intent: Intent): SignInResult {
-        val credential = oneTapClient.getSignInCredentialFromIntent(intent)
-        val googleIdToken = credential.googleIdToken
-        val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
-        return try {
-            val user = auth.signInWithCredential(googleCredentials).await().user
-            SignInResult(
+
+    suspend fun signInWithEmailAndPassword(email: String, password: String): SignInResult {
+        var result: SignInResult
+        try {
+            val user = auth.signInWithEmailAndPassword(email, password).await().user
+            Log.d("Login", "signInWithEmailAndPassword: $user")
+
+
+            result = SignInResult(
                 data = user?.run {
                     UserData(
                         id = uid,
                         name = displayName,
                         profileImage = photoUrl?.toString(),
                         email = email ?: ""
-
                     )
                 },
                 errorMessage = null
@@ -54,11 +58,90 @@ class Login(
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            SignInResult(
+            result = SignInResult(
                 data = null,
                 errorMessage = e.message
             )
         }
+        return result
+    }
+
+    suspend fun createUserWithEmailAndPassword(email: String, password: String): SignInResult {
+
+        var result: SignInResult
+        try {
+            val user = auth.createUserWithEmailAndPassword(email, password).await().user
+            result = SignInResult(
+                data = user?.run {
+                    UserData(
+                        id = uid,
+                        name = displayName,
+                        profileImage = photoUrl?.toString(),
+                        email = email ?: ""
+                    )
+                },
+                errorMessage = null
+            )
+            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).get().addOnSuccessListener {
+                if (!it.exists()) {
+                    val newUser = hashMapOf(
+                        "name" to user?.displayName,
+                        "email" to user?.email,
+                        "profileImage" to user?.photoUrl.toString(),
+                        "uid" to user?.uid
+                    )
+                    FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).set(newUser)
+                }
+            }
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+            result = SignInResult(
+                data = null,
+                errorMessage = e.message
+            )
+        }
+        return result
+    }
+
+    suspend fun signInWithIntent(intent: Intent): SignInResult {
+        val credential = oneTapClient.getSignInCredentialFromIntent(intent)
+        val googleIdToken = credential.googleIdToken
+        val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
+        var result: SignInResult
+        try {
+            val user = auth.signInWithCredential(googleCredentials).await().user
+            result = SignInResult(
+                data = user?.run {
+                    UserData(
+                        id = uid,
+                        name = displayName,
+                        profileImage = photoUrl?.toString(),
+                        email = email ?: ""
+                    )
+                },
+                errorMessage = null
+            )
+            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).get().addOnSuccessListener {
+                if (!it.exists()) {
+                    val newUser = hashMapOf(
+                        "name" to user?.displayName,
+                        "email" to user?.email,
+                        "profileImage" to user?.photoUrl.toString(),
+                        "uid" to user?.uid
+                    )
+                    FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).set(newUser)
+                }
+            }
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+            result = SignInResult(
+                data = null,
+                errorMessage = e.message
+            )
+        }
+        return result
     }
 
     suspend fun signOut() {
@@ -69,6 +152,18 @@ class Login(
             e.printStackTrace()
             if(e is CancellationException) throw e
         }
+    }
+
+    suspend fun sendPasswordResetEmail(email: String): Boolean {
+        var result = false
+        try {
+            auth.sendPasswordResetEmail(email).await()
+            result = true
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+        }
+        return result
     }
 
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
@@ -91,6 +186,16 @@ class Login(
             )
             .setAutoSelectEnabled(true)
             .build()
+    }
+
+    // Update the user name in Firebase Auth
+    suspend fun updateName(name: String) {
+        val user = auth.currentUser ?: return
+        user.updateProfile(
+            com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+        )
     }
 
     companion object
