@@ -27,6 +27,18 @@
     </string>
     <string name="elim">Eliminar</string>
 
+    <!--  FirstScreen   -->
+    <string name="logo_description">Logo de Chipiolo</string>
+
+    <!--    HOME -->
+    <string name="single_player">Un jugador</string>
+    <string name="multi_player">Multijugador</string>
+    <string name="pica_description">Logo de pica</string>
+    <string name="letra_providerAuthority">com.google.android.gms.fonts</string>
+    <string name="letra_providerPackage">com.google.android.gms/string></string>
+
+    
+
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
     <string name="send_recover">Enviar</string>

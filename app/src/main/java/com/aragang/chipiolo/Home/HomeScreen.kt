@@ -1,6 +1,5 @@
 package com.aragang.chipiolo.Home
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,13 +17,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
@@ -32,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aragang.chipiolo.R
-import com.aragang.chipiolo.SignInChipiolo.SignInState
 
 @Composable
 fun HomeScreen(
@@ -42,8 +39,8 @@ fun HomeScreen(
 ) {
 
     val provider = GoogleFont.Provider(
-        providerAuthority = "com.google.android.gms.fonts",
-        providerPackage = "com.google.android.gms",
+        providerAuthority = stringResource(R.string.letra_providerAuthority),
+        providerPackage = stringResource(R.string.letra_providerPackage),
         certificates = R.array.com_google_android_gms_fonts_certs
     )
     val fontName = GoogleFont("Bangers")
@@ -79,7 +76,7 @@ fun HomeScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.logo_chipiolo),
-                contentDescription = "logo",
+                contentDescription = stringResource(R.string.logo_description),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(350.dp)
@@ -105,13 +102,13 @@ fun HomeScreen(
                 //Row {
                 Image(
                     painter = painterResource(R.drawable.logo_pica),
-                    contentDescription = "Logo de pica",
+                    contentDescription = stringResource(R.string.pica_description),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(20.dp)
                 )
 
                 Text(
-                    text = "UN JUGADOR",
+                    text =  stringResource(R.string.single_player),
                     Modifier.padding(
                         start = 10.dp
                     ),
@@ -140,7 +137,7 @@ fun HomeScreen(
             {
 
                 Text(
-                    text = "MULTIJUGADOR",
+                    text = stringResource(R.string.multi_player),
                     Modifier.padding(
                         start = 5.dp
                     ),
