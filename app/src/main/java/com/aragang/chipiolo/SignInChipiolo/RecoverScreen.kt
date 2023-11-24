@@ -100,7 +100,7 @@ fun RecoverScreen(
 
 fun recoverPassword(email: String) {
     val apiBuilder  = Retrofit.Builder()
-        .baseUrl("https://11b2-181-234-146-197.ngrok-free.app/")
+        .baseUrl("https://bffc-181-234-146-197.ngrok-free.app/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

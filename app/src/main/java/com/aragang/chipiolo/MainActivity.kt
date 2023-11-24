@@ -2,6 +2,7 @@ package com.aragang.chipiolo
 
 import OtpTextFieldScreen
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -121,7 +122,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("create_user")
+                                    navController.navigate("profile")
                                 }
                             }
 
@@ -180,7 +181,7 @@ class MainActivity : ComponentActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
 
-                                        navController.popBackStack()
+                                        navController.navigate("login_screen")
                                     }
                                 },
                                 onCamera = {
@@ -195,7 +196,12 @@ class MainActivity : ComponentActivity() {
                         composable("login_screen"){
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
-                            LoginScreen()
+                            LoginScreen(
+                                client = googleAuthUiClient,
+                                onSuccess = {
+                                    navController.navigate("home")
+                                },
+                            )
                         }
                     }
                 }
