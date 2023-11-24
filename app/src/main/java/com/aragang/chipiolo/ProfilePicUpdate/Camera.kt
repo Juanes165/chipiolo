@@ -48,6 +48,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
+import com.aragang.chipiolo.SignInChipiolo.Login
+import com.aragang.chipiolo.SignInChipiolo.UserData
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -59,6 +61,9 @@ import java.util.concurrent.Executor
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
+    userData: UserData?,
+    client: Login,
+    returnToProfile: () -> Unit
 ) {
     // Permisos de la camara
     val permissionState = rememberPermissionState(Manifest.permission.CAMERA)
@@ -179,18 +184,23 @@ fun CameraScreen(
                                 .padding(top = 16.dp, end = 5.dp)
                                 .width(115.dp)
                         ) {
-                            androidx.compose.material3.Text("Repetir", fontSize = 14.sp)
+                            Text("Repetir", fontSize = 14.sp)
                         }
 
                         Button(
                             onClick = {
-                                uploadProfilePicture(Uri.parse(photoUri))
+                                uploadProfilePicture(
+                                    Uri.parse(photoUri),
+                                    client,
+                                    userData?.email?.substringBefore('@') ?: userData?.id ?: "",
+                                    returnToProfile
+                                )
                             },
                             modifier = Modifier
                                 .padding(top = 16.dp, start = 5.dp)
                                 .width(115.dp)
                         ) {
-                            androidx.compose.material3.Text("Aceptar", fontSize = 14.sp)
+                            Text("Aceptar", fontSize = 14.sp)
                         }
                     }
                 }
@@ -244,18 +254,27 @@ private fun takePicture(
         })
 }
 
-fun uploadProfilePicture(uri: Uri) {
+fun uploadProfilePicture(uri: Uri, client: Login, userMail: String, returnToProfile: () -> Unit) {
     Log.d("TAG", "PHOTOURI: ${uri.lastPathSegment}")
     val storageRef = FirebaseStorage.getInstance().getReference()
-    val fileRef = storageRef.child("${uri.lastPathSegment}")
+    val fileRef = storageRef.child("${if(userMail == "") uri.lastPathSegment else userMail}")
     val uploadTask = fileRef.putFile(uri)
 
-    uploadTask.addOnSuccessListener {
-//        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT)
-//            .show()
-        Log.d("TAG", "uploadProfilePicture: ${it.metadata?.path}")
-    }.addOnFailureListener {
-//        Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
-        Log.d("TAG", "uploadProfilePicture: ${it.message}")
+    val urlTask = uploadTask.continueWithTask { task ->
+        if (!task.isSuccessful) {
+            task.exception?.let {
+                throw it
+            }
+        }
+        fileRef.downloadUrl
+    }.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val downloadUri = task.result
+            Log.d("TAG", "uploadProfilePicture: $downloadUri")
+            client.updatePhotoUrl(downloadUri.toString())
+            returnToProfile()
+        } else {
+            Log.e("Error", "uploadProfilePicture: ${task.exception?.message}")
+        }
     }
 }

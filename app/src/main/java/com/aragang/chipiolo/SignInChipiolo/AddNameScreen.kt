@@ -53,7 +53,7 @@ fun AddNameScreen(
         ) {
 
             Image(
-                painter = painterResource(R.drawable.juanes_prueba),
+                painter = painterResource(R.drawable.avatar0),
                 contentDescription = "Default profile picture",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

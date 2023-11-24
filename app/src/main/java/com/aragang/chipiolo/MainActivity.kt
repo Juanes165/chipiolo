@@ -27,6 +27,7 @@ import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.LoginScreen
 import com.aragang.chipiolo.SignInChipiolo.RecoverScreen
 import com.aragang.chipiolo.Profile.ProfileScreen
+import com.aragang.chipiolo.ProfilePicUpdate.PickAvatarScreen
 import com.aragang.chipiolo.SignInChipiolo.AddNameScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
 import com.aragang.chipiolo.ui.theme.ChipioloTheme
@@ -125,6 +126,9 @@ class MainActivity : ComponentActivity() {
                                 onCamera = {
                                     navController.navigate("camera")
                                 },
+                                onAvatarPick = {
+                                    navController.navigate("pick_avatar")
+                                },
                                 goToLogin = {
                                     navController.navigate("login_screen")
                                 },
@@ -220,11 +224,26 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                        // PANTALLA DE LA CAMARA
                         composable("camera") {
-                            CameraScreen()
+                            CameraScreen(
+                                userData = googleAuthUiClient.getSignedInUser(),
+                                client = googleAuthUiClient,
+                                returnToProfile = {
+                                    navController.navigate("profile")
+                                }
+                            )
                         }
 
-
+                        // PANTALLA DE SELECCIONAR AVATAR
+                        composable("pick_avatar") {
+                            PickAvatarScreen(
+                                client = googleAuthUiClient,
+                                onSuccess = {
+                                    navController.navigate("profile")
+                                }
+                            )
+                        }
 
                         // GAME SCREEN - JUEGO
                         composable("game") {

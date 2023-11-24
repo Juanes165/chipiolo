@@ -4,6 +4,7 @@
     <string name="guest">Invitado</string>
     <string name="server_client_id">156015254808-94kht33taq5lvknuf5bj5dcen71vfpcm.apps.googleusercontent.com</string>
     <string name="araganes">Solo pa Tín</string>
+    <string name="pick_avatar">SELECCIONA TU AVATAR</string>
 
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
