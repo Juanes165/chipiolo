@@ -103,6 +103,7 @@ class MainActivity : ComponentActivity() {
                                 onPlay = {navController.navigate("game")},
                                 onProfile = {navController.navigate("profile")},
                             )
+                            //ProfileHome()
                         }
 
                         // PERFIL DEL USUARIO
