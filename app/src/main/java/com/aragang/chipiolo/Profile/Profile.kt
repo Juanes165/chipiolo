@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +77,7 @@ fun ProfileScreen(
 
         Image(
             painter = painterResource(R.drawable.logo_chipiolo),
-            contentDescription = "Logo de fondo",
+            contentDescription = stringResource(R.string.logofondo),
             colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
             modifier = Modifier
                 .padding(
@@ -97,7 +98,7 @@ fun ProfileScreen(
             if (userData?.profileImage != null) {
                 AsyncImage(
                     model = userData.profileImage,
-                    contentDescription = "Profile picture",
+                    contentDescription = stringResource(R.string.prpic),
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
@@ -113,7 +114,7 @@ fun ProfileScreen(
             } else {
                 Image(
                     painter = painterResource(R.drawable.juanes_prueba),
-                    contentDescription = "Default profile picture",
+                    contentDescription = stringResource(R.string.dftprpic),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(100.dp)
@@ -141,7 +142,7 @@ fun ProfileScreen(
             }
 
             Text(
-                text = "Cambiar foto de perfil",
+                text = stringResource(R.string.chpic),
                 fontSize = 15.sp,
                 modifier = Modifier.padding(top = 16.dp)
             )
@@ -158,7 +159,7 @@ fun ProfileScreen(
 
             ) {
             Text(
-                text = "Cerrar sesión",
+                text = stringResource(R.string.clses),
                 fontSize = 15.sp,
                 modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
                 color = Color.White
@@ -177,7 +178,7 @@ fun ProfileScreen(
             shape = CircleShape
         ) {
             Text(
-                text = "X",
+                text = stringResource(R.string.x),
                 fontSize = 15.sp,
                 color = Color.White
             )
@@ -255,7 +256,7 @@ fun ProfilePictureDialog(
         ) {
             Column {
                 Text(
-                    text = "Foto de perfil",
+                    text = stringResource(R.string.picpro),
                     fontSize = 18.sp,
                     modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                     textAlign = TextAlign.Center
@@ -267,7 +268,7 @@ fun ProfilePictureDialog(
                         .padding(top = 16.dp, start = 5.dp)
                         .width(115.dp)
                 ) {
-                    Text("Cámara", fontSize = 14.sp)
+                    Text(stringResource(R.string.cam), fontSize = 14.sp)
                 }
 
                 Button(
@@ -276,7 +277,7 @@ fun ProfilePictureDialog(
                         .padding(top = 16.dp, start = 5.dp)
                         .width(115.dp)
                 ) {
-                    Text("Galería", fontSize = 14.sp)
+                    Text(stringResource(R.string.gal), fontSize = 14.sp)
                 }
 
                 Button(
@@ -285,7 +286,7 @@ fun ProfilePictureDialog(
                         .padding(top = 16.dp, start = 5.dp)
                         .width(115.dp)
                 ) {
-                    Text("Avatar", fontSize = 14.sp)
+                    Text(stringResource(R.string.ava), fontSize = 14.sp)
                 }
             }
         }
@@ -306,7 +307,7 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
         ) {
             Column {
                 Text(
-                    text = "¿Estás seguro de que quieres cerrar sesión?",
+                    text = stringResource(R.string.confexit),
                     fontSize = 18.sp,
                     modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                     textAlign = TextAlign.Center
@@ -323,7 +324,7 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
                             .padding(top = 16.dp, end = 5.dp)
                             .width(115.dp)
                     ) {
-                        Text("Cancelar", fontSize = 14.sp)
+                        Text(stringResource(R.string.cnl), fontSize = 14.sp)
                     }
 
                     Button(
@@ -332,7 +333,7 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
                             .padding(top = 16.dp, start = 5.dp)
                             .width(115.dp)
                     ) {
-                        Text("Salir", fontSize = 14.sp)
+                        Text(stringResource(R.string.salir), fontSize = 14.sp)
                     }
                 }
             }
@@ -356,14 +357,16 @@ fun deleteAccountDialog(
         ) {
             Column {
                 Text(
-                    text = "Eliminar cuenta",
+                    text = stringResource(R.string.elicuen),
                     fontSize = 30.sp,
-                    modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp).align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                        .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
                     color = Color(255, 0, 0)
                 )
                 Text(
-                    text = "Lamentamos que te vayas 😞\n¿Estás seguro de que quieres eliminar tu cuenta?",
+                    text = stringResource(R.string.msgfarewell),
                     fontSize = 20.sp,
                     modifier = Modifier.padding(top = 16.dp, start = 20.dp, end = 20.dp),
                     textAlign = TextAlign.Center
@@ -380,7 +383,7 @@ fun deleteAccountDialog(
                             .padding(top = 16.dp, end = 5.dp)
                             .width(115.dp)
                     ) {
-                        Text("Cancelar", fontSize = 14.sp)
+                        Text(stringResource(R.string.cnl), fontSize = 14.sp)
                     }
 
                     Button(
@@ -393,7 +396,7 @@ fun deleteAccountDialog(
                             contentColor = Color.White,
                         ),
                     ) {
-                        Text("Eliminar", fontSize = 14.sp)
+                        Text(stringResource(R.string.elim), fontSize = 14.sp)
                     }
                 }
             }

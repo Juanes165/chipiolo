@@ -5,6 +5,28 @@
     <string name="server_client_id">156015254808-94kht33taq5lvknuf5bj5dcen71vfpcm.apps.googleusercontent.com</string>
     <string name="araganes">Solo pa Tín</string>
 
+    <!-- Profile Home -->
+    <string name="logofondo">Logo de fondo</string>
+    <string name="plybtn">Play Button</string>
+    <string name="prpic">Profile picture</string>
+    <string name="dftprpic">Default Profile picture</string>
+    <string name="std">Estadistica</string>
+    <string name="lgr">Logros</string>
+    <string name="chpic">Cambiar foto de perfil</string>
+    <string name="clses">Cerrar sesión</string>
+    <string name="x">X</string>
+    <string name="picpro">Foto de perfil</string>
+    <string name="cam">Cámara</string>
+    <string name="gal">Galería</string>
+    <string name="ava">Avatar</string>
+    <string name="confexit">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="cnl">Cancelar</string>
+    <string name="salir">Salir</string>
+    <string name="elicuen">Eliminar cuenta</string>
+    <string name="msgfarewell">Lamentamos que te vayas 😞\n ¿Estás seguro de que quieres eliminar tu cuenta?
+    </string>
+    <string name="elim">Eliminar</string>
+
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
     <string name="send_recover">Enviar</string>

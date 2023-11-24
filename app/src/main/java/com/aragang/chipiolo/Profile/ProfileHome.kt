@@ -48,6 +48,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
@@ -74,7 +75,7 @@ fun ProfileHome(
 
         Image(
             painter = painterResource(R.drawable.logo_chipiolo),
-            contentDescription = "Logo de fondo",
+            contentDescription = stringResource(R.string.logofondo),
             colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
             modifier = Modifier
                 .padding(
@@ -144,7 +145,7 @@ fun ProfileHome(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.play_icon),
-                            contentDescription = "Play Button",
+                            contentDescription = stringResource(R.string.plybtn),
                             modifier = Modifier
                                 .size(80.dp)
                                 .fillMaxSize()
@@ -157,7 +158,7 @@ fun ProfileHome(
                 if (userData?.profileImage != null) {
                     AsyncImage(
                         model = userData.profileImage,
-                        contentDescription = "Profile picture",
+                        contentDescription = stringResource(R.string.prpic),
                         modifier = Modifier
                             .size(100.dp)
                             .clip(CircleShape)
@@ -174,7 +175,7 @@ fun ProfileHome(
                 } else {
                     Image(
                         painter = painterResource(R.drawable.juanes_prueba),
-                        contentDescription = "Default profile picture",
+                        contentDescription = stringResource(R.string.dftprpic),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(100.dp)
@@ -197,12 +198,12 @@ fun ProfileHome(
                 ) {
                     ButtonStatistics(
                         Modifier.padding(end = 1.dp),
-                        "Estadistica",
+                        stringResource(R.string.std),
                         RoundedCornerShape(bottomStart = 30.dp)
                     )
                     ButtonStatistics(
                         Modifier.padding(start = 1.dp),
-                        "logros",
+                        stringResource(R.string.lgr),
                         RoundedCornerShape(bottomEnd = 30.dp)
                     )
                 }
@@ -281,7 +282,7 @@ fun ProfilePopup(userData: UserData, onSignOut: () -> Unit, updateShowDialog: ()
         if (userData?.profileImage != null) {
             AsyncImage(
                 model = userData.profileImage,
-                contentDescription = "Profile picture",
+                contentDescription = stringResource(R.string.prpic),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
@@ -296,7 +297,7 @@ fun ProfilePopup(userData: UserData, onSignOut: () -> Unit, updateShowDialog: ()
         } else {
             Image(
                 painter = painterResource(R.drawable.juanes_prueba),
-                contentDescription = "Default profile picture",
+                contentDescription = stringResource(R.string.dftprpic),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
@@ -323,7 +324,7 @@ fun ProfilePopup(userData: UserData, onSignOut: () -> Unit, updateShowDialog: ()
         }
 
         Text(
-            text = "Cambiar foto de perfil",
+            text = stringResource(R.string.chpic),
             fontSize = 15.sp,
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -335,7 +336,7 @@ fun ProfilePopup(userData: UserData, onSignOut: () -> Unit, updateShowDialog: ()
         )
 
         Text(
-            text = "Cerrar sesión",
+            text = stringResource(R.string.clses),
             fontSize = 15.sp,
             modifier = Modifier.padding(top = 8.dp),
             color = Color.Red
