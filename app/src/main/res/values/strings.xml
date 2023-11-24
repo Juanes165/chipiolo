@@ -8,4 +8,49 @@
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su corre al cual llegara un código de verificación</string>
     <string name="send_recover">Enviar</string>
+    <string name="register">Registrarse</string>
+    <string name="accept">Aceptar terminos y condiciones</string>
+    <string name="conditions_text">Terms and Conditions for Mobile Poker Game
+
+Last Updated: 23/11/2023
+
+Please read these Terms and Conditions ("Terms") carefully before using the Mobile Poker Game (the "Game") operated by ChipioloCorp ("we," "us," or "our"). By accessing or using the Game, you agree to be bound by these Terms. If you do not agree with any part of these Terms, you may not access or use the Game.
+
+    Acceptance of Terms:
+    By downloading, installing, or using the Game, you agree to these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use the Game.
+
+    Age Restriction:
+    You must be at least 18 years old or the legal age for gambling in your jurisdiction to use this Game. By using the Game, you confirm that you meet these age requirements.
+
+    Registration and Accounts:
+    You may need to create an account to access certain features of the Game. You agree to provide accurate and complete information during the registration process and to update such information to keep it accurate and current.
+
+    Gameplay:
+    The Game is intended for entertainment purposes only. You understand and agree that you are solely responsible for any losses or damages incurred while playing the Game. We are not responsible for any gambling addiction or related issues.
+
+    Fair Play:
+    Cheating, hacking, or any form of unfair play is strictly prohibited. We reserve the right to terminate your account and take legal action if we suspect any fraudulent or unethical behavior.
+
+    Virtual Currency:
+    The Game may use virtual currency. Virtual currency has no real-world value and cannot be exchanged for real money or other items of value outside the Game.
+
+    In-App Purchases:
+    The Game may offer in-app purchases. You agree to pay all fees and applicable taxes incurred by you or anyone using your account. In-app purchases are non-refundable.
+
+    Intellectual Property:
+    All content, trademarks, and other intellectual property rights related to the Game are the property of ChipioloCorp. You may not use, reproduce, or distribute any content from the Game without our prior written consent.
+
+    Privacy:
+    We collect, use, and disclose personal information in accordance with our Privacy Policy. By using the Game, you consent to such collection, use, and disclosure.
+
+    Termination:
+    We reserve the right to terminate or suspend your access to the Game without prior notice for any reason, including violation of these Terms.
+
+    Changes to Terms:
+    We reserve the right to update or change these Terms at any time. Your continued use of the Game after the posting of any changes constitutes acceptance of those changes.
+
+    Contact Information:
+    If you have any questions or concerns about these Terms, please contact us at chipiolo@gmail.com.
+
+By using the Mobile Poker Game, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</string>
 </resources>

@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "verify_code") {
+                    NavHost(navController = navController, startDestination = "create_user") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
