@@ -272,6 +272,9 @@ fun PopVerifyCode(
 @Composable
 private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:  MutableState<String>, code: MutableState<String>, coroutineScope: CoroutineScope, client: Login) {
 
+    var openExito by remember { mutableStateOf(false) }
+    var openError by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -311,7 +314,7 @@ private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:
         Spacer(Modifier.width(6.dp))
 
         androidx.compose.material.Button(
-            onClick = { VerifyCode(email.value, code.value, coroutineScope, client)
+            onClick = { VerifyCode(email.value, code.value, coroutineScope, client, {openExito = true}, {openError = true})
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFFF5B041),
@@ -330,6 +333,50 @@ private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:
                 modifier = Modifier.padding(start = 6.dp, top = 6.dp, bottom = 6.dp)
             )
         }
+    }
+
+    if (openExito) {
+        AlertDialog(
+            onDismissRequest = {
+                openExito = false
+            },
+            title = {
+                Text(text = "Codigo Exitoso")
+            },
+            text = {
+                Text("Se ha enviado un correo a ${email.value} para recuperar su contraseña")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        openExito = false
+                    }) {
+                    Text("Ok")
+                }
+            }
+        )
+    }
+
+    if (openError) {
+        AlertDialog(
+            onDismissRequest = {
+                openError = false
+            },
+            title = {
+                Text(text = "Código Incorrecto")
+            },
+            text = {
+                Text("Por favor, ingrese un código válido")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        openError = false
+                    }) {
+                    Text("Ok")
+                }
+            }
+        )
     }
 }
 
@@ -419,7 +466,7 @@ fun recoverPassword(email: String) {
     })
 }
 
-fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, client: Login) {
+fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, client: Login, openExito: () -> Unit = {}, openError:  () -> Unit = {}) {
 
     val apiUrlRecover = BuildConfig.API_ENDPOINT
     val apiBuilder  = Retrofit.Builder()
@@ -430,7 +477,7 @@ fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, clie
     val api = apiBuilder.create(FireStoreAPI::class.java)
     val data = BodyRequestModelVerify(email, code)
     val call: Call<ResponseVerifyCode?>? = api.VerifyCode(data);
-    val context = LocalContext
+
 
 
     call!!.enqueue(object: retrofit2.Callback<ResponseVerifyCode?> {
@@ -441,11 +488,13 @@ fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, clie
             if (response.isSuccessful) {
                 coroutineScope.launch {
                     client.sendPasswordResetEmail(email)
+
                 }
                 Log.d("Respuesta: ", response.body().toString())
-
+                openExito()
             } else {
                 Log.e("Error", response.message())
+                openError()
             }
         }
 
