@@ -27,6 +27,22 @@
     </string>
     <string name="elim">Eliminar</string>
 
+    <!-- AddNameScreen -->
+    <string name="dftpict">Default Profile picture</string>
+    <string name="welcome">Bienvenido a Chipiolo</string>
+    <string name="newname">Crea un nombre de usuario genial para empezar a jugar</string>
+    <string name="name">Nombre</string>
+    <string name="cont">Continuar</string>
+
+    <!-- CreateUserScreen -->
+    <string name="culogo">logo</string>
+    <string name="cuchipiuser">Crea Tu ChipiUser</string>
+    <string name="cucorreo">Correo</string>
+    <string name="cupass">Contraseña</string>
+    <string name="curptpass">Repite la contraseña</string>
+    <string name="cuyacuenta">¿Ya tienes cuenta?</string>
+    <string name="cuinicia">Inicia Sesión</string>
+
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
     <string name="send_recover">Enviar</string>

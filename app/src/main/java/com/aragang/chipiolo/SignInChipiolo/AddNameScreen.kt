@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,7 +55,7 @@ fun AddNameScreen(
 
             Image(
                 painter = painterResource(R.drawable.juanes_prueba),
-                contentDescription = "Default profile picture",
+                contentDescription = stringResource(R.string.dftpict),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(200.dp)
@@ -67,13 +68,13 @@ fun AddNameScreen(
             )
 
             Text(
-                text = "Bienvenido a Chipiolo",
+                text = stringResource(R.string.welcome),
                 color = Color.White,
                 fontSize = 30.sp,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
             Text(
-                text = "Crea un nombre de usuario genial para empezar a jugar",
+                text = stringResource(R.string.newname),
                 color = Color.White,
                 fontSize = 13.sp,
                 modifier = Modifier.padding(bottom = 30.dp)
@@ -81,7 +82,7 @@ fun AddNameScreen(
             OutlinedTextField(
                 value = name.value,
                 onValueChange = { name.value = it },
-                label = { Text("Nombre", fontSize = 16.sp) },
+                label = { Text(stringResource(R.string.name), fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -95,7 +96,7 @@ fun AddNameScreen(
             Button(onClick = {
                 onNameEntered(name.value)
             }) {
-                Text(text = "Continuar")
+                Text(text = stringResource(R.string.cont))
             }
         }
     }
