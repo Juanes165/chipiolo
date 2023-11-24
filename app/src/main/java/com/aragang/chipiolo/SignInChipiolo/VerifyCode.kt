@@ -46,6 +46,9 @@ import com.aragang.chipiolo.API.BodyRequestModelVerify
 import com.aragang.chipiolo.API.FireStoreAPI
 import com.aragang.chipiolo.API.ResponseGenerateCode
 import com.aragang.chipiolo.API.ResponseVerifyCode
+import com.aragang.chipiolo.SignInChipiolo.Login
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -53,8 +56,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OtpTextFieldScreen() {
+fun OtpTextFieldScreen(client: Login) {
 
+    val coroutineScope = rememberCoroutineScope()
     val codeTxtFieldTxt = remember { mutableStateOf("") }
     val textFieldRequester = remember { FocusRequester() }
     val email = remember { mutableStateOf("") }
@@ -148,7 +152,7 @@ fun OtpTextFieldScreen() {
                         label = { Text(text = "Code", fontSize = 16.sp) })
 
 
-                    BottomActionButtons(email, code)
+                    BottomActionButtons(email, code, coroutineScope, client)
 
                 }
 
@@ -163,7 +167,7 @@ fun OtpTextFieldScreen() {
 }
 
 @Composable
-private fun ColumnScope.BottomActionButtons(email: MutableState<String>, code: MutableState<String>){
+private fun ColumnScope.BottomActionButtons(email: MutableState<String>, code: MutableState<String>, coroutineScope: CoroutineScope, client: Login){
 
     Row(
         modifier = Modifier
@@ -209,7 +213,7 @@ private fun ColumnScope.BottomActionButtons(email: MutableState<String>, code: M
         Spacer(Modifier.width(6.dp))
 
         Button(
-            onClick = { VerifyCode(email.value, code.value)
+            onClick = { VerifyCode(email.value, code.value, coroutineScope, client)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF9500FF),
@@ -332,7 +336,8 @@ private fun OtpTextFieldBox(text:String) {
     }
 }
 
-fun VerifyCode(email: String, code: String) {
+fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, client: Login) {
+
     val apiBuilder  = Retrofit.Builder()
         .baseUrl("https://90fe-181-234-146-197.ngrok-free.app/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -348,8 +353,9 @@ fun VerifyCode(email: String, code: String) {
             response: retrofit2.Response<ResponseVerifyCode?>
         ) {
             if (response.isSuccessful()) {
-                //val data: ResponseGenerateCode? = response.body()
-                //println(data)
+                coroutineScope.launch {
+                    client.sendPasswordResetEmail(email)
+                }
                 Log.d("Respuesta: ", response.body().toString())
             } else {
                 Log.e("No estas autorizado", "El Codigo que has proporcionado no es correcto")

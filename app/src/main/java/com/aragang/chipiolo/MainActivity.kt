@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("verify_code") {
-                            OtpTextFieldScreen()
+                            OtpTextFieldScreen(client = googleAuthUiClient)
                         }
 
                         composable("create_user"){
