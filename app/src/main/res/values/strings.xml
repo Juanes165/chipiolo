@@ -53,6 +53,11 @@
     <string name="lonocuenta">¿No tienes cuenta?</string>
     <string name="loregistrate">Regístrate</string>
 
+    <!-- RecoverScreen -->
+    <string name="reclogo">logo</string>
+    <string name="reccancel">Cancelar</string>
+    <string name="recemail">Email</string>
+
 
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>

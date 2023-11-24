@@ -58,7 +58,7 @@ fun RecoverScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.logo_chipiolo),
-                contentDescription = "logo",
+                contentDescription = stringResource(R.string.reclogo),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(325.dp)
@@ -81,7 +81,7 @@ fun RecoverScreen(
             OutlinedTextField(
                 value = emailRecover.value,
                 onValueChange = { emailRecover.value = it },
-                label = { Text(text = "Email", fontSize = 16.sp) },
+                label = { Text(text = stringResource(R.string.recemail), fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
                     unfocusedBorderColor = Color.White,
@@ -95,7 +95,7 @@ fun RecoverScreen(
 
             Row {
                 Button(onClick = { onGoBack() }) {
-                    Text(text = "Cancelar")
+                    Text(text = stringResource(R.string.reccancel))
                 }
                 Button(
                     onClick = {
