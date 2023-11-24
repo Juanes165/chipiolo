@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "login_screen") {
+                    NavHost(navController = navController, startDestination = "home") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("login_screen")
+                                    navController.navigate("profile")
                                 }
                             }
 

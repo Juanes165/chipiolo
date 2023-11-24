@@ -1,11 +1,5 @@
 package com.aragang.chipiolo.Profile
 
-import android.Manifest
-import android.view.ViewGroup
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.view.LifecycleCameraController
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,29 +45,13 @@ import com.aragang.chipiolo.R
 import com.aragang.chipiolo.TabViewModel
 import com.aragang.chipiolo.views.Achievements
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
 import com.aragang.chipiolo.views.Statistics
-
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.isGranted
-import java.io.File
-import java.util.concurrent.Executor
 
 
 @Composable

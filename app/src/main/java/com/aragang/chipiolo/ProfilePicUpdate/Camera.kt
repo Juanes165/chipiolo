@@ -1,6 +1,8 @@
 package com.aragang.chipiolo.ProfilePicUpdate
 
 import android.Manifest
+import android.net.Uri
+import android.util.Log
 import android.view.ViewGroup
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -50,13 +52,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.util.concurrent.Executor
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
-//    onPhotoTaken: (File) -> Unit,
 ) {
     // Permisos de la camara
     val permissionState = rememberPermissionState(Manifest.permission.CAMERA)
@@ -181,7 +183,9 @@ fun CameraScreen(
                         }
 
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                uploadProfilePicture(Uri.parse(photoUri))
+                            },
                             modifier = Modifier
                                 .padding(top = 16.dp, start = 5.dp)
                                 .width(115.dp)
@@ -238,4 +242,20 @@ private fun takePicture(
             }
 
         })
+}
+
+fun uploadProfilePicture(uri: Uri) {
+    Log.d("TAG", "PHOTOURI: ${uri.lastPathSegment}")
+    val storageRef = FirebaseStorage.getInstance().getReference()
+    val fileRef = storageRef.child("${uri.lastPathSegment}")
+    val uploadTask = fileRef.putFile(uri)
+
+    uploadTask.addOnSuccessListener {
+//        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT)
+//            .show()
+        Log.d("TAG", "uploadProfilePicture: ${it.metadata?.path}")
+    }.addOnFailureListener {
+//        Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
+        Log.d("TAG", "uploadProfilePicture: ${it.message}")
+    }
 }

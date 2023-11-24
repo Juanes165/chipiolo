@@ -1,6 +1,8 @@
 package com.aragang.chipiolo.profileUser
 
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +38,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.R
 import com.aragang.chipiolo.SignInChipiolo.UserData
+import com.google.firebase.storage.FirebaseStorage
 
 
 @Composable
@@ -51,10 +54,15 @@ fun ProfileScreen(
     var photoUri: Uri? by remember { mutableStateOf(null) }
 
     // Photo picker
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        //When the user has selected a photo, its URL is returned here
-        photoUri = uri
-    }
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            //When the user has selected a photo, its URL is returned here
+            photoUri = uri
+            if (photoUri != null) {
+                uploadProfilePicture(photoUri!!)
+            }
+        }
+
 
     Box(
         modifier = Modifier
@@ -111,6 +119,7 @@ fun ProfileScreen(
                         )
                         .padding(4.dp)
                         .clip(CircleShape)
+                        .clickable { showProfilePictureDialog = true }
                 )
             }
 
@@ -165,12 +174,33 @@ fun ProfileScreen(
                 closeDialog = { showProfilePictureDialog = false },
                 openCamera = onCamera,
                 openGallery = {
-                    launcher.launch(PickVisualMediaRequest(
-                        mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
-                    ))
+                    launcher.launch(
+                        PickVisualMediaRequest(
+                            mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                    Log.d("TAG", "PHOTOURI BEFORE: ${photoUri}")
+                    //uploadProfilePicture(photoUri!!)
                 }
             )
         }
+    }
+}
+
+
+fun uploadProfilePicture(uri: Uri) {
+    Log.d("TAG", "PHOTOURI: ${uri.lastPathSegment}")
+    val storageRef = FirebaseStorage.getInstance().getReference()
+    val fileRef = storageRef.child("${uri.lastPathSegment}")
+    val uploadTask = fileRef.putFile(uri)
+
+    uploadTask.addOnSuccessListener {
+//        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT)
+//            .show()
+        Log.d("TAG", "uploadProfilePicture: ${it.metadata?.path}")
+    }.addOnFailureListener {
+//        Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
+        Log.d("TAG", "uploadProfilePicture: ${it.message}")
     }
 }
 

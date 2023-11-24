@@ -54,6 +54,7 @@ android {
 dependencies {
 
     implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
     // CAMERA
     val cameraxVersion = "1.3.0-rc01"
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
