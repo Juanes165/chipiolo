@@ -41,8 +41,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import com.aragang.chipiolo.API.BodyRequestModel
+import com.aragang.chipiolo.API.BodyRequestModelVerify
+import com.aragang.chipiolo.API.FireStoreAPI
+import com.aragang.chipiolo.API.ResponseGenerateCode
+import com.aragang.chipiolo.API.ResponseVerifyCode
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-@Preview
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OtpTextFieldScreen() {
@@ -140,7 +148,7 @@ fun OtpTextFieldScreen() {
                         label = { Text(text = "Code", fontSize = 16.sp) })
 
 
-                    BottomActionButtons()
+                    BottomActionButtons(email, code)
 
                 }
 
@@ -155,7 +163,7 @@ fun OtpTextFieldScreen() {
 }
 
 @Composable
-private fun ColumnScope.BottomActionButtons(){
+private fun ColumnScope.BottomActionButtons(email: MutableState<String>, code: MutableState<String>){
 
     Row(
         modifier = Modifier
@@ -201,7 +209,7 @@ private fun ColumnScope.BottomActionButtons(){
         Spacer(Modifier.width(6.dp))
 
         Button(
-            onClick = {
+            onClick = { VerifyCode(email.value, code.value)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF9500FF),
@@ -322,5 +330,35 @@ private fun OtpTextFieldBox(text:String) {
         )
 
     }
+}
 
+fun VerifyCode(email: String, code: String) {
+    val apiBuilder  = Retrofit.Builder()
+        .baseUrl("https://90fe-181-234-146-197.ngrok-free.app/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val api = apiBuilder.create(FireStoreAPI::class.java)
+    val data = BodyRequestModelVerify(email, code)
+    val call: Call<ResponseVerifyCode?>? = api.VerifyCode(data);
+
+    call!!.enqueue(object: retrofit2.Callback<ResponseVerifyCode?> {
+        override fun onResponse(
+            call: Call<ResponseVerifyCode?>,
+            response: retrofit2.Response<ResponseVerifyCode?>
+        ) {
+            if (response.isSuccessful()) {
+                //val data: ResponseGenerateCode? = response.body()
+                //println(data)
+                Log.d("Respuesta: ", response.body().toString())
+            } else {
+                Log.e("No estas autorizado", "El Codigo que has proporcionado no es correcto")
+            }
+        }
+
+        override fun onFailure(call: Call<ResponseVerifyCode?>?, t: Throwable) {
+            //println(t.message)
+            Log.e("Error respuesta: ", t.message.toString())
+        }
+    })
 }

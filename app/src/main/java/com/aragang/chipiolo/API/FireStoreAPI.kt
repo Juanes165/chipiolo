@@ -13,4 +13,7 @@ public interface FireStoreAPI {
     )
     @POST("users/generate-code")
     fun GenerateCode(@Body bdrequest: BodyRequestModel?): Call<ResponseGenerateCode?>?
+
+    @POST("users/verify-code")
+    fun VerifyCode(@Body bdrequest: BodyRequestModelVerify?): Call<ResponseVerifyCode?>?
 }

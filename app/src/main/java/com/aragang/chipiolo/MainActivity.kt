@@ -1,5 +1,6 @@
 package com.aragang.chipiolo
 
+import OtpTextFieldScreen
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "recover_password") {
+                    NavHost(navController = navController, startDestination = "verify_code") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -94,6 +95,10 @@ class MainActivity : ComponentActivity() {
 
                         composable("recover_password") {
                             RecoverScreen()
+                        }
+
+                        composable("verify_code") {
+                            OtpTextFieldScreen()
                         }
 
                         composable("create_user"){
