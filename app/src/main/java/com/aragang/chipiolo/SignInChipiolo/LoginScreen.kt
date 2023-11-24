@@ -201,17 +201,5 @@ fun LoginScreen(
                 )
             }
         }
-
-        if (showCreateNameDialog) {
-            CreateNameDialog(
-                onNameEntered = { name ->
-                    coroutineScope.launch {
-                        client.updateName(name)
-                        onSuccess()
-                    }
-                },
-                onDialogDismissed = { showCreateNameDialog = false }
-            )
-        }
     }
 }

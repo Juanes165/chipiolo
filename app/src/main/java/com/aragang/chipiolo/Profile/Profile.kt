@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.R
+import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.UserData
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.storage.FirebaseStorage
 
 
@@ -44,11 +46,14 @@ import com.google.firebase.storage.FirebaseStorage
 fun ProfileScreen(
     userData: UserData?,
     onSignOut: () -> Unit,
-    onCamera: () -> Unit
+    onCamera: () -> Unit,
+    goToLogin: () -> Unit = {},
+    client: Login,
 ) {
 
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showProfilePictureDialog by remember { mutableStateOf(false) }
+    var showDeleteAccountDialog by remember { mutableStateOf(false) }
 
     var photoUri: Uri? by remember { mutableStateOf(null) }
 
@@ -160,6 +165,24 @@ fun ProfileScreen(
             )
         }
 
+        Button(
+            onClick = { showDeleteAccountDialog = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(255, 0, 0),
+                contentColor = Color.White,
+            ),
+            modifier = Modifier
+                .padding(bottom = 24.dp, end = 24.dp)
+                .align(Alignment.BottomEnd),
+            shape = CircleShape
+        ) {
+            Text(
+                text = "X",
+                fontSize = 15.sp,
+                color = Color.White
+            )
+        }
+
         if (showSignOutDialog) {
             SignOutDialog(
                 signOut = onSignOut,
@@ -180,6 +203,16 @@ fun ProfileScreen(
                     )
                     Log.d("TAG", "PHOTOURI BEFORE: ${photoUri}")
                     //uploadProfilePicture(photoUri!!)
+                }
+            )
+        }
+
+        if (showDeleteAccountDialog) {
+            deleteAccountDialog(
+                closeDialog = { showDeleteAccountDialog = false },
+                deleteAccount = {
+                    client.deleteAccount()
+                    onSignOut()
                 }
             )
         }
@@ -300,6 +333,67 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
                             .width(115.dp)
                     ) {
                         Text("Salir", fontSize = 14.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun deleteAccountDialog(
+    closeDialog: () -> Unit,
+    deleteAccount: () -> Unit = {}
+){
+    Dialog(onDismissRequest = closeDialog) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .border(
+                    BorderStroke(1.dp, Color(0, 0, 0, 255)),
+                    RoundedCornerShape(16.dp)
+                )
+        ) {
+            Column {
+                Text(
+                    text = "Eliminar cuenta",
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp).align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    color = Color(255, 0, 0)
+                )
+                Text(
+                    text = "Lamentamos que te vayas 😞\n¿Estás seguro de que quieres eliminar tu cuenta?",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(top = 16.dp, start = 20.dp, end = 20.dp),
+                    textAlign = TextAlign.Center
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = closeDialog,
+                        modifier = Modifier
+                            .padding(top = 16.dp, end = 5.dp)
+                            .width(115.dp)
+                    ) {
+                        Text("Cancelar", fontSize = 14.sp)
+                    }
+
+                    Button(
+                        onClick = deleteAccount,
+                        modifier = Modifier
+                            .padding(top = 16.dp, start = 5.dp)
+                            .width(115.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(255, 0, 0),
+                            contentColor = Color.White,
+                        ),
+                    ) {
+                        Text("Eliminar", fontSize = 14.sp)
                     }
                 }
             }

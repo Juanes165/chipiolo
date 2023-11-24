@@ -28,9 +28,9 @@ class Login(
             oneTapClient.beginSignIn(
                 buildSignInRequest()
             ).await()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             null
         }
         return result?.pendingIntent?.intentSender
@@ -55,9 +55,9 @@ class Login(
                 },
                 errorMessage = null
             )
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             result = SignInResult(
                 data = null,
                 errorMessage = e.message
@@ -82,7 +82,8 @@ class Login(
                 },
                 errorMessage = null
             )
-            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).get().addOnSuccessListener {
+            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString())
+                .get().addOnSuccessListener {
                 if (!it.exists()) {
                     val newUser = hashMapOf(
                         "name" to user?.displayName,
@@ -90,12 +91,13 @@ class Login(
                         "profileImage" to user?.photoUrl.toString(),
                         "uid" to user?.uid
                     )
-                    FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).set(newUser)
+                    FirebaseFirestore.getInstance().collection("UserData")
+                        .document(user?.uid.toString()).set(newUser)
                 }
             }
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             result = SignInResult(
                 data = null,
                 errorMessage = e.message
@@ -122,7 +124,8 @@ class Login(
                 },
                 errorMessage = null
             )
-            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).get().addOnSuccessListener {
+            FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString())
+                .get().addOnSuccessListener {
                 if (!it.exists()) {
                     val newUser = hashMapOf(
                         "name" to user?.displayName,
@@ -130,12 +133,13 @@ class Login(
                         "profileImage" to user?.photoUrl.toString(),
                         "uid" to user?.uid
                     )
-                    FirebaseFirestore.getInstance().collection("UserData").document(user?.uid.toString()).set(newUser)
+                    FirebaseFirestore.getInstance().collection("UserData")
+                        .document(user?.uid.toString()).set(newUser)
                 }
             }
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             result = SignInResult(
                 data = null,
                 errorMessage = e.message
@@ -148,9 +152,9 @@ class Login(
         try {
             oneTapClient.signOut().await()
             auth.signOut()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
         }
     }
 
@@ -159,9 +163,9 @@ class Login(
         try {
             auth.sendPasswordResetEmail(email).await()
             result = true
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
         }
         return result
     }
@@ -196,6 +200,19 @@ class Login(
                 .setDisplayName(name)
                 .build()
         )
+    }
+
+    fun deleteAccount() {
+        auth.currentUser?.delete()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                return@addOnCompleteListener
+            } else {
+                Log.e("Login", "deleteAccount: ${task.exception?.message}")
+            }
+        }?.addOnFailureListener() { exception ->
+            Log.e("Login", "deleteAccount: ${exception.message}")
+            return@addOnFailureListener
+        }
     }
 
     companion object

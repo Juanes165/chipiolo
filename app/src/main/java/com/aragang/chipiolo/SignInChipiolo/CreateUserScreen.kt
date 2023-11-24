@@ -47,7 +47,9 @@ fun CreateUserScreen(
 //    onLoginSuccess: (UserData) -> Unit,
 //    onLoginFailure: (String) -> Unit
     client: Login,
+    onRegisterSuccess: () -> Unit = {},
     onLogin: () -> Unit = {},
+    goToHome: () -> Unit = {}
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -136,9 +138,9 @@ fun CreateUserScreen(
                     if (registerResult.data != null) {
                         val user = registerResult.data
                         if (user.name.isNullOrEmpty()) {
-                            //showCreateNameDialog = true
+                            onRegisterSuccess()
                         } else {
-                            //onSuccess()
+                            goToHome()
                         }
                     }
                 }

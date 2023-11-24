@@ -27,6 +27,7 @@ import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.LoginScreen
 import com.aragang.chipiolo.SignInChipiolo.RecoverScreen
 import com.aragang.chipiolo.Profile.ProfileScreen
+import com.aragang.chipiolo.SignInChipiolo.AddNameScreen
 import com.aragang.chipiolo.SignInChipiolo.SignInViewModel
 import com.aragang.chipiolo.ui.theme.ChipioloTheme
 import com.google.android.gms.auth.api.identity.Identity
@@ -122,7 +123,11 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onCamera = {
                                     navController.navigate("camera")
-                                }
+                                },
+                                goToLogin = {
+                                    navController.navigate("login_screen")
+                                },
+                                client = googleAuthUiClient
                             )
                         }
 
@@ -149,7 +154,16 @@ class MainActivity : ComponentActivity() {
                         // PANTALLA DE REGISTRO
                         composable("create_user"){
                             CreateUserScreen(
-                                client = googleAuthUiClient
+                                client = googleAuthUiClient,
+                                onRegisterSuccess = {
+                                    navController.navigate("add_username")
+                                },
+                                onLogin = {
+                                    navController.navigate("login_screen")
+                                },
+                                goToHome = {
+                                    navController.navigate("home")
+                                }
                             )
                         }
 
@@ -161,6 +175,28 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onCodeSent = {
                                     navController.navigate("verify_code")
+                                }
+                            )
+                        }
+
+                        // PANTALLA DE AGREGAR NOMBRE DE USUARIO
+                        composable("add_username") {
+                            AddNameScreen(
+                                client = googleAuthUiClient,
+                                onNameEntered = { name ->
+                                    lifecycleScope.launch {
+                                        googleAuthUiClient.updateName(name)
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Name updated",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        navController.navigate("profile_home")
+                                    }
+                                },
+                                onSuccess = {
+                                    navController.navigate("home")
                                 }
                             )
                         }
