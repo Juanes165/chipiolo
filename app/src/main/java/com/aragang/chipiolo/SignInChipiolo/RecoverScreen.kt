@@ -99,8 +99,9 @@ fun RecoverScreen(
                 }
                 Button(
                     onClick = {
+                        recoverPassword(emailRecover.value)
                         onCodeSent()
-                        //recoverPassword(emailRecover.value)
+
                     }
                 ) {
                     Text(text = stringResource(R.string.send_recover))
