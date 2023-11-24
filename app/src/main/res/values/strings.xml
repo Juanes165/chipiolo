@@ -43,6 +43,17 @@
     <string name="cuyacuenta">¿Ya tienes cuenta?</string>
     <string name="cuinicia">Inicia Sesión</string>
 
+    <!-- LoginScreen -->
+    <string name="lologo">logo</string>
+    <string name="loiniciar">Iniciar sesión</string>
+    <string name="loemail">Email</string>
+    <string name="lopass">Password</string>
+    <string name="loforgotpass">¿Olvidaste tu contraseña?</string>
+    <string name="logoogle">Login con Google</string>
+    <string name="lonocuenta">¿No tienes cuenta?</string>
+    <string name="loregistrate">Regístrate</string>
+
+
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
     <string name="send_recover">Enviar</string>
