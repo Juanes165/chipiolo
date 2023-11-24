@@ -19,10 +19,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -39,12 +46,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -77,8 +89,14 @@ fun CreateUserScreen(
 
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
+    var repeatPassword = remember { mutableStateOf("") }
 
     var showConditionsDialog by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+
+    val showPassword = remember { mutableStateOf(false) }
+    val showRepeatPassword = remember { mutableStateOf(false) }
 
 
     Box(
@@ -120,6 +138,17 @@ fun CreateUserScreen(
                     focusedTextColor = Color.White,
                 ),
                 modifier = Modifier.padding(bottom = 20.dp),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    autoCorrect = true,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                singleLine = true,
             )
             OutlinedTextField(
                 value = password.value,
@@ -134,12 +163,42 @@ fun CreateUserScreen(
                     unfocusedLabelColor = Color.White,
                     focusedTextColor = Color.White
                 ),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    autoCorrect = true,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                singleLine = true,
+                visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val (icon, iconColor) = if (showPassword.value) {
+                        Pair(
+                            Icons.Filled.Visibility,
+                            Color.White
+                        )
+                    } else {
+                        Pair(Icons.Filled.VisibilityOff, Color.White)
+                    }
+
+                    IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                        Icon(
+                            icon,
+                            contentDescription = "Visibility",
+                            tint = iconColor
+                        )
+                    }
+                }
             )
 
             //  RepassWord
             OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
+                value = repeatPassword.value,
+                onValueChange = { repeatPassword.value = it },
                 label = { Text("Repite la contraseña", fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -150,12 +209,56 @@ fun CreateUserScreen(
                     unfocusedLabelColor = Color.White,
                     focusedTextColor = Color.White
                 ),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    autoCorrect = true,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                singleLine = true,
+                visualTransformation = if (showRepeatPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val (icon, iconColor) = if (showRepeatPassword.value) {
+                        Pair(
+                            Icons.Filled.Visibility,
+                            Color.White
+                        )
+                    } else {
+                        Pair(Icons.Filled.VisibilityOff, Color.White)
+                    }
+
+                    IconButton(onClick = { showRepeatPassword.value = !showRepeatPassword.value }) {
+                        Icon(
+                            icon,
+                            contentDescription = "Visibility",
+                            tint = iconColor
+                        )
+                    }
+                }
+            )
+
+            Text(
+                text = stringResource(returnPasswordMessage(password.value, repeatPassword.value)),
+                color = Color.White,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 10.dp, start = 24.dp, end = 24.dp)
             )
 
             // Button
             Button(
                 onClick = {
-                    showConditionsDialog = true
+                    if (returnPasswordMessage(
+                            password.value,
+                            repeatPassword.value
+                        ) == R.string.empty
+                        && email.value != ""
+                    ) {
+                        showConditionsDialog = true
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(66, 79, 88)
@@ -190,7 +293,7 @@ fun CreateUserScreen(
                 )
             }
 
-            if (showConditionsDialog){
+            if (showConditionsDialog) {
                 PopupWindowDialog(
                     client = client,
                     email = email.value,
@@ -303,7 +406,8 @@ fun PopupWindowDialog(
                             buttonTitle.value = register
                         }
                         coroutineScope.launch {
-                            val signInResult = client.createUserWithEmailAndPassword(email, password)
+                            val signInResult =
+                                client.createUserWithEmailAndPassword(email, password)
                             if (signInResult.data != null) {
                                 val user = signInResult.data
                                 if (user.name.isNullOrEmpty()) {
@@ -315,7 +419,7 @@ fun PopupWindowDialog(
                             }
                         }
                     }
-                ){
+                ) {
 
                     // on the below line we are creating a text for our button.
                     Text(text = stringResource(R.string.accept), modifier = Modifier.padding(3.dp))
@@ -323,6 +427,30 @@ fun PopupWindowDialog(
             }
         }
     }
+}
+
+private fun strengthChecker(password: String): StrengthPasswordTypes =
+    when {
+        REGEX_STRONG_PASSWORD.toRegex().containsMatchIn(password) -> StrengthPasswordTypes.STRONG
+        else -> StrengthPasswordTypes.WEAK
     }
 
+enum class StrengthPasswordTypes {
+    STRONG,
+    WEAK
+}
 
+private const val REGEX_STRONG_PASSWORD =
+    "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})"
+
+fun returnPasswordMessage(password: String, repeatPassword: String): Int {
+    return if (password == "") {
+        R.string.empty
+    } else if (strengthChecker(password) == StrengthPasswordTypes.WEAK) {
+        R.string.password_conditions
+    } else if (password != repeatPassword) {
+        R.string.passwords_different
+    } else {
+        R.string.empty
+    }
+}

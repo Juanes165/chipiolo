@@ -12,6 +12,9 @@
     <string name="register">Registrarse</string>
     <string name="accept">Aceptar terminos y condiciones</string>
     <string name="conditions">Términos y Condiciones y Política de Privacidad</string>
+    <string name="password_conditions">"Tu contraseña es muy débil"</string>
+    <string name="passwords_different">Las contraseñas no coinciden</string>
+    <string name="empty"></string>
     <string name="conditions_text">
         Última actualización: 23/11/2023\nLee cuidadosamente estos Términos y Condiciones ("Términos") antes de utilizar el Juego de Chipiolo (el "Juego") operado por ChipioloCorp ("nosotros", "nos" o "nuestro"). Al acceder o utilizar el Juego, aceptas quedar sujeto a estos Términos. Si no estás de acuerdo con alguna parte de estos Términos, no puedes acceder ni utilizar el Juego.\n\n
 \tAceptación de los Términos:\nAl descargar, instalar o utilizar el Juego, aceptas estos Términos y nuestra Política de Privacidad. Si no estás de acuerdo con estos Términos, por favor, no uses el Juego.\n\n
