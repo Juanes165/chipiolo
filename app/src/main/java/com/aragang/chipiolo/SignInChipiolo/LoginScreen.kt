@@ -15,8 +15,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextField
@@ -36,11 +43,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -65,6 +78,9 @@ fun LoginScreen(
     var password = remember { mutableStateOf("") }
 
     val viewModel = viewModel<SignInViewModel>()
+    val focusManager = LocalFocusManager.current
+
+    val showPassword = remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -122,7 +138,19 @@ fun LoginScreen(
                     focusedTextColor = Color.White,
                 ),
                 modifier = Modifier.padding(bottom = 20.dp),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    autoCorrect = true,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                singleLine = true,
             )
+
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
@@ -136,12 +164,44 @@ fun LoginScreen(
                     unfocusedLabelColor = Color.White,
                     focusedTextColor = Color.White
                 ),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    autoCorrect = true,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                singleLine = true,
+                visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val (icon, iconColor) = if (showPassword.value) {
+                        Pair(
+                            Icons.Filled.Visibility,
+                            Color.White
+                        )
+                    } else {
+                        Pair(Icons.Filled.VisibilityOff, Color.White)
+                    }
+
+                    IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                        Icon(
+                            icon,
+                            contentDescription = "Visibility",
+                            tint = iconColor
+                        )
+                    }
+                }
             )
 
             ClickableText(
                 text = AnnotatedString("¿Olvidaste tu contraseña?"),
                 onClick = { onRecoverPassword() },
-                modifier = Modifier.padding(bottom = 20.dp, end = 20.dp).align(Alignment.End),
+                modifier = Modifier
+                    .padding(bottom = 20.dp, end = 20.dp)
+                    .align(Alignment.End),
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 14.sp
@@ -180,7 +240,7 @@ fun LoginScreen(
                 Text(text = "Login con Google")
             }
 
-            Row (
+            Row(
                 modifier = Modifier
                     .padding(top = 20.dp),
             ) {
@@ -196,7 +256,7 @@ fun LoginScreen(
                     modifier = Modifier.padding(bottom = 10.dp),
                     style = TextStyle(
                         color = Color.White,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 )
             }

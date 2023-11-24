@@ -197,7 +197,7 @@ class MainActivity : ComponentActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
 
-                                        navController.navigate("profile_home")
+                                        navController.navigate("home")
                                     }
                                 },
                                 onSuccess = {
