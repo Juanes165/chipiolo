@@ -264,7 +264,6 @@ fun ProfileScreen(
         // DIALOGO DE CAMBIAR FOTO DE PERFIL
         if (showProfilePictureDialog) {
             ProfilePictureDialog(
-                signOut = onSignOut,
                 closeDialog = { showProfilePictureDialog = false },
                 openCamera = onCamera,
                 openGallery = {
