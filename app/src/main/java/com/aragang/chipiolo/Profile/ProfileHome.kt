@@ -48,6 +48,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
@@ -76,7 +77,7 @@ fun ProfileHome(
 
         Image(
             painter = painterResource(R.drawable.logo_chipiolo),
-            contentDescription = "Logo de fondo",
+            contentDescription = stringResource(R.string.logofondo),
             colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
             modifier = Modifier
                 .padding(
@@ -146,7 +147,7 @@ fun ProfileHome(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.play_icon),
-                            contentDescription = "Play Button",
+                            contentDescription = stringResource(R.string.plybtn),
                             modifier = Modifier
                                 .size(80.dp)
                                 .fillMaxSize()
@@ -222,12 +223,12 @@ fun ProfileHome(
                 ) {
                     ButtonStatistics(
                         Modifier.padding(end = 1.dp),
-                        "Estadistica",
+                        stringResource(R.string.std),
                         RoundedCornerShape(bottomStart = 30.dp)
                     )
                     ButtonStatistics(
                         Modifier.padding(start = 1.dp),
-                        "logros",
+                        stringResource(R.string.lgr),
                         RoundedCornerShape(bottomEnd = 30.dp)
                     )
                 }

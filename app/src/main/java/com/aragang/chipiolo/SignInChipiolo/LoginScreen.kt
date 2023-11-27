@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -113,14 +114,14 @@ fun LoginScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.logo_chipiolo),
-                contentDescription = "logo",
+                contentDescription = stringResource(R.string.lologo),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(325.dp)
             )
 
             Text(
-                text = "Iniciar sesión",
+                text = stringResource(R.string.loiniciar),
                 color = Color.White,
                 fontSize = 30.sp,
                 modifier = Modifier.padding(bottom = 10.dp)
@@ -128,7 +129,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { Text(text = "Email", fontSize = 16.sp) },
+                label = { Text(text = stringResource(R.string.loemail), fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
                     unfocusedBorderColor = Color.White,
@@ -154,7 +155,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Password", fontSize = 16.sp) },
+                label = { Text(stringResource(R.string.lopass), fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -197,7 +198,7 @@ fun LoginScreen(
             )
 
             ClickableText(
-                text = AnnotatedString("¿Olvidaste tu contraseña?"),
+                text = AnnotatedString(stringResource(R.string.loforgotpass)),
                 onClick = { onRecoverPassword() },
                 modifier = Modifier
                     .padding(bottom = 20.dp, end = 20.dp)
@@ -222,7 +223,7 @@ fun LoginScreen(
                     }
                 }
             }) {
-                Text(text = "Iniciar sesión")
+                Text(text = stringResource(R.string.loiniciar))
             }
 
             Button(
@@ -237,7 +238,7 @@ fun LoginScreen(
                     }
                 }
             ) {
-                Text(text = "Login con Google")
+                Text(text = stringResource(R.string.logoogle))
             }
 
             Row(
@@ -245,13 +246,13 @@ fun LoginScreen(
                     .padding(top = 20.dp),
             ) {
                 Text(
-                    text = "¿No tienes cuenta?",
+                    text = stringResource(R.string.lonocuenta),
                     color = Color.White,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 ClickableText(
-                    text = AnnotatedString(" Regístrate"),
+                    text = AnnotatedString(stringResource(R.string.loregistrate)),
                     onClick = { onRegister() },
                     modifier = Modifier.padding(bottom = 10.dp),
                     style = TextStyle(

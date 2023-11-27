@@ -113,14 +113,14 @@ fun CreateUserScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.logo_chipiolo),
-                contentDescription = "logo",
+                contentDescription = stringResource(R.string.culogo),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(325.dp)
             )
 
             Text(
-                text = "Crea Tu ChipiUser",
+                text = stringResource(R.string.cuchipiuser),
                 color = Color.White,
                 fontSize = 30.sp,
                 modifier = Modifier.padding(bottom = 50.dp)
@@ -128,7 +128,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { Text(text = "Correo", fontSize = 16.sp) },
+                label = { Text(text = stringResource(R.string.cucorreo), fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
                     unfocusedBorderColor = Color.White,
@@ -153,7 +153,7 @@ fun CreateUserScreen(
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Contraseña", fontSize = 16.sp) },
+                label = { Text(stringResource(R.string.cupass), fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -197,9 +197,9 @@ fun CreateUserScreen(
 
             //  RepassWord
             OutlinedTextField(
-                value = repeatPassword.value,
-                onValueChange = { repeatPassword.value = it },
-                label = { Text("Repite la contraseña", fontSize = 16.sp) },
+                value = password.value,
+                onValueChange = { password.value = it },
+                label = { Text(stringResource(R.string.curptpass), fontSize = 16.sp) },
                 modifier = Modifier.padding(bottom = 20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.White,
@@ -277,13 +277,13 @@ fun CreateUserScreen(
                     .padding(top = 20.dp),
             ) {
                 Text(
-                    text = "¿Ya tienes cuenta?",
+                    text = stringResource(R.string.cuyacuenta),
                     color = Color.White,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 ClickableText(
-                    text = AnnotatedString("Inicia Sesión"),
+                    text = AnnotatedString(stringResource(R.string.cuinicia)),
                     onClick = { onLogin() },
                     modifier = Modifier.padding(bottom = 10.dp),
                     style = TextStyle(

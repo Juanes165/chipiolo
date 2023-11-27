@@ -6,6 +6,70 @@
     <string name="araganes">Solo pa Tín</string>
     <string name="pick_avatar">SELECCIONA TU AVATAR</string>
 
+    <!-- Profile Home -->
+    <string name="logofondo">Logo de fondo</string>
+    <string name="plybtn">Play Button</string>
+    <string name="prpic">Profile picture</string>
+    <string name="dftprpic">Default Profile picture</string>
+    <string name="std">Estadistica</string>
+    <string name="lgr">Logros</string>
+    <string name="chpic">Cambiar foto de perfil</string>
+    <string name="clses">Cerrar sesión</string>
+    <string name="x">X</string>
+    <string name="picpro">Foto de perfil</string>
+    <string name="cam">Cámara</string>
+    <string name="gal">Galería</string>
+    <string name="ava">Avatar</string>
+    <string name="confexit">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="cnl">Cancelar</string>
+    <string name="salir">Salir</string>
+    <string name="elicuen">Eliminar cuenta</string>
+    <string name="msgfarewell">Lamentamos que te vayas 😞\n ¿Estás seguro de que quieres eliminar tu cuenta?
+    </string>
+    <string name="elim">Eliminar</string>
+
+    <!-- AddNameScreen -->
+    <string name="dftpict">Default Profile picture</string>
+    <string name="welcome">Bienvenido a Chipiolo</string>
+    <string name="newname">Crea un nombre de usuario genial para empezar a jugar</string>
+    <string name="name">Nombre</string>
+    <string name="cont">Continuar</string>
+
+    <!-- CreateUserScreen -->
+    <string name="culogo">logo</string>
+    <string name="cuchipiuser">Crea Tu ChipiUser</string>
+    <string name="cucorreo">Correo</string>
+    <string name="cupass">Contraseña</string>
+    <string name="curptpass">Repite la contraseña</string>
+    <string name="cuyacuenta">¿Ya tienes cuenta?</string>
+    <string name="cuinicia">Inicia Sesión</string>
+
+    <!-- LoginScreen -->
+    <string name="lologo">logo</string>
+    <string name="loiniciar">Iniciar sesión</string>
+    <string name="loemail">Email</string>
+    <string name="lopass">Password</string>
+    <string name="loforgotpass">¿Olvidaste tu contraseña?</string>
+    <string name="logoogle">Login con Google</string>
+    <string name="lonocuenta">¿No tienes cuenta?</string>
+    <string name="loregistrate">Regístrate</string>
+
+    <!-- RecoverScreen -->
+    <string name="reclogo">logo</string>
+    <string name="reccancel">Cancelar</string>
+    <string name="recemail">Email</string>
+
+    <!--  FirstScreen   -->
+    <string name="logo_description">Logo de Chipiolo</string>
+
+    <!--    HOME -->
+    <string name="single_player">Un jugador</string>
+    <string name="multi_player">Multijugador</string>
+    <string name="pica_description">Logo de pica</string>
+    <string name="letra_providerAuthority">com.google.android.gms.fonts</string>
+    <string name="letra_providerPackage">com.google.android.gms/string></string>
+
+
     <string name="recov_pass">Olvido su contraseña</string>
     <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
     <string name="send_recover">Enviar</string>
