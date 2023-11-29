@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.stringResource
@@ -58,6 +59,13 @@ fun ProfileScreen(
     client: Login,
 ) {
 
+    // Paleta de colores
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
+    val colorLightGray = colorResource(id = R.color.light_gray)
+    val colorWhite = colorResource(id = R.color.white)
+    val colorGreenPrimary = colorResource(id = R.color.green_primary)
+    val colorBlack = colorResource(id = R.color.black)
+
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showProfilePictureDialog by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
@@ -82,7 +90,7 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(43, 168, 74))
+            .background(colorDarkGray)
     ) {
 
         Image(
@@ -93,7 +101,7 @@ fun ProfileScreen(
                 .padding(
                     start = 150.dp
                 )
-                .size(250.dp)
+                .size(350.dp)
         )
 
         Column(

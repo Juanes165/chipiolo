@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -53,10 +55,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -76,16 +80,20 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun CreateUserScreen(
-//    viewModel: SignInViewModel,
-//    oneTapClient: SignInClient,
-//    onLoginSuccess: (UserData) -> Unit,
-//    onLoginFailure: (String) -> Unit
     client: Login,
     onRegisterSuccess: () -> Unit = {},
     onLogin: () -> Unit = {},
     goToHome: () -> Unit = {}
 ) {
 
+    // Paleta de colores
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
+    val colorLightGray = colorResource(id = R.color.light_gray)
+    val colorWhite = colorResource(id = R.color.white)
+    val colorGreenPrimary = colorResource(id = R.color.green_primary)
+    val colorBlack = colorResource(id = R.color.black)
+
+    var visibilityIconColor by remember { mutableStateOf(colorLightGray) }
 
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
@@ -102,7 +110,8 @@ fun CreateUserScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0, 97, 23, 255))
+            .background(colorDarkGray)
+            .padding(start = 60.dp, end = 60.dp, top = 10.dp, bottom = 10.dp)
     ) {
         // formulario de email y password
         Column(
@@ -116,28 +125,36 @@ fun CreateUserScreen(
                 contentDescription = stringResource(R.string.culogo),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(325.dp)
+                    .size(225.dp)
             )
 
+            // Titulo
             Text(
                 text = stringResource(R.string.cuchipiuser),
-                color = Color.White,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(bottom = 50.dp)
+                color = colorWhite,
+                fontSize = 35.sp,
+                modifier = Modifier.padding(bottom = 15.dp),
+                fontWeight = FontWeight.Bold
             )
+
+            // Email
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
                 label = { Text(text = stringResource(R.string.cucorreo), fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White,
-                    cursorColor = Color.Black,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White,
-                    focusedTextColor = Color.White,
+                    focusedBorderColor = colorWhite,
+                    unfocusedBorderColor = colorLightGray,
+                    focusedLabelColor = colorWhite,
+                    unfocusedLabelColor = colorLightGray,
+                    cursorColor = colorWhite,
+                    focusedTextColor = colorWhite,
+                    unfocusedTextColor = colorLightGray,
                 ),
-                modifier = Modifier.padding(bottom = 20.dp),
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     autoCorrect = true,
                     keyboardType = KeyboardType.Text,
@@ -150,19 +167,25 @@ fun CreateUserScreen(
                 ),
                 singleLine = true,
             )
+
+            // Password
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
                 label = { Text(stringResource(R.string.cupass), fontSize = 16.sp) },
-                modifier = Modifier.padding(bottom = 20.dp),
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White,
-                    cursorColor = Color.Black,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White,
-                    focusedTextColor = Color.White
+                    focusedBorderColor = colorWhite,
+                    unfocusedBorderColor = colorLightGray,
+                    focusedLabelColor = colorWhite,
+                    unfocusedLabelColor = colorLightGray,
+                    cursorColor = colorWhite,
+                    focusedTextColor = colorWhite,
+                    unfocusedTextColor = colorLightGray,
                 ),
+                shape = MaterialTheme.shapes.medium,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     autoCorrect = true,
                     keyboardType = KeyboardType.Text,
@@ -177,19 +200,18 @@ fun CreateUserScreen(
                 visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     val (icon, iconColor) = if (showPassword.value) {
-                        Pair(
-                            Icons.Filled.Visibility,
-                            Color.White
-                        )
+                        Pair(Icons.Filled.Visibility, visibilityIconColor)
                     } else {
-                        Pair(Icons.Filled.VisibilityOff, Color.White)
+                        Pair(Icons.Filled.VisibilityOff, visibilityIconColor)
                     }
 
+                    // Icono de visibilidad de password
                     IconButton(onClick = { showPassword.value = !showPassword.value }) {
                         Icon(
                             icon,
                             contentDescription = "Visibility",
-                            tint = iconColor
+                            tint = iconColor,
+                            modifier = Modifier.padding(end = 10.dp)
                         )
                     }
                 }
@@ -197,18 +219,22 @@ fun CreateUserScreen(
 
             //  RepassWord
             OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
+                value = repeatPassword.value,
+                onValueChange = { repeatPassword.value = it },
                 label = { Text(stringResource(R.string.curptpass), fontSize = 16.sp) },
-                modifier = Modifier.padding(bottom = 20.dp),
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White,
-                    cursorColor = Color.Black,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White,
-                    focusedTextColor = Color.White
+                    focusedBorderColor = colorWhite,
+                    unfocusedBorderColor = colorLightGray,
+                    focusedLabelColor = colorWhite,
+                    unfocusedLabelColor = colorLightGray,
+                    cursorColor = colorWhite,
+                    focusedTextColor = colorWhite,
+                    unfocusedTextColor = colorLightGray,
                 ),
+                shape = MaterialTheme.shapes.medium,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     autoCorrect = true,
                     keyboardType = KeyboardType.Text,
@@ -223,32 +249,31 @@ fun CreateUserScreen(
                 visualTransformation = if (showRepeatPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     val (icon, iconColor) = if (showRepeatPassword.value) {
-                        Pair(
-                            Icons.Filled.Visibility,
-                            Color.White
-                        )
+                        Pair(Icons.Filled.Visibility, visibilityIconColor)
                     } else {
-                        Pair(Icons.Filled.VisibilityOff, Color.White)
+                        Pair(Icons.Filled.VisibilityOff, visibilityIconColor)
                     }
 
                     IconButton(onClick = { showRepeatPassword.value = !showRepeatPassword.value }) {
                         Icon(
                             icon,
                             contentDescription = "Visibility",
-                            tint = iconColor
+                            tint = iconColor,
+                            modifier = Modifier.padding(end = 10.dp)
                         )
                     }
                 }
             )
 
+            // Texto de condiciones de password
             Text(
                 text = stringResource(returnPasswordMessage(password.value, repeatPassword.value)),
-                color = Color.White,
+                color = colorWhite,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 10.dp, start = 24.dp, end = 24.dp)
             )
 
-            // Button
+            // Boton de registro
             Button(
                 onClick = {
                     if (returnPasswordMessage(
@@ -260,18 +285,24 @@ fun CreateUserScreen(
                         showConditionsDialog = true
                     }
                 },
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(66, 79, 88)
+                    containerColor = colorGreenPrimary,
+                    contentColor = colorWhite
                 ),
-                shape = RoundedCornerShape(5.dp),
+                shape = MaterialTheme.shapes.medium,
+                contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp)
             ) {
                 Text(
                     text = stringResource(R.string.register),
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
 
-
+            // Texto de cuenta existente
             Row(
                 modifier = Modifier
                     .padding(top = 20.dp),
@@ -288,7 +319,9 @@ fun CreateUserScreen(
                     modifier = Modifier.padding(bottom = 10.dp),
                     style = TextStyle(
                         color = Color.White,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        textDecoration = TextDecoration.Underline
                     )
                 )
             }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,10 +20,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -43,13 +47,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aragang.chipiolo.API.BodyRequestModel
 import com.aragang.chipiolo.API.BodyRequestModelVerify
 //import com.aragang.chipiolo.API.BottomActionButtons
@@ -72,14 +80,25 @@ fun RecoverScreen(
     onCodeSent: () -> Unit = {},
     client: Login
 ) {
+
+    // Paleta de colores
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
+    val colorLightGray = colorResource(id = R.color.light_gray)
+    val colorWhite = colorResource(id = R.color.white)
+    val colorGreenPrimary = colorResource(id = R.color.green_primary)
+    val colorBlack = colorResource(id = R.color.black)
+
     var emailRecover = remember { mutableStateOf("") }
     var showConditionsDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0, 97, 23, 255))
+            .background(colorDarkGray)
+            .padding(start = 60.dp, end = 60.dp, top = 10.dp, bottom = 10.dp)
     ) {
         // formulario de email y password
         Column(
@@ -90,19 +109,39 @@ fun RecoverScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.logo_chipiolo),
-                contentDescription = stringResource(R.string.reclogo),
+                contentDescription = stringResource(R.string.lologo),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(325.dp)
+                    .size(225.dp)
+//                    .shadow(
+//                        5.dp,
+//                        shape = MaterialTheme.shapes.medium,
+//                        ambientColor = colorWhite,
+//                        spotColor = colorWhite
+//                    )
             )
 
+            // Titulo
             Text(
                 text = stringResource(R.string.recov_pass),
-                color = Color.White,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(bottom = 10.dp)
+                color = colorWhite,
+                fontSize = 35.sp,
+                modifier = Modifier
+                    .padding(bottom = 0.dp)
+                    .align(Alignment.CenterHorizontally),
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = stringResource(R.string.recov_pass_two),
+                color = colorWhite,
+                fontSize = 35.sp,
+                modifier = Modifier
+                    .padding(bottom = 15.dp, top = 0.dp)
+                    .align(Alignment.CenterHorizontally),
+                fontWeight = FontWeight.Bold
             )
 
+            // Subtitulo
             Text(
                 text = stringResource(R.string.recov_steps),
                 color = Color.White,
@@ -110,41 +149,70 @@ fun RecoverScreen(
                 modifier = Modifier.padding(bottom = 30.dp)
             )
 
+            // Campo de email
             OutlinedTextField(
                 value = emailRecover.value,
                 onValueChange = { emailRecover.value = it },
                 label = { Text(text = stringResource(R.string.recemail), fontSize = 16.sp) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White,
-                    cursorColor = Color.Black,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White,
-                    focusedTextColor = Color.White,
+                    focusedBorderColor = colorWhite,
+                    unfocusedBorderColor = colorLightGray,
+                    focusedLabelColor = colorWhite,
+                    unfocusedLabelColor = colorLightGray,
+                    cursorColor = colorWhite,
+                    focusedTextColor = colorWhite,
+                    unfocusedTextColor = colorLightGray,
                 ),
-                modifier = Modifier.padding(bottom = 20.dp),
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    autoCorrect = true,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                singleLine = true,
             )
 
-            Row {
-                Button(onClick = { onGoBack() }) {
-                    Text(text = stringResource(R.string.reccancel))
-                }
-                Button(
-                    onClick = {
-                        showConditionsDialog = true
-                        recoverPassword(emailRecover.value)
-                        //onCodeSent() Por ahora necesito que se abra la alerta
-
-                    }
-                ) {
-                    Text(text = stringResource(R.string.send_recover))
-                }
+            // Boton de enviar
+            Button(
+                onClick = {
+                    showConditionsDialog = true
+                    recoverPassword(emailRecover.value)
+                    //onCodeSent() Por ahora necesito que se abra la alerta
+                },
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = colorGreenPrimary,
+                    contentColor = colorWhite
+                ),
+                shape = MaterialTheme.shapes.medium,
+                contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.send_recover),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
             }
         }
 
     }
     if (showConditionsDialog) {
-        PopVerifyCode(closeDialog = { showConditionsDialog = false }, emailRecover, coroutineScope, client)
+        PopVerifyCode(
+            closeDialog = { showConditionsDialog = false },
+            emailRecover,
+            coroutineScope,
+            client
+        )
     }
 }
 
@@ -162,10 +230,11 @@ fun PopVerifyCode(
     val codigo = remember { mutableStateOf("") }
 
     AlertDialog(
-        onDismissRequest = {closeDialog},
+        onDismissRequest = { closeDialog },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 420.dp)) {
+            .padding(top = 420.dp)
+    ) {
 
         Column(
             modifier = Modifier
@@ -176,10 +245,11 @@ fun PopVerifyCode(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val keyboardController = LocalSoftwareKeyboardController.current //Necesito el ExperimentalcomposeUiApi
+            val keyboardController =
+                LocalSoftwareKeyboardController.current //Necesito el ExperimentalcomposeUiApi
             val focusManager = LocalFocusManager.current
 
-            Box (modifier=Modifier.weight(1f), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
 
                 /*TextField(
                     value = codeTxtFieldTxt.value,
@@ -207,7 +277,7 @@ fun PopVerifyCode(
                 )*/
 
 
-                Column{
+                Column {
                     androidx.compose.material.Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Ingrese el código que le enviamos a su correo",
@@ -223,7 +293,12 @@ fun PopVerifyCode(
                     OutlinedTextField(
                         value = codigo.value,
                         onValueChange = { codigo.value = it },
-                        label = { Text(text = stringResource(R.string.recemail), fontSize = 16.sp) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.recemail),
+                                fontSize = 16.sp
+                            )
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.White,
                             unfocusedBorderColor = Color.White,
@@ -270,7 +345,13 @@ fun PopVerifyCode(
 }
 
 @Composable
-private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:  MutableState<String>, code: MutableState<String>, coroutineScope: CoroutineScope, client: Login) {
+private fun ColumnScope.BottomActionButtons(
+    closeDialog: () -> Unit = {},
+    email: MutableState<String>,
+    code: MutableState<String>,
+    coroutineScope: CoroutineScope,
+    client: Login
+) {
 
     var openExito by remember { mutableStateOf(false) }
     var openError by remember { mutableStateOf(false) }
@@ -286,7 +367,7 @@ private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:
     ) {
 
         androidx.compose.material.Button(
-            onClick = {closeDialog() },
+            onClick = { closeDialog() },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.Transparent,
                 contentColor = Color(0xFF9300FC),
@@ -314,7 +395,14 @@ private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:
         Spacer(Modifier.width(6.dp))
 
         androidx.compose.material.Button(
-            onClick = { VerifyCode(email.value, code.value, coroutineScope, client, {openExito = true}, {openError = true})
+            onClick = {
+                VerifyCode(
+                    email.value,
+                    code.value,
+                    coroutineScope,
+                    client,
+                    { openExito = true },
+                    { openError = true })
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFFF5B041),
@@ -437,10 +525,9 @@ private fun ColumnScope.BottomActionButtons(closeDialog: () -> Unit = {}, email:
 //}
 
 
-
 fun recoverPassword(email: String) {
     val apiUrl = BuildConfig.API_ENDPOINT
-    val apiBuilder  = Retrofit.Builder()
+    val apiBuilder = Retrofit.Builder()
         .baseUrl(apiUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -449,7 +536,7 @@ fun recoverPassword(email: String) {
     val data = BodyRequestModel(email)
     val call: Call<ResponseGenerateCode?>? = api.GenerateCode(data);
 
-    call!!.enqueue(object: retrofit2.Callback<ResponseGenerateCode?> {
+    call!!.enqueue(object : retrofit2.Callback<ResponseGenerateCode?> {
         override fun onResponse(
             call: Call<ResponseGenerateCode?>,
             response: retrofit2.Response<ResponseGenerateCode?>
@@ -466,10 +553,17 @@ fun recoverPassword(email: String) {
     })
 }
 
-fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, client: Login, openExito: () -> Unit = {}, openError:  () -> Unit = {}) {
+fun VerifyCode(
+    email: String,
+    code: String,
+    coroutineScope: CoroutineScope,
+    client: Login,
+    openExito: () -> Unit = {},
+    openError: () -> Unit = {}
+) {
 
     val apiUrlRecover = BuildConfig.API_ENDPOINT
-    val apiBuilder  = Retrofit.Builder()
+    val apiBuilder = Retrofit.Builder()
         .baseUrl(apiUrlRecover)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -480,7 +574,7 @@ fun VerifyCode(email: String, code: String, coroutineScope: CoroutineScope, clie
 
 
 
-    call!!.enqueue(object: retrofit2.Callback<ResponseVerifyCode?> {
+    call!!.enqueue(object : retrofit2.Callback<ResponseVerifyCode?> {
         override fun onResponse(
             call: Call<ResponseVerifyCode?>,
             response: retrofit2.Response<ResponseVerifyCode?>

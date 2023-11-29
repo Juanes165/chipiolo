@@ -89,19 +89,6 @@ class MainActivity : ComponentActivity() {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
-                                onSignOut = {
-                                    lifecycleScope.launch {
-                                        googleAuthUiClient.signOut()
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Signed out",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-
-                                        navController.popBackStack()
-                                    }
-                                },
-                                onPlay = {navController.navigate("game")},
                                 onProfile = {navController.navigate("profile")},
                             )
                             //ProfileHome()

@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- COLORES DE LA APLICACION -->
+    <color name="dark_gray">#FF1E1E1E</color>
+    <color name="light_gray">#FF6F6F6F</color>
+    <color name="green_primary">#FF2BB700</color>
+    <color name="green_secondary">#FF7DBD4C</color>
+    <color name="red_primary">#FF8D0000</color>
+
 </resources>

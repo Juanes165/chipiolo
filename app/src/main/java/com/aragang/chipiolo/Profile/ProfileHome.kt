@@ -48,7 +48,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.aragang.chipiolo.SignInChipiolo.UserData
@@ -61,30 +64,32 @@ import com.aragang.chipiolo.views.Statistics
 fun ProfileHome(
     viewModel: TabViewModel,
     userData: UserData?,
-    onSignOut: () -> Unit,
-    onPlay: () -> Unit,
     onProfile: () -> Unit,
 ) {
 
-    var showDialog by remember { mutableStateOf(false) }
-
+    // Paleta de colores
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
+    val colorLightGray = colorResource(id = R.color.light_gray)
+    val colorWhite = colorResource(id = R.color.white)
+    val colorGreenPrimary = colorResource(id = R.color.green_primary)
+    val colorBlack = colorResource(id = R.color.black)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(43, 168, 74))
+            .background(colorDarkGray)
     ) {
 
-        Image(
-            painter = painterResource(R.drawable.logo_chipiolo),
-            contentDescription = stringResource(R.string.logofondo),
-            colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
-            modifier = Modifier
-                .padding(
-                    start = 150.dp
-                )
-                .size(250.dp)
-        )
+//        Image(
+//            painter = painterResource(R.drawable.logo_chipiolo),
+//            contentDescription = stringResource(R.string.logofondo),
+//            colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
+//            modifier = Modifier
+//                .padding(
+//                    start = 150.dp
+//                )
+//                .size(250.dp)
+//        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,12 +103,20 @@ fun ProfileHome(
                 .fillMaxHeight()
                 .fillMaxWidth()
         ) {
+
+            // Titulo
+            Text(
+                text = stringResource(R.string.profile),
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 80.dp, bottom = 40.dp),
+                color = colorWhite
+            )
+
             Box(
                 modifier = Modifier
-                    .padding(top = 100.dp)
                     .fillMaxWidth()
                     .height(255.dp)
-                    .background(Color(66, 79, 88), RoundedCornerShape(30.dp))
             ) {
                 ElevatedCard(
                     elevation = CardDefaults.cardElevation(
@@ -113,63 +126,66 @@ fun ProfileHome(
                         .size(width = 280.dp, height = 150.dp)
                         .align(Alignment.Center),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(255, 255, 255),
+                        containerColor = colorWhite,
                     ),
                     shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                 ) {
+
+                    // NOMBRE DE USUARIO
                     if (userData?.name != null) {
                         Text(
-                            text = userData.name,
+                            text = userData.name.split(" ").first().uppercase(),
                             modifier = Modifier
-                                .padding(top = 50.dp, start = 20.dp, end = 20.dp)
+                                .padding(top = 85.dp, start = 20.dp, end = 20.dp)
                                 .align(Alignment.CenterHorizontally),
                             textAlign = TextAlign.Center,
-                            fontSize = 20.sp
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     } else {
                         Text(
-                            text = "",
+                            text = "Nombre",
                             modifier = Modifier
-                                .padding(top = 50.dp)
+                                .padding(top = 80.dp, start = 20.dp, end = 20.dp)
                                 .align(Alignment.CenterHorizontally),
                             textAlign = TextAlign.Center,
-                            fontSize = 20.sp
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
-                    Button(
-                        onClick = onPlay,
-                        shape = CircleShape,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
-                        modifier = Modifier
-                            .size(80.dp)
-                            .align(Alignment.CenterHorizontally),
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.play_icon),
-                            contentDescription = stringResource(R.string.plybtn),
-                            modifier = Modifier
-                                .size(80.dp)
-                                .fillMaxSize()
-                        )
-                    }
-
+//                    Button(
+//                        onClick = onPlay,
+//                        shape = CircleShape,
+//                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+//                        modifier = Modifier
+//                            .size(80.dp)
+//                            .align(Alignment.CenterHorizontally),
+//                    ) {
+//                        Image(
+//                            painter = painterResource(R.drawable.play_icon),
+//                            contentDescription = stringResource(R.string.plybtn),
+//                            modifier = Modifier
+//                                .size(80.dp)
+//                                .fillMaxSize()
+//                        )
+//                    }
                 }
 
                 // FOTO DE PERFIL
                 if (userData?.profileImage != null) {
-                    if(userData.profileImage !in avatarList){
+                    if (userData.profileImage !in avatarList) {
                         AsyncImage(
                             model = userData.profileImage,
                             contentDescription = "Profile picture",
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(125.dp)
                                 .clip(CircleShape)
                                 .border(
-                                    BorderStroke(4.dp, Color.White),
+                                    BorderStroke(5.dp, colorWhite),
                                     CircleShape
                                 )
-                                .padding(4.dp)
+                                .padding(5.dp)
                                 .clip(CircleShape)
                                 .align(Alignment.TopCenter)
                                 .background(Color.White)
@@ -183,7 +199,7 @@ fun ProfileHome(
                             contentDescription = "Default profile picture",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(125.dp)
                                 .border(
                                     BorderStroke(4.dp, Color.White),
                                     CircleShape
@@ -195,7 +211,6 @@ fun ProfileHome(
                                 .clickable { onProfile() }
                         )
                     }
-
                 } else {
                     Image(
                         painter = painterResource(R.drawable.avatar0),
@@ -243,7 +258,7 @@ fun ProfileHome(
 
 @Composable
 fun ButtonStatistics(
-    modi: Modifier,
+    modifier: Modifier,
     text: String,
     roundC: RoundedCornerShape
 ) {
@@ -253,7 +268,7 @@ fun ButtonStatistics(
     var disabled_button = Color.White
 
     Box(
-        modifier = modi
+        modifier = modifier
             .background(
                 color = if (enabled) enable_button else disabled_button,
                 shape = roundC
@@ -283,10 +298,3 @@ fun Tabs(viewModel: TabViewModel) {
         1 -> Achievements(viewModel = viewModel)
     }
 }
-
-
-//@Preview
-//@Composable
-//fun Juju() {
-//    ProfileHome(null, null, {}, {})
-//}

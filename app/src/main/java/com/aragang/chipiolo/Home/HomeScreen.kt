@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,13 +16,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -38,6 +45,13 @@ fun HomeScreen(
     onMultiPlayer: () -> Unit = {}
 ) {
 
+    // Paleta de colores
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
+    val colorLightGray = colorResource(id = R.color.light_gray)
+    val colorWhite = colorResource(id = R.color.white)
+    val colorGreenPrimary = colorResource(id = R.color.green_primary)
+    val colorBlack = colorResource(id = R.color.black)
+
     val provider = GoogleFont.Provider(
         providerAuthority = stringResource(R.string.letra_providerAuthority),
         providerPackage = stringResource(R.string.letra_providerPackage),
@@ -52,7 +66,8 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(43, 168, 74))
+            .background(colorDarkGray)
+            .padding(start = 60.dp, end = 60.dp, top = 10.dp, bottom = 10.dp)
     ) {
 
         Column(
@@ -63,86 +78,108 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Center
         ) {
 
-            Button(
-                onClick = { onProfile() },
-                colors = buttonColors(containerColor = Color(66, 79, 88)),
-                shape = CircleShape,
-                modifier = Modifier
-                    .size(60.dp)
-                    .align(Alignment.End)
-            ) {
-                Text("P")
-            }
-
             Image(
                 painter = painterResource(id = R.drawable.logo_chipiolo),
                 contentDescription = stringResource(R.string.logo_description),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(350.dp)
-                    .padding(bottom = 70.dp, top = 30.dp, start = 30.dp, end = 30.dp)
             )
 
-
+            // Boton single player
             Button(
                 onClick = { onSinglePlayer() },
-                colors = buttonColors(
-                    containerColor = Color(
-                        66,
-                        79,
-                        88
-                    )
-                ),
-                shape = RoundedCornerShape(5.dp),
                 modifier = Modifier
-                    .height(60.dp)
-                    .width(250.dp)
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth(),
+                colors = buttonColors(
+                    containerColor = colorGreenPrimary,
+                    contentColor = colorWhite
+                ),
+                shape = MaterialTheme.shapes.medium,
+                contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp)
             ) {
 
-                //Row {
                 Image(
                     painter = painterResource(R.drawable.logo_pica),
                     contentDescription = stringResource(R.string.pica_description),
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier
+                        .size(30.dp)
                 )
 
                 Text(
-                    text =  stringResource(R.string.single_player),
+                    text = stringResource(R.string.single_player),
                     Modifier.padding(
-                        start = 10.dp
+                        start = 15.dp
                     ),
                     fontFamily = fontFamily,
                     fontSize = 20.sp,
                 )
-                //}
             }
-            Spacer(modifier = Modifier.height(30.dp))
 
+            // Boton multi player
             Button(
-                onClick = { onMultiPlayer() },
-                enabled = false,
-                colors = buttonColors(
-                    containerColor = Color(
-                        66,
-                        79,
-                        88
-                    )
-                ),
-                shape = RoundedCornerShape(5.dp),
+                onClick = { onSinglePlayer() },
                 modifier = Modifier
-                    .height(60.dp)
-                    .width(250.dp)
-            )
-            {
+                    .padding(bottom = 20.dp, top = 20.dp)
+                    .fillMaxWidth(),
+                colors = buttonColors(
+                    containerColor = colorGreenPrimary,
+                    contentColor = colorWhite
+                ),
+                shape = MaterialTheme.shapes.medium,
+                contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp),
+                enabled = false
+            ) {
+
+                Image(
+                    painter = painterResource(R.drawable.logo_pica),
+                    contentDescription = stringResource(R.string.pica_description),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(30.dp)
+                )
 
                 Text(
                     text = stringResource(R.string.multi_player),
                     Modifier.padding(
-                        start = 5.dp
+                        start = 15.dp
                     ),
                     fontFamily = fontFamily,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                )
+            }
+
+            // Boton de perfil
+            Button(
+                onClick = { onProfile() },
+                modifier = Modifier
+                    .padding(bottom = 20.dp, top = 20.dp)
+                    .fillMaxWidth(),
+                colors = buttonColors(
+                    containerColor = colorGreenPrimary,
+                    contentColor = colorWhite
+                ),
+                shape = MaterialTheme.shapes.medium,
+                contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp),
+            ) {
+
+                Image(
+                    painter = painterResource(R.drawable.logo_pica),
+                    contentDescription = stringResource(R.string.pica_description),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.profile),
+                    Modifier.padding(
+                        start = 15.dp
+                    ),
+                    fontFamily = fontFamily,
+                    fontSize = 20.sp,
                 )
             }
         }

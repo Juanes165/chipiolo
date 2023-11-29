@@ -37,12 +37,12 @@
 
     <!-- CreateUserScreen -->
     <string name="culogo">logo</string>
-    <string name="cuchipiuser">Crea Tu ChipiUser</string>
+    <string name="cuchipiuser">Registrarse</string>
     <string name="cucorreo">Correo</string>
     <string name="cupass">Contraseña</string>
     <string name="curptpass">Repite la contraseña</string>
-    <string name="cuyacuenta">¿Ya tienes cuenta?</string>
-    <string name="cuinicia">Inicia Sesión</string>
+    <string name="cuyacuenta">¿Ya tienes cuenta?&#160;</string>
+    <string name="cuinicia">Inicia sesión</string>
 
     <!-- LoginScreen -->
     <string name="lologo">logo</string>
@@ -50,8 +50,8 @@
     <string name="loemail">Email</string>
     <string name="lopass">Password</string>
     <string name="loforgotpass">¿Olvidaste tu contraseña?</string>
-    <string name="logoogle">Login con Google</string>
-    <string name="lonocuenta">¿No tienes cuenta?</string>
+    <string name="logoogle">Ingresar con Google</string>
+    <string name="lonocuenta">¿No tienes cuenta?&#160;</string>
     <string name="loregistrate">Regístrate</string>
 
     <!-- RecoverScreen -->
@@ -63,15 +63,17 @@
     <string name="logo_description">Logo de Chipiolo</string>
 
     <!--    HOME -->
-    <string name="single_player">Un jugador</string>
-    <string name="multi_player">Multijugador</string>
+    <string name="single_player">UN JUGADOR</string>
+    <string name="multi_player">MULTIJUGADOR</string>
     <string name="pica_description">Logo de pica</string>
     <string name="letra_providerAuthority">com.google.android.gms.fonts</string>
     <string name="letra_providerPackage">com.google.android.gms/string></string>
+    <string name="profile">TU PERFIL</string>
 
-
-    <string name="recov_pass">Olvido su contraseña</string>
-    <string name="recov_steps">Ingrese su correo al cual llegará un código de verificación</string>
+    <string name="or">O</string>
+    <string name="recov_pass">Recupera tu</string>
+    <string name="recov_pass_two">contraseña</string>
+    <string name="recov_steps">Ingresa tu correo electrónico</string>
     <string name="send_recover">Enviar</string>
     <string name="register">Registrarse</string>
     <string name="accept">Aceptar terminos y condiciones</string>
