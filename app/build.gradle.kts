@@ -68,6 +68,10 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
+    // OhTeePee
+    var ohTeePeeVersion = "1.0.3"
+    implementation ("com.github.composeuisuite:ohteepee:$ohTeePeeVersion")
+
     // RETROFIT
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.5.0")
