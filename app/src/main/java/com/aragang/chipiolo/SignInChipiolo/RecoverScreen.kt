@@ -267,12 +267,23 @@ fun RecoverScreen(
                                 otpValue = newValue
                                 abbleToVerify.value = isValid
                             },
+                            isValueInvalid = openError,
                             configurations = OhTeePeeConfigurations.withDefaults(
                                 cellsCount = 6,
                                 emptyCellConfig = defaultCellConfig,
                                 cellModifier = Modifier
                                         .padding(horizontal = 4.dp)
                                         .size(48.dp),
+                                filledCellConfig = defaultCellConfig,
+                                activeCellConfig = defaultCellConfig.copy(
+                                    borderColor = Color.Blue,
+                                    borderWidth = 2.dp
+                                ),
+                                errorCellConfig = defaultCellConfig.copy(
+                                    borderColor = Color.Red,
+                                    borderWidth = 2.dp
+                                ),
+                                placeHolder = "-",
                             ),
                         )
 
