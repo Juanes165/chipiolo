@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,7 +74,10 @@ import com.composeuisuite.ohteepee.OhTeePeeInput
 import com.composeuisuite.ohteepee.configuration.OhTeePeeCellConfiguration
 import com.composeuisuite.ohteepee.configuration.OhTeePeeConfigurations
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -97,7 +101,6 @@ fun RecoverScreen(
     var emailRecover = remember { mutableStateOf("") }
     var showConditionsDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val codigo = remember { mutableStateOf("") }
 
     var openExito by remember { mutableStateOf(false) }
     var openError by remember { mutableStateOf(false) }
@@ -113,6 +116,12 @@ fun RecoverScreen(
         )
     )
 
+    // Contador de intentos:
+    var intentos = remember { mutableStateOf(0) }
+    var enableSend = remember { mutableStateOf(true) }
+    var contador = remember { mutableStateOf(0) }
+    var contarTiempo by remember {mutableStateOf(false) }
+
     var abbleToVerify = remember {
         mutableStateOf(false)
     }
@@ -121,9 +130,9 @@ fun RecoverScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(colorDarkGray)
-            .padding(start = 60.dp, end = 60.dp, top = 10.dp, bottom = 10.dp)
+                .fillMaxSize()
+                .background(colorDarkGray)
+                .padding(start = 60.dp, end = 60.dp, top = 10.dp, bottom = 10.dp)
     ) {
         // formulario de email y password
         Column(
@@ -152,8 +161,8 @@ fun RecoverScreen(
                 color = colorWhite,
                 fontSize = 35.sp,
                 modifier = Modifier
-                    .padding(bottom = 0.dp)
-                    .align(Alignment.CenterHorizontally),
+                        .padding(bottom = 0.dp)
+                        .align(Alignment.CenterHorizontally),
                 fontWeight = FontWeight.Bold
             )
             Text(
@@ -161,8 +170,8 @@ fun RecoverScreen(
                 color = colorWhite,
                 fontSize = 35.sp,
                 modifier = Modifier
-                    .padding(bottom = 15.dp, top = 0.dp)
-                    .align(Alignment.CenterHorizontally),
+                        .padding(bottom = 15.dp, top = 0.dp)
+                        .align(Alignment.CenterHorizontally),
                 fontWeight = FontWeight.Bold
             )
 
@@ -190,8 +199,8 @@ fun RecoverScreen(
                 ),
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .padding(bottom = 20.dp)
-                    .fillMaxWidth(),
+                        .padding(bottom = 20.dp)
+                        .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     autoCorrect = true,
                     keyboardType = KeyboardType.Text,
@@ -207,14 +216,15 @@ fun RecoverScreen(
 
             // Boton de enviar
             Button(
+                enabled = enableSend.value,
                 onClick = {
                     showConditionsDialog = true
                     recoverPassword(emailRecover.value)
                     //onCodeSent() Por ahora necesito que se abra la alerta
                 },
                 modifier = Modifier
-                    .padding(bottom = 20.dp)
-                    .fillMaxWidth(),
+                        .padding(bottom = 20.dp)
+                        .fillMaxWidth(),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                     containerColor = colorGreenPrimary,
                     contentColor = colorWhite
@@ -231,12 +241,13 @@ fun RecoverScreen(
         }
 
     }
+
     if (showConditionsDialog) {
         AlertDialog(
             onDismissRequest = { showConditionsDialog = false },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 410.dp),
+                    .fillMaxWidth()
+                    .padding(top = 410.dp),
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
             )
@@ -244,10 +255,10 @@ fun RecoverScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(topStart = 33.dp, topEnd = 33.dp))
-                    .background(Color.White)
-                    .padding(end = 18.dp, start = 18.dp, top = 38.dp),
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(topStart = 33.dp, topEnd = 33.dp))
+                        .background(Color.White)
+                        .padding(end = 18.dp, start = 18.dp, top = 38.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -279,8 +290,8 @@ fun RecoverScreen(
                                 cellsCount = 6,
                                 emptyCellConfig = defaultCellConfig,
                                 cellModifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                                    .size(48.dp),
+                                        .padding(horizontal = 4.dp)
+                                        .size(48.dp),
                             ),
                         )
 
@@ -288,10 +299,10 @@ fun RecoverScreen(
                         //Columnscope para los botones
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.White)
-                                .padding(bottom = 19.dp)
-                                .weight(1f),
+                                    .fillMaxWidth()
+                                    .background(Color.White)
+                                    .padding(bottom = 19.dp)
+                                    .weight(1f),
                             horizontalArrangement = Arrangement.SpaceAround,
                             verticalAlignment = Alignment.Bottom
                         ) {
@@ -305,12 +316,12 @@ fun RecoverScreen(
                                 ),
                                 enabled = true,
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .border(
-                                        2.5.dp,
-                                        Color(0xFFF5B041),
-                                        shape = RoundedCornerShape(100.dp)
-                                    ),
+                                        .weight(1f)
+                                        .border(
+                                                2.5.dp,
+                                                Color(0xFFF5B041),
+                                                shape = RoundedCornerShape(100.dp)
+                                        ),
                                 shape = RoundedCornerShape(100.dp),
                                 elevation = ButtonDefaults.elevation(
                                     defaultElevation = 0.dp,
@@ -396,13 +407,21 @@ fun RecoverScreen(
                                 confirmButton = {
                                     Button(
                                         onClick = {
+                                            intentos.value += 1
                                             openError = false
                                             otpValue = ""
+
                                         }) {
                                         Text("Ok")
                                     }
                                 }
                             )
+                        }
+
+                        if(intentos.value == 1){
+                            enableSend.value = false
+                            showConditionsDialog = false
+                            contarTiempo = true
                         }
                     }
                 }
@@ -411,293 +430,20 @@ fun RecoverScreen(
             }
         }
     }
-}
 
-/*
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-@Composable
-fun PopVerifyCode(
-    closeDialog: () -> Unit = {},
-    email: MutableState<String>,
-    coroutineScope: CoroutineScope,
-    client: Login
-) {
-    val openDialog = remember { mutableStateOf(false) }
-    val codeTxtFieldTxt = remember { mutableStateOf("") }
-    val textFieldRequester = remember { FocusRequester() }
-    val codigo = remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = { closeDialog },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 420.dp)
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .clip(RoundedCornerShape(topStart = 33.dp, topEnd = 33.dp))
-                .background(Color.White)
-                .padding(end = 18.dp, start = 18.dp, top = 38.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            val keyboardController =
-                LocalSoftwareKeyboardController.current //Necesito el ExperimentalcomposeUiApi
-            val focusManager = LocalFocusManager.current
-
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-
-                /*TextField(
-                    value = codeTxtFieldTxt.value,
-                    onValueChange = {
-                        if (it.length <= 6) {
-                            codeTxtFieldTxt.value = it
-                            if(it.length == 6){
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                            }
-                        } else {
-                            keyboardController?.hide()
-                            focusManager.clearFocus()
-                        }
-                        Log.d("CODE", "Now: ${codeTxtFieldTxt.value}")
-                    },
-                    maxLines = 1,
-                    modifier = Modifier
-                        .size(0.dp)
-                        .focusRequester(textFieldRequester)
-                        .alpha(0f),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.NumberPassword
-                    )
-                )*/
-
-
-                Column {
-                    androidx.compose.material.Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Ingrese el código que le enviamos a su correo",
-                        fontFamily = FontFamily.SansSerif,
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(Modifier.height(18.dp))
-
-
-                    OutlinedTextField(
-                        value = codigo.value,
-                        onValueChange = { codigo.value = it },
-                        label = {
-                            Text(
-                                text = stringResource(R.string.recemail),
-                                fontSize = 16.sp
-                            )
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.White,
-                            unfocusedBorderColor = Color.White,
-                            cursorColor = Color.Black,
-                            focusedLabelColor = Color.White,
-                            unfocusedLabelColor = Color.White,
-                            focusedTextColor = Color.Black,
-                        ),
-                        modifier = Modifier.padding(bottom = 20.dp),
-                    )
-
-                    /*OtpTextField(codeText = codeTxtFieldTxt) {
-                        focusManager.clearFocus()
-                        textFieldRequester.requestFocus()
-                    }*/
-
-
-                    /*Spacer(Modifier.height(12.dp))
-
-                    TextField(
-                        value = email.value,
-                        onValueChange = {email.value = it},
-                        label = { androidx.compose.material.Text(text = "Email", fontSize = 16.sp) })
-
-                    Spacer(Modifier.height(6.dp))
-
-                    TextField(
-                        value = code.value,
-                        onValueChange = {code.value = it},
-                        label = { androidx.compose.material.Text(text = "Code", fontSize = 16.sp) })*/
-
-
-                    BottomActionButtons(closeDialog, email, codigo, coroutineScope, client)
-
-                }
-
-
+    if (contarTiempo) {
+        LaunchedEffect(contarTiempo) {
+            while (contador.value < 20) {
+                delay(1000)
+                contador.value += 1
             }
-
-            Spacer(Modifier.height(8.dp))
-
+            enableSend.value = true
+            contador.value = 0
+            intentos.value = 0
+            contarTiempo = false
         }
     }
 }
-
-@Composable
-private fun ColumnScope.BottomActionButtons(
-    closeDialog: () -> Unit = {},
-    email: MutableState<String>,
-    code: MutableState<String>,
-    coroutineScope: CoroutineScope,
-    client: Login
-) {
-
-    var openExito by remember { mutableStateOf(false) }
-    var openError by remember { mutableStateOf(false) }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(bottom = 19.dp)
-            .weight(1f),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.Bottom
-    ) {
-
-        androidx.compose.material.Button(
-            onClick = { closeDialog() },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                contentColor = Color(0xFF9300FC),
-                disabledBackgroundColor = Color(0x009300FC)
-            ),
-            enabled = true,
-            modifier = Modifier
-                .weight(1f)
-                .border(2.5.dp, Color(0xFFF5B041), shape = RoundedCornerShape(100.dp)),
-            shape = RoundedCornerShape(100.dp),
-            elevation = ButtonDefaults.elevation(
-                defaultElevation = 0.dp,
-                pressedElevation = 0.dp
-            )
-        ) {
-            androidx.compose.material.Text(
-                "Cancelar",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(end = 6.dp, top = 6.dp, bottom = 6.dp, start = 6.dp),
-                color = Color(0xFFE67E22)
-            )
-
-        }
-
-        Spacer(Modifier.width(6.dp))
-
-        androidx.compose.material.Button(
-            onClick = {
-                VerifyCode(
-                    email.value,
-                    code.value,
-                    coroutineScope,
-                    client,
-                    { openExito = true },
-                    { openError = true })
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color(0xFFF5B041),
-                contentColor = Color.White,
-                disabledBackgroundColor = Color(0x7A9300FC)
-            ),
-            enabled = true,
-            shape = RoundedCornerShape(100.dp),
-            modifier = Modifier.weight(1f),
-
-            ) {
-
-            androidx.compose.material.Text(
-                "Verificar",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(start = 6.dp, top = 6.dp, bottom = 6.dp)
-            )
-        }
-    }
-
-    if (openExito) {
-        AlertDialog(
-            onDismissRequest = {
-                openExito = false
-            },
-            title = {
-                Text(text = "Codigo Exitoso")
-            },
-            text = {
-                Text("Se ha enviado un correo a ${email.value} para recuperar su contraseña")
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        openExito = false
-                    }) {
-                    Text("Ok")
-                }
-            }
-        )
-    }
-
-    if (openError) {
-        AlertDialog(
-            onDismissRequest = {
-                openError = false
-            },
-            title = {
-                Text(text = "Código Incorrecto")
-            },
-            text = {
-                Text("Por favor, ingrese un código válido")
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        openError = false
-                    }) {
-                    Text("Ok")
-                }
-            }
-        )
-    }
-}*/
-
-
-/*
-@Composable
-fun OtpInput() {
-    // a mutable state to handle OTP value changes…
-    var otpValue: String by remember { mutableStateOf("") }
-
-    // this config will be used for each cell
-    val defaultCellConfig = OhTeePeeCellConfiguration.withDefaults(
-        borderColor = Color.LightGray,
-        borderWidth = 1.dp,
-        shape = RoundedCornerShape(16.dp),
-        textStyle = TextStyle(
-            color = Color.Black
-        )
-    )
-
-    OhTeePeeInput(
-        value = otpValue,
-        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-        onValueChange = { newValue, isValid ->
-            otpValue = newValue
-        },
-        configurations = OhTeePeeConfigurations.withDefaults(
-            cellsCount = 6,
-            emptyCellConfig = defaultCellConfig,
-            cellModifier = Modifier
-                .padding(horizontal = 4.dp)
-                .size(48.dp),
-        ),
-    )
-}*/
 
 fun recoverPassword(email: String) {
     //val apiUrl = BuildConfig.API_ENDPOINT
