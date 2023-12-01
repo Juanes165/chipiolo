@@ -1,14 +1,11 @@
 package com.aragang.chipiolo.SignInChipiolo
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +29,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -60,27 +54,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.aragang.chipiolo.API.BodyRequestModel
-import com.aragang.chipiolo.API.BodyRequestModelVerify
-//import com.aragang.chipiolo.API.BottomActionButtons
-import com.aragang.chipiolo.API.FireStoreAPI
-//import com.aragang.chipiolo.API.OtpTextField
-import com.aragang.chipiolo.API.ResponseGenerateCode
-import com.aragang.chipiolo.API.ResponseVerifyCode
-import com.aragang.chipiolo.BuildConfig
+import com.aragang.chipiolo.API.VerifyCode
+import com.aragang.chipiolo.API.recoverPassword
 import com.aragang.chipiolo.R
 import com.composeuisuite.ohteepee.OhTeePeeInput
 import com.composeuisuite.ohteepee.configuration.OhTeePeeCellConfiguration
 import com.composeuisuite.ohteepee.configuration.OhTeePeeConfigurations
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 //@Preview
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -227,7 +207,8 @@ fun RecoverScreen(
                         .fillMaxWidth(),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                     containerColor = colorGreenPrimary,
-                    contentColor = colorWhite
+                    contentColor = colorWhite,
+                    disabledContainerColor = colorWhite,
                 ),
                 shape = MaterialTheme.shapes.medium,
                 contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp)
@@ -402,7 +383,10 @@ fun RecoverScreen(
                                     Text(text = "Código Incorrecto")
                                 },
                                 text = {
-                                    Text("Por favor, ingrese un código válido")
+                                    if (intentos.value != 2)
+                                        Text("Intente nuevamente, le quedan ${2 - intentos.value} intentos")
+                                    else
+                                        Text("Has sido bloqueado por 20 segundos")
                                 },
                                 confirmButton = {
                                     Button(
@@ -418,7 +402,7 @@ fun RecoverScreen(
                             )
                         }
 
-                        if(intentos.value == 1){
+                        if(intentos.value == 3){
                             enableSend.value = false
                             showConditionsDialog = false
                             contarTiempo = true
@@ -445,78 +429,5 @@ fun RecoverScreen(
     }
 }
 
-fun recoverPassword(email: String) {
-    //val apiUrl = BuildConfig.API_ENDPOINT
-    val apiUrl = "https://chipioloapi.vercel.app/"
-    val apiBuilder = Retrofit.Builder()
-        .baseUrl(apiUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val api = apiBuilder.create(FireStoreAPI::class.java)
-    val data = BodyRequestModel(email)
-    val call: Call<ResponseGenerateCode?>? = api.GenerateCode(data);
-
-    call!!.enqueue(object : retrofit2.Callback<ResponseGenerateCode?> {
-        override fun onResponse(
-            call: Call<ResponseGenerateCode?>,
-            response: retrofit2.Response<ResponseGenerateCode?>
-        ) {
-            if (response.isSuccessful) {
-                //val data: ResponseGenerateCode? = response.body()
-                Log.d("Respuesta: ", response.body().toString())
-            }
-        }
-
-        override fun onFailure(call: Call<ResponseGenerateCode?>?, t: Throwable) {
-            Log.e("Error respuesta: ", t.message.toString())
-        }
-    })
-}
-
-fun VerifyCode(
-    email: String,
-    code: String,
-    coroutineScope: CoroutineScope,
-    client: Login,
-    openExito: () -> Unit = {},
-    openError: () -> Unit = {}
-) {
-
-    //val apiUrlRecover = BuildConfig.API_ENDPOINT
-    val apiUrlRecover = "https://chipioloapi.vercel.app/"
-    val apiBuilder = Retrofit.Builder()
-        .baseUrl(apiUrlRecover)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val api = apiBuilder.create(FireStoreAPI::class.java)
-    val data = BodyRequestModelVerify(email, code)
-    val call: Call<ResponseVerifyCode?>? = api.VerifyCode(data);
 
 
-
-    call!!.enqueue(object : retrofit2.Callback<ResponseVerifyCode?> {
-        override fun onResponse(
-            call: Call<ResponseVerifyCode?>,
-            response: retrofit2.Response<ResponseVerifyCode?>
-        ) {
-            if (response.isSuccessful) {
-                coroutineScope.launch {
-                    client.sendPasswordResetEmail(email)
-
-                }
-                Log.d("Respuesta: ", response.body().toString())
-                openExito()
-            } else {
-                Log.e("Error", response.message())
-                openError()
-            }
-        }
-
-        override fun onFailure(call: Call<ResponseVerifyCode?>?, t: Throwable) {
-            //println(t.message)
-            Log.e("Error respuesta: ", t.message.toString())
-        }
-    })
-}
