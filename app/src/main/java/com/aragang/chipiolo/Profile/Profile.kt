@@ -2,6 +2,7 @@ package com.aragang.chipiolo.Profile
 
 import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,10 +16,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,6 +54,7 @@ import com.aragang.chipiolo.SignInChipiolo.Login
 import com.aragang.chipiolo.SignInChipiolo.UserData
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -56,6 +64,8 @@ fun ProfileScreen(
     onCamera: () -> Unit,
     onAvatarPick: () -> Unit,
     goToLogin: () -> Unit = {},
+    reload: () -> Unit = {},
+    goToProfileHome: () -> Unit = {},
     client: Login,
 ) {
 
@@ -65,6 +75,7 @@ fun ProfileScreen(
     val colorWhite = colorResource(id = R.color.white)
     val colorGreenPrimary = colorResource(id = R.color.green_primary)
     val colorBlack = colorResource(id = R.color.black)
+    val colorRed = colorResource(id = R.color.red_primary)
 
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showProfilePictureDialog by remember { mutableStateOf(false) }
@@ -86,6 +97,9 @@ fun ProfileScreen(
             }
         }
 
+    BackHandler {
+        goToProfileHome()
+    }
 
     Box(
         modifier = Modifier
@@ -93,31 +107,35 @@ fun ProfileScreen(
             .background(colorDarkGray)
     ) {
 
-        Image(
-            painter = painterResource(R.drawable.logo_chipiolo),
-            contentDescription = stringResource(R.string.logofondo),
-            colorFilter = ColorFilter.tint(Color(43, 168, 74), blendMode = BlendMode.Darken),
-            modifier = Modifier
-                .padding(
-                    start = 150.dp
-                )
-                .size(350.dp)
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 30.dp, vertical = 100.dp)
                 .background(Color.White, RoundedCornerShape(16.dp)),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Perfil de usuario",
-                fontSize = 40.sp,
-                modifier = Modifier.padding(top = 10.dp, bottom = 16.dp),
-                fontWeight = FontWeight(700),
-            )
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, bottom = 80.dp, top = 20.dp)
+
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo_pica),
+                    contentDescription = "pica",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clickable { goToLogin() }
+                )
+                Text(
+                    text = stringResource(R.string.user_profile),
+                    fontSize = 40.sp,
+                    modifier = Modifier.padding(start = 20.dp),
+                    fontWeight = FontWeight(700),
+                )
+            }
+
             // FOTO DE PERFIL
             if (userData?.profileImage != null) {
                 ProfilePicture(
@@ -145,93 +163,102 @@ fun ProfileScreen(
 
             if (userData != null) {
 
+                Text(
+                    text = stringResource(R.string.name),
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 16.dp, top = 16.dp),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
                 // NOMBRE Y ACTUALIZAR NOMBRE
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
                         // get first name
                         text = userData.name?.substringBefore(' ') ?: "ChipiUsuario",
                         fontSize = 30.sp,
-                        modifier = Modifier.padding(top = 16.dp, start = 10.dp, end = 10.dp),
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                         fontWeight = FontWeight.SemiBold,
                     )
-//                    Image(
-//                        painter = painterResource(R.drawable.ic_baseline_edit_24),
-//                        contentDescription = "Edit name",
-//                        modifier = Modifier
-//                            .padding(top = 16.dp, start = 8.dp)
-//                            .size(30.dp)
-//                            .clickable { /*TODO*/ }
-//                    )
-                    Button(
-                        onClick = { showChangeName = true },
-                        modifier = Modifier
-                            .background(Color.Green, CircleShape)
-                            .padding(top = 16.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
-                            .size(25.dp)
-//                            .align(Alignment.End),
-                        ,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0, 0, 0, 0),
-                            contentColor = Color.White,
-                        ),
-                        shape = CircleShape
-                    ) {
-//                        Text(text = "E", color = Color.White)
+                    IconButton(onClick = { showChangeName = true }) {
+                        Icon(
+                            Icons.Filled.Edit,
+                            contentDescription = "edit",
+                            tint = colorBlack,
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(40.dp)
+                        )
                     }
                 }
 
+                Text(
+                    text = stringResource(R.string.loemail),
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 16.dp, top = 16.dp),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+
                 // EMAIL Y ACTUALIZAR EMAIL
-                Row {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ){
                     Text(
                         text = userData.email,
                         fontSize = 20.sp,
                         modifier = Modifier
-                            .padding(top = 16.dp, start = 10.dp, end = 10.dp)
+                            .padding(start = 10.dp, end = 10.dp)
                             .horizontalScroll(rememberScrollState()),
 
                         )
                 }
             }
         }
+
+        // BOTON DE CERRAR SESION
         Button(
             onClick = { showSignOutDialog = true },
             modifier = Modifier
                 .padding(bottom = 24.dp)
                 .align(Alignment.BottomCenter),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(255, 0, 0),
-                contentColor = Color.White,
+                containerColor = colorRed,
+                contentColor = colorWhite,
             ),
+            shape = MaterialTheme.shapes.medium,
 
             ) {
             Text(
                 text = stringResource(R.string.clses),
-                fontSize = 15.sp,
+                fontSize = 18.sp,
                 modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
-                color = Color.White
+                color = colorWhite
             )
         }
 
-        Button(
-            onClick = { showDeleteAccountDialog = true },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(255, 0, 0),
-                contentColor = Color.White,
-            ),
+        IconButton(onClick = { showDeleteAccountDialog = true },
             modifier = Modifier
                 .padding(bottom = 24.dp, end = 24.dp)
-                .align(Alignment.BottomEnd),
-            shape = CircleShape
+                .align(Alignment.BottomEnd)
+                .background(color = colorRed, shape = CircleShape)
         ) {
-            Text(
-                text = "X",
-                fontSize = 15.sp,
-                color = Color.White
+            Icon(
+                Icons.Filled.Delete,
+                contentDescription = "delete",
+                tint = colorWhite,
+                modifier = Modifier
+//                    .padding(start = 10.dp)
+                    .size(40.dp)
             )
         }
 
@@ -244,6 +271,7 @@ fun ProfileScreen(
                 updateValue = { newName ->
                     client.updateName(newName)
                     showChangeName = false
+                    reload()
                 }
             )
         }
@@ -347,7 +375,8 @@ fun ProfileScreen(
                                 onClick = { showProfilePictureDialog = false },
                                 modifier = Modifier
                                     .padding(top = 16.dp, end = 5.dp)
-                                    .width(115.dp)
+                                    .width(115.dp),
+                                shape = MaterialTheme.shapes.medium,
                             ) {
                                 Text("Repetir", fontSize = 14.sp)
                             }
@@ -368,7 +397,8 @@ fun ProfileScreen(
                                 },
                                 modifier = Modifier
                                     .padding(top = 16.dp, start = 5.dp)
-                                    .width(115.dp)
+                                    .width(115.dp),
+                                shape = MaterialTheme.shapes.medium,
                             ) {
                                 Text("Aceptar", fontSize = 14.sp)
                             }
@@ -428,39 +458,45 @@ fun ProfilePictureDialog(
                     RoundedCornerShape(16.dp)
                 )
         ) {
-            Column {
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = stringResource(R.string.picpro),
-                    fontSize = 18.sp,
+                    fontSize = 24.sp,
                     modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold
                 )
 
                 Button(
                     onClick = openCamera,
                     modifier = Modifier
-                        .padding(top = 16.dp, start = 5.dp)
-                        .width(115.dp)
+                        .padding(top = 16.dp)
+                        .width(115.dp),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
-                    Text(stringResource(R.string.cam), fontSize = 14.sp)
+                    Text(stringResource(R.string.cam), fontSize = 18.sp)
                 }
 
                 Button(
                     onClick = openGallery,
                     modifier = Modifier
-                        .padding(top = 16.dp, start = 5.dp)
-                        .width(115.dp)
+                        .padding(top = 16.dp)
+                        .width(115.dp),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
-                    Text(stringResource(R.string.gal), fontSize = 14.sp)
+                    Text(stringResource(R.string.gal), fontSize = 18.sp)
                 }
 
                 Button(
                     onClick = openAvatarPick,
                     modifier = Modifier
-                        .padding(top = 16.dp, start = 5.dp)
-                        .width(115.dp)
+                        .padding(top = 16.dp, bottom = 16.dp)
+                        .width(115.dp),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
-                    Text(stringResource(R.string.ava), fontSize = 14.sp)
+                    Text(stringResource(R.string.ava), fontSize = 18.sp)
                 }
             }
         }
@@ -496,7 +532,8 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
                         onClick = closeDialog,
                         modifier = Modifier
                             .padding(top = 16.dp, end = 5.dp)
-                            .width(115.dp)
+                            .width(115.dp),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text(stringResource(R.string.cnl), fontSize = 14.sp)
                     }
@@ -505,7 +542,12 @@ fun SignOutDialog(signOut: () -> Unit, closeDialog: () -> Unit = {}) {
                         onClick = signOut,
                         modifier = Modifier
                             .padding(top = 16.dp, start = 5.dp)
-                            .width(115.dp)
+                            .width(115.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(141, 0, 0, 255),
+                            contentColor = Color.White,
+                        ),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text(stringResource(R.string.salir), fontSize = 14.sp)
                     }
@@ -555,7 +597,8 @@ fun deleteAccountDialog(
                         onClick = closeDialog,
                         modifier = Modifier
                             .padding(top = 16.dp, end = 5.dp)
-                            .width(115.dp)
+                            .width(115.dp),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text(stringResource(R.string.cnl), fontSize = 14.sp)
                     }
@@ -566,9 +609,10 @@ fun deleteAccountDialog(
                             .padding(top = 16.dp, start = 5.dp)
                             .width(115.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(255, 0, 0),
+                            containerColor = Color(141, 0, 0, 255),
                             contentColor = Color.White,
                         ),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text(stringResource(R.string.elim), fontSize = 14.sp)
                     }
@@ -629,12 +673,18 @@ fun editValueDialog(
                     onValueChange = { fieldValue.value = it },
                     label = { Text(label) }
                 )
-                Row {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.Center
+                ){
                     Button(
                         onClick = closeDialog,
                         modifier = Modifier
                             .padding(top = 16.dp, end = 5.dp)
-                            .width(115.dp)
+                            .width(115.dp),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text("Cancelar", fontSize = 14.sp)
                     }
@@ -645,9 +695,10 @@ fun editValueDialog(
                             .padding(top = 16.dp, start = 5.dp)
                             .width(115.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0, 255, 166, 255),
+                            containerColor = Color(125, 189, 76, 255),
                             contentColor = Color.White,
                         ),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text("Actualizar", fontSize = 14.sp)
                     }

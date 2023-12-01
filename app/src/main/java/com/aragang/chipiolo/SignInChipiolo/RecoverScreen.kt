@@ -394,8 +394,8 @@ fun RecoverScreen(
                                     Text(text = "Código Incorrecto")
                                 },
                                 text = {
-                                    if (intentos.value != 2)
-                                        Text("Intente nuevamente, le quedan ${2 - intentos.value} intentos")
+                                    if (intentos.value != 3)
+                                        Text("Intente nuevamente, le quedan ${3 - intentos.value} intentos")
                                     else
                                         Text("Has sido bloqueado por 20 segundos")
                                 },
@@ -413,7 +413,7 @@ fun RecoverScreen(
                             )
                         }
 
-                        if(intentos.value == 3){
+                        if(intentos.value == 4){
                             enableSend.value = false
                             showConditionsDialog = false
                             contarTiempo = true
@@ -427,8 +427,9 @@ fun RecoverScreen(
     }
 
     if (contarTiempo) {
+        val blockTimeInSeconds = 20
         LaunchedEffect(contarTiempo) {
-            while (contador.value < 20) {
+            while (contador.value < blockTimeInSeconds) {
                 delay(1000)
                 contador.value += 1
             }

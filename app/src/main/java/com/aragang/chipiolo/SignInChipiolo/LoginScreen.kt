@@ -1,7 +1,9 @@
 package com.aragang.chipiolo.SignInChipiolo
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -100,6 +102,8 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
 
     val showPassword = remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -264,6 +268,8 @@ fun LoginScreen(
                             } else {
                                 onSuccess()
                             }
+                        } else {
+                            sendToastMsg("Credenciales Incorrectas", context)
                         }
                     }
                 },
@@ -426,4 +432,8 @@ fun LoginScreen(
             }
         }
     }
+}
+
+fun sendToastMsg(msg: String, context: Context){
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }

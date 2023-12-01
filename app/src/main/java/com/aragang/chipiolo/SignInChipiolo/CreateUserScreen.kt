@@ -474,7 +474,7 @@ enum class StrengthPasswordTypes {
 }
 
 private const val REGEX_STRONG_PASSWORD =
-    "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})"
+    "(?=.*[a-z])(?=.*[0-9])(?=.{8,})"
 
 fun returnPasswordMessage(password: String, repeatPassword: String): Int {
     return if (password == "") {

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,13 +40,14 @@ fun AddNameScreen(
     onSuccess: () -> Unit,
 ) {
 
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
 
     val name = remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0, 97, 23, 255))
+            .background(colorDarkGray)
     ) {
         // formulario de email y password
         Column(
@@ -95,7 +98,9 @@ fun AddNameScreen(
             )
             Button(onClick = {
                 onNameEntered(name.value)
-            }) {
+            },
+                shape = MaterialTheme.shapes.medium,
+                ) {
                 Text(text = stringResource(R.string.cont))
             }
         }

@@ -119,6 +119,12 @@ class MainActivity : ComponentActivity() {
                                 goToLogin = {
                                     navController.navigate("login_screen")
                                 },
+                                reload = {
+                                    navController.navigate("profile")
+                                },
+                                goToProfileHome = {
+                                    navController.navigate("profile_home")
+                                },
                                 client = googleAuthUiClient
                             )
                         }

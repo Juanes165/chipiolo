@@ -27,6 +27,7 @@
     <string name="msgfarewell">Lamentamos que te vayas 😞\n ¿Estás seguro de que quieres eliminar tu cuenta?
     </string>
     <string name="elim">Eliminar</string>
+    <string name="user_profile">Tu perfil</string>
 
     <!-- AddNameScreen -->
     <string name="dftpict">Default Profile picture</string>
