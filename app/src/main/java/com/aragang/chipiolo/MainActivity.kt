@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                             FirstScreen()
                             // Revisar si esta logeado y redirigir
                             LaunchedEffect(key1 = Unit) {
-                                if(googleAuthUiClient.getSignedInUser() != null) {
+                                if (googleAuthUiClient.getSignedInUser() != null) {
                                     navController.navigate("home")
                                 } else {
                                     navController.navigate("login_screen")
@@ -90,7 +90,6 @@ class MainActivity : ComponentActivity() {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
-
                                 onProfile = {navController.navigate("profile")},
                             )
                             //ProfileHome()
@@ -138,7 +137,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // PANTALLA DE LOGIN
-                        composable("login_screen"){
+                        composable("login_screen") {
                             LoginScreen(
                                 client = googleAuthUiClient,
                                 onSuccess = {
@@ -154,7 +153,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // PANTALLA DE REGISTRO
-                        composable("create_user"){
+                        composable("create_user") {
                             CreateUserScreen(
                                 client = googleAuthUiClient,
                                 onRegisterSuccess = {
@@ -209,7 +208,7 @@ class MainActivity : ComponentActivity() {
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LaunchedEffect(key1 = state.isSignInSuccessful) {
-                                if(state.isSignInSuccessful) {
+                                if (state.isSignInSuccessful) {
                                     Toast.makeText(
                                         applicationContext,
                                         "Sign in successful",
@@ -245,7 +244,11 @@ class MainActivity : ComponentActivity() {
 
                         // GAME SCREEN - JUEGO
                         composable("game") {
-                            GameScreen()
+                            GameScreen(
+                                goToMenu = {
+                                    navController.navigate("home")
+                                },
+                            )
                         }
                         composable("online_game") {
                             OnlineGameScreen()

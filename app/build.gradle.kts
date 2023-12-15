@@ -66,6 +66,8 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     implementation("com.google.firebase:firebase-database")
 
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    implementation("androidx.compose.ui:ui-test-junit4:1.4.1")
     // CAMERA
     val cameraxVersion = "1.3.0-rc01"
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")

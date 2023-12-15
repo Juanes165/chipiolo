@@ -2,57 +2,327 @@ package com.aragang.chipiolo
 
 object Data {
     val cardList = listOf(
+//        PICA
         Card(
             id = 1,
-            imageRes = R.drawable.card_1
+            value = 11,
+            imageRes = R.drawable.pica_card_1,
+            suit = "Spades"
+
         ),
         Card(
             id = 2,
-            imageRes = R.drawable.card_2
+            value = 2,
+            imageRes = R.drawable.pica_card_2,
+            suit = "Spades"
         ),
         Card(
             id = 3,
-            imageRes = R.drawable.card_3
+            value = 3,
+            imageRes = R.drawable.pica_card_3,
+            suit = "Spades"
         ),
         Card(
             id = 4,
-            imageRes = R.drawable.card_4
+            value = 4,
+            imageRes = R.drawable.pica_card_4,
+            suit = "Spades"
         ),
         Card(
             id = 5,
-            imageRes = R.drawable.card_5
+            value = 5,
+            imageRes = R.drawable.pica_card_5,
+            suit = "Spades"
         ),
         Card(
             id = 6,
-            imageRes = R.drawable.card_6
+            value = 6,
+            imageRes = R.drawable.pica_card_6,
+            suit = "Spades"
         ),
         Card(
             id = 7,
-            imageRes = R.drawable.card_7
+            value = 7,
+            imageRes = R.drawable.pica_card_7,
+            suit = "Spades"
         ),
         Card(
             id = 8,
-            imageRes = R.drawable.card_8
+            value = 8,
+            imageRes = R.drawable.pica_card_8,
+            suit = "Spades"
         ),
         Card(
             id = 9,
-            imageRes = R.drawable.card_9
+            value = 9,
+            imageRes = R.drawable.pica_card_9,
+            suit = "Spades"
         ),
         Card(
             id = 10,
-            imageRes = R.drawable.card_10
+            value = 10,
+            imageRes = R.drawable.pica_card_10,
+            suit = "Spades"
         ),
         Card(
             id = 11,
-            imageRes = R.drawable.card_j
+            value = 10,
+            imageRes = R.drawable.pica_card_j,
+            suit = "Spades"
         ),
         Card(
             id = 12,
-            imageRes = R.drawable.card_q
+            value = 10,
+            imageRes = R.drawable.pica_card_q,
+            suit = "Spades"
         ),
         Card(
             id = 13,
-            imageRes = R.drawable.card_k
+            value = 10,
+            imageRes = R.drawable.pica_card_k,
+            suit = "Spades"
+        ),
+//        TREBOL
+        Card(
+            id = 14,
+            value = 11,
+            imageRes = R.drawable.trebol_card_1,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 15,
+            value = 2,
+            imageRes = R.drawable.trebol_card_2,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 16,
+            value = 3,
+            imageRes = R.drawable.trebol_card_3,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 17,
+            value = 4,
+            imageRes = R.drawable.trebol_card_4,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 18,
+            value = 5,
+            imageRes = R.drawable.trebol_card_5,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 19,
+            value = 6,
+            imageRes = R.drawable.trebol_card_6,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 20,
+            value = 7,
+            imageRes = R.drawable.trebol_card_7,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 21,
+            value = 8,
+            imageRes = R.drawable.trebol_card_8,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 22,
+            value = 9,
+            imageRes = R.drawable.trebol_card_9,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 23,
+            value = 10,
+            imageRes = R.drawable.trebol_card_10,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 24,
+            value = 10,
+            imageRes = R.drawable.trebol_card_j,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 25,
+            value = 10,
+            imageRes = R.drawable.trebol_card_q,
+            suit = "Clubs"
+        ),
+        Card(
+            id = 26,
+            value = 10,
+            imageRes = R.drawable.trebol_card_k,
+            suit = "Clubs"
+        ),
+//        CORAZON
+        Card(
+            id = 27,
+            value = 11,
+            imageRes = R.drawable.corazon_card_1,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 28,
+            value = 2,
+            imageRes = R.drawable.corazon_card_2,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 29,
+            value = 3,
+            imageRes = R.drawable.corazon_card_3,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 30,
+            value = 4,
+            imageRes = R.drawable.corazon_card_4,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 31,
+            value = 5,
+            imageRes = R.drawable.corazon_card_5,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 32,
+            value = 6,
+            imageRes = R.drawable.corazon_card_6,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 33,
+            value = 7,
+            imageRes = R.drawable.corazon_card_7,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 34,
+            value = 8,
+            imageRes = R.drawable.corazon_card_8,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 35,
+            value = 9,
+            imageRes = R.drawable.corazon_card_9,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 36,
+            value = 10,
+            imageRes = R.drawable.corazon_card_10,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 37,
+            value = 10,
+            imageRes = R.drawable.corazon_card_j,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 38,
+            value = 10,
+            imageRes = R.drawable.corazon_card_q,
+            suit = "Hearts"
+        ),
+        Card(
+            id = 39,
+            value = 10,
+            imageRes = R.drawable.corazon_card_k,
+            suit = "Hearts"
+        ),
+//        DIAMANTE
+        Card(
+            id = 40,
+            value = 11,
+            imageRes = R.drawable.diamante_card_1,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 41,
+            value = 2,
+            imageRes = R.drawable.diamante_card_2,
+            suit = "Diamonds"
+
+        ),
+        Card(
+            id = 42,
+            value = 3,
+            imageRes = R.drawable.diamante_card_3,
+            suit = "Diamonds"
+
+        ),
+        Card(
+            id = 43,
+            value = 4,
+            imageRes = R.drawable.diamante_card_4,
+            suit = "Diamonds"
+
+        ),
+        Card(
+            id = 44,
+            value = 5,
+            imageRes = R.drawable.diamante_card_5,
+            suit = "Diamonds"
+
+        ),
+        Card(
+            id = 45,
+            value = 6,
+            imageRes = R.drawable.diamante_card_6,
+            suit = "Diamonds"
+
+        ),
+        Card(
+            id = 46,
+            value = 7,
+            imageRes = R.drawable.diamante_card_7,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 47,
+            value = 8,
+            imageRes = R.drawable.diamante_card_8,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 48,
+            value = 9,
+            imageRes = R.drawable.diamante_card_9,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 49,
+            value = 10,
+            imageRes = R.drawable.diamante_card_10,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 50,
+            value = 10,
+            imageRes = R.drawable.diamante_card_j,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 51,
+            value = 10,
+            imageRes = R.drawable.diamante_card_q,
+            suit = "Diamonds"
+        ),
+        Card(
+            id = 52,
+            value = 10,
+            imageRes = R.drawable.diamante_card_k,
+            suit = "Diamonds"
         ),
     )
 }
