@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
+
                     NavHost(navController = navController, startDestination = "first_screen") {
 
                         // FIRST SCREEN - LOGO CHIPIOLO
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 onProfile = {navController.navigate("profile_home")},
                                 onSinglePlayer = {navController.navigate("game")},
-                                onMultiPlayer = {navController.navigate("game")},
+                                onMultiPlayer = {navController.navigate("online_game")},
                             )
                         }
 
@@ -89,12 +90,15 @@ class MainActivity : ComponentActivity() {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
+
                                 onProfile = {navController.navigate("profile")},
                             )
                             //ProfileHome()
                         }
 
+
                         // PERFIL DEL USUARIO
+
                         composable("profile") {
                             ProfileScreen(
                                 userData = googleAuthUiClient.getSignedInUser(),
@@ -242,6 +246,9 @@ class MainActivity : ComponentActivity() {
                         // GAME SCREEN - JUEGO
                         composable("game") {
                             GameScreen()
+                        }
+                        composable("online_game") {
+                            OnlineGameScreen()
                         }
                     }
                 }
