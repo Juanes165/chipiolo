@@ -26,6 +26,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +71,10 @@ fun GameScreen() {
         mutableStateOf(Data.cardList.shuffled())
     }
 
+     // juego terminado
+    val gameOver = remember {
+        mutableStateOf(false)
+    }
 
 
     val cardsSpreadDegree = remember {
@@ -95,14 +101,115 @@ fun GameScreen() {
 // Puntaje inicial del aragang
     val userScore = remember { mutableStateOf(userCards.value.sumOf { it.value }) }
 
-    //    imprimir cartas pa tin
-    bot1.printCards()
-    bot2.printCards()
-    bot3.printCards()
-    println("user cards:")
-    userCards.value.forEach { card ->
-        println(card)
-    }
+    // lista de jugadores  para crear turnos
+    val players = remember { listOf("User", bot1, bot2, bot3) }
+
+    // crear una variable para llevar el turno
+    val currentTurn = remember { mutableStateOf(0) }
+
+
+
+    // CAMBIA ESO PARA QUE CORRA SOLO OBCIAMENTE
+    // progreso del turno
+    var turnInProgress = false
+
+
+
+//    LaunchedEffect(currentTurn.value) {
+//        val currentPlayer = players[currentTurn.value % players.size]
+//
+//        if (currentPlayer == "User") {
+//            // User's turn
+//            if (allCards.value.isNotEmpty() && userCards.value.size < 5) {
+//                val card = allCards.value.first()
+//                allCards.value = allCards.value.drop(1)
+//                userCards.value = userCards.value + card
+//                userScore.value += card.value
+//
+//                // Discard a card
+//                if (userCards.value.size > 3) {
+//                    val discardedCard = userCards.value.first()
+//                    userCards.value = userCards.value - discardedCard
+//                    userScore.value -= discardedCard.value
+//                }
+//            }
+//        } else {
+//            // Bot turn
+//            val bot = currentPlayer as Bot
+//            if (turnInProgress) {
+//                bot.takeCard(allCards)
+//                bot.discardCard()
+//                bot.printLastPlayedCard()
+//
+//                // Check if the bot won
+//                if (bot.getScore() in 27..310) {
+//                    println("${bot.name} won!")
+//                }
+//            }
+//        }
+//
+//        // siguiente turno
+//        currentTurn.value++
+//
+//        // repite el turno despues de todos los jugadores
+//        if (currentTurn.value % players.size == 0) {
+//            turnInProgress = false
+//        } else {
+//            turnInProgress = true
+//        }
+//    }
+
+//    LaunchedEffect(currentTurn.value) {
+//        val currentPlayer = players[currentTurn.value % players.size]
+//
+//        if (currentPlayer == "User") {
+//            // User turn
+//            if (allCards.value.isNotEmpty() && userCards.value.size < 5) {
+//                val card = allCards.value.first()
+//                allCards.value = allCards.value.drop(1)
+//                userCards.value = userCards.value + card
+//                userScore.value += card.value
+//
+//                // Discard a card
+//                if (userCards.value.size > 3) {
+//                    val discardedCard = userCards.value.first()
+//                    userCards.value = userCards.value - discardedCard
+//                    userScore.value -= discardedCard.value
+//                }
+//            }
+//        } else {
+//            // Bot turno
+//            val bot = currentPlayer as Bot
+//            bot.takeCard(allCards)
+//            bot.discardCard()
+//            bot.printLastPlayedCard()
+//
+//            // revisa si el bot gano
+//            if (bot.getScore() in 27..31) {
+//                println("${bot.name} won!")
+//            }
+//        }
+//
+//        // siguiente ronda
+//        currentTurn.value++
+//
+//        // siguiente ronda despues de todos los jugadores
+//        if (currentTurn.value % players.size == 0) {
+//            // You can add additional logic here if needed before starting the next round
+//        }
+//    }
+
+
+
+
+//    //    imprimir cartas pa tin
+//    bot1.printCards()
+//    bot2.printCards()
+//    bot3.printCards()
+//    println("user cards:")
+//    userCards.value.forEach { card ->
+//        println(card)
+//    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -178,6 +285,15 @@ fun GameScreen() {
                 .align(Alignment.BottomStart)
                 .offset(16.dp)
 
+        )
+
+        // Mazo boca abajo
+        DeckView(
+            allCards = allCards,
+            userCards = userCards,
+            userScore = userScore,
+            modifier = Modifier
+                .align(Alignment.Center)
         )
 
 
@@ -293,6 +409,39 @@ fun BotView(bot: Bot, modifier: Modifier = Modifier) {
         }
     }
 }
+
+
+// deck view: mazo de cartas restantes boca abajo
+@Composable
+fun DeckView(
+    allCards: MutableState<List<Card>>,
+    userCards: MutableState<List<Card>>,
+    userScore: MutableState<Int>,
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painter = painterResource(id = R.drawable.card_back),
+        contentDescription = "Deck",
+        modifier = modifier
+            .size(120.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        if (allCards.value.isNotEmpty()) {
+                            val card = allCards.value.first()
+                            allCards.value = allCards.value.drop(1)
+                            userCards.value = userCards.value + card
+                            userScore.value += card.value
+                        }
+                    }
+                )
+            }
+    )
+}
+
+
+
+
 @Composable
 fun CardItem(
     card: Card,
