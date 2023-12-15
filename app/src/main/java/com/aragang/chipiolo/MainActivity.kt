@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "create_user") {
+                    NavHost(navController = navController, startDestination = "login_screen") {
                         composable("home") {
                             ProfileHome(
                                 viewModel = you_view,
@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
                                         navController.popBackStack()
                                     }
                                 },
-                                onPlay = {navController.navigate("game")},
+                                onPlay = {navController.navigate("online_game")},
                                 onProfile = {navController.navigate("profile")},
                             )
                             //ProfileHome()
@@ -87,9 +87,22 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("sign_in ")
+                                    navController.navigate("sign_in")
                                 }
                             }
+
+
+                        }
+                        composable("online_game") {
+                            OnlineGameScreen()
+                            val viewModel = viewModel<SignInViewModel>()
+
+
+                            /*LaunchedEffect(key1 = Unit) {
+                                if(googleAuthUiClient.getSignedInUser() != null) {
+                                    navController.navigate("sign_in")
+                                }
+                            }*/
 
 
                         }
