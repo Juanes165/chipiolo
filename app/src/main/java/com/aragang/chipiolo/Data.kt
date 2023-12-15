@@ -245,84 +245,84 @@ object Data {
             id = 40,
             value = 11,
             imageRes = R.drawable.diamante_card_1,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 41,
             value = 2,
             imageRes = R.drawable.diamante_card_2,
-            suit = "diamonds"
+            suit = "Diamonds"
 
         ),
         Card(
             id = 42,
             value = 3,
             imageRes = R.drawable.diamante_card_3,
-            suit = "diamonds"
+            suit = "Diamonds"
 
         ),
         Card(
             id = 43,
             value = 4,
             imageRes = R.drawable.diamante_card_4,
-            suit = "diamonds"
+            suit = "Diamonds"
 
         ),
         Card(
             id = 44,
             value = 5,
             imageRes = R.drawable.diamante_card_5,
-            suit = "diamonds"
+            suit = "Diamonds"
 
         ),
         Card(
             id = 45,
             value = 6,
             imageRes = R.drawable.diamante_card_6,
-            suit = "diamonds"
+            suit = "Diamonds"
 
         ),
         Card(
             id = 46,
             value = 7,
             imageRes = R.drawable.diamante_card_7,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 47,
             value = 8,
             imageRes = R.drawable.diamante_card_8,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 48,
             value = 9,
             imageRes = R.drawable.diamante_card_9,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 49,
             value = 10,
             imageRes = R.drawable.diamante_card_10,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 50,
             value = 10,
             imageRes = R.drawable.diamante_card_j,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 51,
             value = 10,
             imageRes = R.drawable.diamante_card_q,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
         Card(
             id = 52,
             value = 10,
             imageRes = R.drawable.diamante_card_k,
-            suit = "diamonds"
+            suit = "Diamonds"
         ),
     )
 }
