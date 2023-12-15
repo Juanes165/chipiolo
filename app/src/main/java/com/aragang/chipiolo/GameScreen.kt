@@ -1,5 +1,6 @@
 package com.aragang.chipiolo
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -106,58 +107,94 @@ fun GameScreen() {
 
     // crear una variable para llevar el turno
     val currentTurn = remember { mutableStateOf(0) }
-
-
+    val currentPlayer = remember { mutableStateOf(players[currentTurn.value % players.size]) }
 
     // CAMBIA ESO PARA QUE CORRA SOLO OBCIAMENTE
     // progreso del turno
     var turnInProgress = false
 
+   /* if (currentPlayer.value == "User") {
+        LaunchedEffect(currentTurn.value) {
+            Log.d("GameScreen", currentPlayer.value.toString())
+            if (allCards.value.isNotEmpty() && userCards.value.size < 5) {
+                val card = allCards.value.first() // toma la primera carta
+                allCards.value = allCards.value.drop(1) // elimina la carta de la lista de cartas disponibles
+                userCards.value = userCards.value + card // agrega la carta a la lista de cartas del usuario
+                userScore.value += card.value // suma el valor de la carta a la puntuacion del usuario
+
+                // Discard a card
+                if (userCards.value.size > 3) {
+                    val discardedCard = userCards.value.first()
+                    userCards.value = userCards.value - discardedCard
+                    userScore.value -= discardedCard.value
+                }
+            }
+        }
+
+        //currentTurn.value++
+    }
+
+    if (currentPlayer.value != "User") {
+        LaunchedEffect(currentTurn.value) {
+            Log.d("GameScreen", "Bot's turn")
+            val bot = currentPlayer as Bot
+            bot.takeCard(allCards)
+            bot.discardCard()
+            bot.printLastPlayedCard()
+
+            // Check if the bot won
+            if (bot.getScore() in 27..310) {
+                println("${bot.name} won!")
+            }
+        }
+
+        //currentTurn.value++
+    }*/
 
 
-//    LaunchedEffect(currentTurn.value) {
-//        val currentPlayer = players[currentTurn.value % players.size]
-//
-//        if (currentPlayer == "User") {
-//            // User's turn
-//            if (allCards.value.isNotEmpty() && userCards.value.size < 5) {
-//                val card = allCards.value.first()
-//                allCards.value = allCards.value.drop(1)
-//                userCards.value = userCards.value + card
-//                userScore.value += card.value
-//
-//                // Discard a card
-//                if (userCards.value.size > 3) {
-//                    val discardedCard = userCards.value.first()
-//                    userCards.value = userCards.value - discardedCard
-//                    userScore.value -= discardedCard.value
-//                }
-//            }
-//        } else {
-//            // Bot turn
-//            val bot = currentPlayer as Bot
-//            if (turnInProgress) {
-//                bot.takeCard(allCards)
-//                bot.discardCard()
-//                bot.printLastPlayedCard()
-//
-//                // Check if the bot won
-//                if (bot.getScore() in 27..310) {
-//                    println("${bot.name} won!")
-//                }
-//            }
-//        }
-//
-//        // siguiente turno
-//        currentTurn.value++
-//
-//        // repite el turno despues de todos los jugadores
-//        if (currentTurn.value % players.size == 0) {
-//            turnInProgress = false
-//        } else {
-//            turnInProgress = true
-//        }
-//    }
+ /*   LaunchedEffect(currentTurn.value) {
+        val currentPlayer = players[currentTurn.value % players.size]
+
+        if (currentPlayer == "User") {
+            // User's turn
+            if (allCards.value.isNotEmpty() && userCards.value.size < 5) {
+                val card = allCards.value.first()
+                allCards.value = allCards.value.drop(1)
+                userCards.value = userCards.value + card
+                userScore.value += card.value
+
+                // Discard a card
+                if (userCards.value.size > 3) {
+                    val discardedCard = userCards.value.first()
+                    userCards.value = userCards.value - discardedCard
+                    userScore.value -= discardedCard.value
+                }
+            }
+        } else {
+            // Bot turn
+            val bot = currentPlayer as Bot
+            if (turnInProgress) {
+                bot.takeCard(allCards)
+                bot.discardCard()
+                bot.printLastPlayedCard()
+
+                // Check if the bot won
+                if (bot.getScore() in 27..310) {
+                    println("${bot.name} won!")
+                }
+            }
+        }
+
+        // siguiente turno
+        currentTurn.value++
+
+        // repite el turno despues de todos los jugadores
+        if (currentTurn.value % players.size == 0) {
+            turnInProgress = false
+        } else {
+            turnInProgress = true
+        }
+    }*/
 
 //    LaunchedEffect(currentTurn.value) {
 //        val currentPlayer = players[currentTurn.value % players.size]
@@ -203,13 +240,13 @@ fun GameScreen() {
 
 
 //    //    imprimir cartas pa tin
-//    bot1.printCards()
-//    bot2.printCards()
-//    bot3.printCards()
-//    println("user cards:")
-//    userCards.value.forEach { card ->
-//        println(card)
-//    }
+    bot1.printCards()
+    bot2.printCards()
+    bot3.printCards()
+    println("user cards:")
+    userCards.value.forEach { card ->
+        println(card)
+    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -427,11 +464,25 @@ fun DeckView(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-                        if (allCards.value.isNotEmpty()) {
+                        /*if (allCards.value.isNotEmpty()) {
                             val card = allCards.value.first()
                             allCards.value = allCards.value.drop(1)
                             userCards.value = userCards.value + card
                             userScore.value += card.value
+                        }*/
+                        //Logica: click, si tiene 2->3 y pasa turno, si 3->4 y necesita descartar
+                        if (allCards.value.isNotEmpty() && userCards.value.size < 5) {
+                            val card = allCards.value.first()
+                            allCards.value = allCards.value.drop(1)
+                            userCards.value = userCards.value + card
+                            userScore.value += card.value
+
+                            // Discard a card
+                            if (userCards.value.size > 3) {
+                                val discardedCard = userCards.value.first()
+                                userCards.value = userCards.value - discardedCard
+                                userScore.value -= discardedCard.value
+                            }
                         }
                     }
                 )
