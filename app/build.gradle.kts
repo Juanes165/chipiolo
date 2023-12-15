@@ -23,13 +23,20 @@ android {
     }
 
     buildTypes {
+        val apiEndpointValue = project.findProperty("apiEndpoint") ?: "https://chipioloapi.vercel.app"
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_ENDPOINT", "$apiEndpointValue")
         }
+        debug {
+            buildConfigField("String", "API_ENDPOINT", "$apiEndpointValue")
+        }
+
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -65,6 +72,10 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
+    // OhTeePee
+    var ohTeePeeVersion = "1.0.3"
+    implementation ("com.github.composeuisuite:ohteepee:$ohTeePeeVersion")
+
     // RETROFIT
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.5.0")
@@ -94,6 +105,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.5.0")
+    
+    val compose_ui_version = "1.0.5"
+    implementation("androidx.compose.material:material-icons-extended:$compose_ui_version")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")

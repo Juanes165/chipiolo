@@ -4,53 +4,97 @@
     <string name="guest">Invitado</string>
     <string name="server_client_id">156015254808-94kht33taq5lvknuf5bj5dcen71vfpcm.apps.googleusercontent.com</string>
     <string name="araganes">Solo pa Tín</string>
+    <string name="pick_avatar">SELECCIONA TU AVATAR</string>
 
-    <string name="recov_pass">Olvido su contraseña</string>
-    <string name="recov_steps">Ingrese su corre al cual llegara un código de verificación</string>
+    <!-- Profile Home -->
+    <string name="logofondo">Logo de fondo</string>
+    <string name="plybtn">Play Button</string>
+    <string name="prpic">Profile picture</string>
+    <string name="dftprpic">Default Profile picture</string>
+    <string name="std">Estadistica</string>
+    <string name="lgr">Logros</string>
+    <string name="chpic">Cambiar foto de perfil</string>
+    <string name="clses">Cerrar sesión</string>
+    <string name="x">X</string>
+    <string name="picpro">Foto de perfil</string>
+    <string name="cam">Cámara</string>
+    <string name="gal">Galería</string>
+    <string name="ava">Avatar</string>
+    <string name="confexit">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="cnl">Cancelar</string>
+    <string name="salir">Salir</string>
+    <string name="elicuen">Eliminar cuenta</string>
+    <string name="msgfarewell">Lamentamos que te vayas 😞\n ¿Estás seguro de que quieres eliminar tu cuenta?
+    </string>
+    <string name="elim">Eliminar</string>
+    <string name="user_profile">Tu perfil</string>
+
+    <!-- AddNameScreen -->
+    <string name="dftpict">Default Profile picture</string>
+    <string name="welcome">Bienvenido a Chipiolo</string>
+    <string name="newname">Crea un nombre de usuario genial para empezar a jugar</string>
+    <string name="name">Nombre</string>
+    <string name="cont">Continuar</string>
+
+    <!-- CreateUserScreen -->
+    <string name="culogo">logo</string>
+    <string name="cuchipiuser">Registrarse</string>
+    <string name="cucorreo">Correo</string>
+    <string name="cupass">Contraseña</string>
+    <string name="curptpass">Repite la contraseña</string>
+    <string name="cuyacuenta">¿Ya tienes cuenta?&#160;</string>
+    <string name="cuinicia">Inicia sesión</string>
+
+    <!-- LoginScreen -->
+    <string name="lologo">logo</string>
+    <string name="loiniciar">Iniciar sesión</string>
+    <string name="loemail">Email</string>
+    <string name="lopass">Password</string>
+    <string name="loforgotpass">¿Olvidaste tu contraseña?</string>
+    <string name="logoogle">Ingresar con Google</string>
+    <string name="lonocuenta">¿No tienes cuenta?&#160;</string>
+    <string name="loregistrate">Regístrate</string>
+
+    <!-- RecoverScreen -->
+    <string name="reclogo">logo</string>
+    <string name="reccancel">Cancelar</string>
+    <string name="recemail">Email</string>
+
+    <!--  FirstScreen   -->
+    <string name="logo_description">Logo de Chipiolo</string>
+
+    <!--    HOME -->
+    <string name="single_player">UN JUGADOR</string>
+    <string name="multi_player">MULTIJUGADOR</string>
+    <string name="pica_description">Logo de pica</string>
+    <string name="letra_providerAuthority">com.google.android.gms.fonts</string>
+    <string name="letra_providerPackage">com.google.android.gms/string></string>
+    <string name="profile">TU PERFIL</string>
+
+    <string name="or">O</string>
+    <string name="recov_pass">Recupera tu</string>
+    <string name="recov_pass_two">contraseña</string>
+    <string name="recov_steps">Ingresa tu correo electrónico</string>
     <string name="send_recover">Enviar</string>
     <string name="register">Registrarse</string>
     <string name="accept">Aceptar terminos y condiciones</string>
-    <string name="conditions_text">Terms and Conditions for Mobile Poker Game
-
-Last Updated: 23/11/2023
-
-Please read these Terms and Conditions ("Terms") carefully before using the Mobile Poker Game (the "Game") operated by ChipioloCorp ("we," "us," or "our"). By accessing or using the Game, you agree to be bound by these Terms. If you do not agree with any part of these Terms, you may not access or use the Game.
-
-    Acceptance of Terms:
-    By downloading, installing, or using the Game, you agree to these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use the Game.
-
-    Age Restriction:
-    You must be at least 18 years old or the legal age for gambling in your jurisdiction to use this Game. By using the Game, you confirm that you meet these age requirements.
-
-    Registration and Accounts:
-    You may need to create an account to access certain features of the Game. You agree to provide accurate and complete information during the registration process and to update such information to keep it accurate and current.
-
-    Gameplay:
-    The Game is intended for entertainment purposes only. You understand and agree that you are solely responsible for any losses or damages incurred while playing the Game. We are not responsible for any gambling addiction or related issues.
-
-    Fair Play:
-    Cheating, hacking, or any form of unfair play is strictly prohibited. We reserve the right to terminate your account and take legal action if we suspect any fraudulent or unethical behavior.
-
-    Virtual Currency:
-    The Game may use virtual currency. Virtual currency has no real-world value and cannot be exchanged for real money or other items of value outside the Game.
-
-    In-App Purchases:
-    The Game may offer in-app purchases. You agree to pay all fees and applicable taxes incurred by you or anyone using your account. In-app purchases are non-refundable.
-
-    Intellectual Property:
-    All content, trademarks, and other intellectual property rights related to the Game are the property of ChipioloCorp. You may not use, reproduce, or distribute any content from the Game without our prior written consent.
-
-    Privacy:
-    We collect, use, and disclose personal information in accordance with our Privacy Policy. By using the Game, you consent to such collection, use, and disclosure.
-
-    Termination:
-    We reserve the right to terminate or suspend your access to the Game without prior notice for any reason, including violation of these Terms.
-
-    Changes to Terms:
-    We reserve the right to update or change these Terms at any time. Your continued use of the Game after the posting of any changes constitutes acceptance of those changes.
-
-    Contact Information:
-    If you have any questions or concerns about these Terms, please contact us at chipiolo@gmail.com.
-
-By using the Mobile Poker Game, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</string>
+    <string name="conditions">Términos y Condiciones y Política de Privacidad</string>
+    <string name="password_conditions">"Tu contraseña es muy débil"</string>
+    <string name="passwords_different">Las contraseñas no coinciden</string>
+    <string name="empty"></string>
+    <string name="conditions_text">
+        Última actualización: 23/11/2023\nLee cuidadosamente estos Términos y Condiciones ("Términos") antes de utilizar el Juego de Chipiolo (el "Juego") operado por ChipioloCorp ("nosotros", "nos" o "nuestro"). Al acceder o utilizar el Juego, aceptas quedar sujeto a estos Términos. Si no estás de acuerdo con alguna parte de estos Términos, no puedes acceder ni utilizar el Juego.\n\n
+\tAceptación de los Términos:\nAl descargar, instalar o utilizar el Juego, aceptas estos Términos y nuestra Política de Privacidad. Si no estás de acuerdo con estos Términos, por favor, no uses el Juego.\n\n
+\tRestricción de Edad:\nDebes tener al menos 18 años de edad o la edad legal para el juego en tu jurisdicción para usar este Juego. Al usar el Juego, confirmas que cumples con estos requisitos de edad.\n\n
+\tRegistro y Cuentas:\nEs posible que necesites crear una cuenta para acceder a ciertas características del Juego. Aceptas proporcionar información precisa y completa durante el proceso de registro y actualizar dicha información para mantenerla precisa y actualizada.\n\n
+\tJugabilidad:\nEl Juego está destinado únicamente con fines de entretenimiento. Comprendes y aceptas que eres el único responsable de cualquier pérdida o daño incurrido mientras juegas al Juego. No nos hacemos responsables de cualquier adicción al juego o problemas relacionados.\n\n
+\tJuego Limpio:\nEl fraude, el pirateo o cualquier forma de juego injusto está estrictamente prohibido. Nos reservamos el derecho de cerrar tu cuenta y emprender acciones legales si sospechamos de cualquier comportamiento fraudulento o poco ético.\n\n
+\tVirtual:\nEl Juego puede usar moneda virtual. La moneda virtual no tiene valor en el mundo real y no puede ser intercambiada por dinero real ni otros artículos de valor fuera del Juego.\n\n
+\tCompras en la Aplicación:\nEl Juego puede ofrecer compras dentro de la aplicación. Aceptas pagar todas las tarifas e impuestos aplicables incurridos por ti o cualquier persona que use tu cuenta. Las compras dentro de la aplicación no son reembolsables.\n\n
+\tPropiedad Intelectual:\nTodo el contenido, marcas comerciales y otros derechos de propiedad intelectual relacionados con el Juego son propiedad de ChipioloCorp. No puedes usar, reproducir o distribuir ningún contenido del Juego sin nuestro consentimiento por escrito previo.\n\n
+\tPrivacidad:\nRecopilamos, utilizamos y divulgamos información personal de acuerdo con nuestra Política de Privacidad. Al usar el Juego, consientes dicha recopilación, uso y divulgación.\n\n
+\tTerminación:\nNos reservamos el derecho de terminar o suspender tu acceso al Juego sin previo aviso por cualquier motivo, incluida la violación de estos Términos.\n\n
+\tCambios en los Términos:\nNos reservamos el derecho de actualizar o cambiar estos Términos en cualquier momento. Tu uso continuado del Juego después de la publicación de cualquier cambio constituye la aceptación de esos cambios.\n\n
+\tInformación de Contacto:\nSi tienes alguna pregunta o inquietud sobre estos Términos, contáctanos en chipiolo@gmail.com.\n\nAl utilizar el Juego de Chipiolo, reconoces que has leído, comprendido y aceptas quedar sujeto a estos Términos y Condiciones y Política de Privacidad.
+</string>
 </resources>
