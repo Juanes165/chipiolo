@@ -30,22 +30,8 @@ class Bot(val name: String, cards: List<Card>) {
 
         val pickedCard = allCards[0]
         this.cards.add(pickedCard)
-//        allCards.removeAt(0)
+
         return dropLeastFavorableCard()
-    }
-
-
-
-    // tirar carta
-    fun dropCard(): Card {
-        val droppedCard = this.cards[0]
-        this.cards.removeAt(0)
-        return droppedCard
-    }
-
-    // plantar
-    fun plant() {
-        this.isPlanted = true
     }
 
 

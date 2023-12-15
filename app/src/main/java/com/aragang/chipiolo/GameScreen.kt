@@ -86,6 +86,16 @@ fun GameScreen() {
         mutableStateOf(Data.cardList.shuffled())
     }
 
+    // cartas que se van descartando
+    var cardTrash by remember {
+        mutableStateOf(listOf<Card>())
+    }
+
+    // si no hay cartas en la lista de cartas disponibles se vuelve a mezclar
+    if (allCards.isEmpty()) {
+        allCards = cardTrash.shuffled()
+    }
+
     // bots
     var bot1cards by remember { mutableStateOf(allCards.take(3)) }
     var bot2cards by remember { mutableStateOf(allCards.drop(3).take(3)) }
@@ -95,7 +105,7 @@ fun GameScreen() {
     var userCards by remember { mutableStateOf(allCards.drop(9).take(3)) }
 
     // delete card taks of the allCards list
-    
+
 
     // Puntaje inicial del aragang
     var userScore = getUserScores(userCards) as MutableList<Int>
@@ -113,11 +123,6 @@ fun GameScreen() {
     // cartas en la mesa
     var tableCard by remember { mutableStateOf(Card(53, 0, "", R.drawable.card_back)) }
     var droppedCard by remember { mutableStateOf(allCards.drop(12).take(1)[0]) }
-
-    var cardTrash by remember {
-        mutableStateOf(droppedCard)
-    }
-
 
     // NO SE POR QUE ESTA LINEA ME DA PROBLEMAS PERO SI LA PONGO NO FUNCIONA EL CODIGO
     // NO ENTIENDO KOTLIN ODIO MI VIDA ESTE ERROR ME DEMORE 1 HORA EN SOLUCIONAR
@@ -145,7 +150,7 @@ fun GameScreen() {
     var planted by remember { mutableStateOf(false) }
 
     println("canPlant: $canPlant")
-
+    println("cardsTrash: $cardTrash")
 
     // imprimir cartas pa tin
 //    bot1.printCards()
@@ -179,8 +184,11 @@ fun GameScreen() {
 
 
                 val dropCardLessF = bot1.pickCard(allCards.toMutableList())
+                allCards = allCards.drop(1)
+                Log.e("Numero cartas Bot1", droppedCard.toString())
 
-                if(droppedCard != null) {
+                if(dropCardLessF != null) {
+                    cardTrash = cardTrash.plus(droppedCard)
                     droppedCard = dropCardLessF!!
                     Log.d("dropped card", dropCardLessF!!.toString())
 
@@ -211,9 +219,13 @@ fun GameScreen() {
 //            bot2.pickCard(allCards.toMutableList())
 //            bot2.dropCard()
                 val dropCardLessF = bot2.pickCard(allCards.toMutableList())
+                allCards = allCards.drop(1)
+                Log.e("Numero cartas Bot2", droppedCard.toString())
 
-                if(droppedCard != null) {
+                if(dropCardLessF != null) {
+                    cardTrash = cardTrash.plus(droppedCard)
                     droppedCard = dropCardLessF!!
+
                     Log.d("dropped card", dropCardLessF!!.toString())
 
 
@@ -243,8 +255,11 @@ fun GameScreen() {
 //            bot3.dropCard()
 
                 val dropCardLessF = bot3.pickCard(allCards.toMutableList())
+                allCards = allCards.drop(1)
+                Log.e("Numero cartas Bot3", droppedCard.toString())
 
-                if(droppedCard != null) {
+                if(dropCardLessF != null) {
+                    cardTrash = cardTrash.plus(droppedCard)
                     droppedCard = dropCardLessF!!
                     Log.d("dropped card", dropCardLessF!!.toString())
 
@@ -475,6 +490,7 @@ fun GameScreen() {
                 // =============== PEDIR CARTA ===============
                 Button(
                     onClick = {
+                        cardTrash = cardTrash.plus(droppedCard)
                         droppedCard = allCards[0]
                         allCards = allCards.drop(1)
                         println(allCards.size)
