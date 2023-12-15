@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "first_screen") {
+                    NavHost(navController = navController, startDestination = "results") {
 
                         // FIRST SCREEN - LOGO CHIPIOLO
                         composable("first_screen") {
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                             FirstScreen()
                             // Revisar si esta logeado y redirigir
                             LaunchedEffect(key1 = Unit) {
-                                if(googleAuthUiClient.getSignedInUser() != null) {
+                                if (googleAuthUiClient.getSignedInUser() != null) {
                                     navController.navigate("home")
                                 } else {
                                     navController.navigate("login_screen")
@@ -78,9 +78,9 @@ class MainActivity : ComponentActivity() {
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             HomeScreen(
-                                onProfile = {navController.navigate("profile_home")},
-                                onSinglePlayer = {navController.navigate("game")},
-                                onMultiPlayer = {navController.navigate("game")},
+                                onProfile = { navController.navigate("profile_home") },
+                                onSinglePlayer = { navController.navigate("game") },
+                                onMultiPlayer = { navController.navigate("game") },
                             )
                         }
 
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
-                                onProfile = {navController.navigate("profile")},
+                                onProfile = { navController.navigate("profile") },
                             )
                             //ProfileHome()
                         }
@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // PANTALLA DE LOGIN
-                        composable("login_screen"){
+                        composable("login_screen") {
                             LoginScreen(
                                 client = googleAuthUiClient,
                                 onSuccess = {
@@ -150,7 +150,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // PANTALLA DE REGISTRO
-                        composable("create_user"){
+                        composable("create_user") {
                             CreateUserScreen(
                                 client = googleAuthUiClient,
                                 onRegisterSuccess = {
@@ -205,7 +205,7 @@ class MainActivity : ComponentActivity() {
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LaunchedEffect(key1 = state.isSignInSuccessful) {
-                                if(state.isSignInSuccessful) {
+                                if (state.isSignInSuccessful) {
                                     Toast.makeText(
                                         applicationContext,
                                         "Sign in successful",
@@ -242,6 +242,37 @@ class MainActivity : ComponentActivity() {
                         // GAME SCREEN - JUEGO
                         composable("game") {
                             GameScreen()
+                        }
+
+                        // PANTALLA DE RESULTADOS
+                        composable("results") {
+                            ResultsScreen(
+                                listOf(
+                                    Card(1, 1, "Hearts", R.drawable.corazon_card_1),
+                                    Card(2, 2, "Hearts", R.drawable.corazon_card_2),
+                                    Card(3, 3, "Hearts", R.drawable.corazon_card_3),
+                                    Card(4, 4, "Hearts", R.drawable.corazon_card_4)
+                                ),
+                                listOf(
+                                    Card(1, 1, "Spades", R.drawable.pica_card_1),
+                                    Card(2, 2, "Spades", R.drawable.pica_card_2),
+                                    Card(3, 3, "Spades", R.drawable.pica_card_3),
+                                    Card(4, 4, "Spades", R.drawable.pica_card_4)
+                                ),
+                                listOf(
+                                    Card(1, 1, "Diamonds", R.drawable.diamante_card_1),
+                                    Card(2, 2, "Diamonds", R.drawable.diamante_card_2),
+                                    Card(3, 3, "Diamonds", R.drawable.diamante_card_3),
+                                    Card(4, 4, "Diamonds", R.drawable.diamante_card_4)
+                                ),
+                                listOf(
+                                    Card(1, 1, "Clubs", R.drawable.trebol_card_1),
+                                    Card(2, 2, "Clubs", R.drawable.trebol_card_2),
+                                    Card(3, 3, "Clubs", R.drawable.trebol_card_3),
+                                    Card(4, 4, "Clubs", R.drawable.trebol_card_4)
+                                ),
+                                plantedPlayer = 2,
+                            )
                         }
                     }
                 }
