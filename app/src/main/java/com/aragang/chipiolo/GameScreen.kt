@@ -81,6 +81,7 @@ fun GameScreen() {
         mutableListOf<Card>()
     }
 
+
 //    bots
 
     val bot1 = remember { Bot("Chostoy", allCards.value.take(3)) }
@@ -90,6 +91,18 @@ fun GameScreen() {
 
 //    aqui se elimina las cartas asinadas de la lista de cartas disponibles
     allCards.value = allCards.value.drop(12)
+
+// Puntaje inicial del aragang
+    val userScore = remember { mutableStateOf(userCards.value.sumOf { it.value }) }
+
+    //    imprimir cartas pa tin
+    bot1.printCards()
+    bot2.printCards()
+    bot3.printCards()
+    println("user cards:")
+    userCards.value.forEach { card ->
+        println(card)
+    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -126,6 +139,48 @@ fun GameScreen() {
                 .zIndex((droppedCards.size + cards.value.size).toFloat())
         )
 
+        //       User (abajo)
+        userCards.value.forEachIndexed { index, card ->
+            CardItem(
+                card = card,
+                index = index,
+                onCardDropped = { droppedCard ->
+                    droppedCards.add(droppedCard)
+                    userScore.value -= droppedCard.value
+                    userScore.value = max(0, userScore.value)
+                },
+                transformOrigin = TransformOrigin(0f, 1f),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(x = 60.dp, y = (-100).dp)
+                    .then(
+                        if (droppedCards.contains(card)) {
+                            Modifier
+                                .zIndex(
+                                    droppedCards
+                                        .indexOf(card)
+                                        .toFloat()
+                                )
+                        } else {
+                            Modifier
+                                .zIndex((droppedCards.size + index).toFloat())
+                        }
+                    )
+            )
+        }
+
+        // Puntuacion del aragang
+        Text(
+            text = "Score: ${userScore.value}",
+            color = Color.White,
+            fontSize = 20.sp,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .offset(16.dp)
+
+        )
+
+
 //        Data.cardList.indices.forEach { index ->
 //            if(index < 3){  // LIMITE LAS CARTAS A 3 BOCA ABAJO
 //                CardItem(
@@ -142,46 +197,46 @@ fun GameScreen() {
 //        }
 
 
-        cards.value.forEachIndexed { index, card ->
-            key(card.id) {
-                CardItem(
-                    card = card,
-                    index = index,
-                    transformOrigin = TransformOrigin(0f, 1f),
-                    nonDroppedCardsSize = cards.value.size - droppedCards.size,
-                    activeCard = activeCard.value,
-                    cardsSpreadDegree = cardsSpreadDegree.value,
-                    isDropped = droppedCards.contains(card),
-                    onCardDropped = { droppedCard ->
-                        droppedCards.add(droppedCard)
-                    },
-                    setActiveCard = { activeCard.value = it },
-                    getTargetOffset = {
-                        val width = 50f * droppedCards.size
-                        Offset(
-                            x = width,
-                            y = with(density) { maxHeight.toPx() / 2 } - 450f,
-                        )
-                    },
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .offset(x = 60.dp, y = (-100).dp)
-                        .then(
-                            if (droppedCards.contains(card)) {
-                                Modifier
-                                    .zIndex(
-                                        droppedCards
-                                            .indexOf(card)
-                                            .toFloat()
-                                    )
-                            } else {
-                                Modifier
-                                    .zIndex((droppedCards.size + index).toFloat())
-                            }
-                        )
-                )
-            }
-        }
+//        cards.value.forEachIndexed { index, card ->
+//            key(card.id) {
+//                CardItem(
+//                    card = card,
+//                    index = index,
+//                    transformOrigin = TransformOrigin(0f, 1f),
+//                    nonDroppedCardsSize = cards.value.size - droppedCards.size,
+//                    activeCard = activeCard.value,
+//                    cardsSpreadDegree = cardsSpreadDegree.value,
+//                    isDropped = droppedCards.contains(card),
+//                    onCardDropped = { droppedCard ->
+//                        droppedCards.add(droppedCard)
+//                    },
+//                    setActiveCard = { activeCard.value = it },
+//                    getTargetOffset = {
+//                        val width = 50f * droppedCards.size
+//                        Offset(
+//                            x = width,
+//                            y = with(density) { maxHeight.toPx() / 2 } - 450f,
+//                        )
+//                    },
+//                    modifier = Modifier
+//                        .align(Alignment.BottomCenter)
+//                        .offset(x = 60.dp, y = (-100).dp)
+//                        .then(
+//                            if (droppedCards.contains(card)) {
+//                                Modifier
+//                                    .zIndex(
+//                                        droppedCards
+//                                            .indexOf(card)
+//                                            .toFloat()
+//                                    )
+//                            } else {
+//                                Modifier
+//                                    .zIndex((droppedCards.size + index).toFloat())
+//                            }
+//                        )
+//                )
+//            }
+//        }
 
         PlayerHand(
             cardsSpreadDegree = cardsSpreadDegree,
@@ -283,6 +338,7 @@ fun CardItem(
         mutableStateOf(Offset.Zero)
     }
 
+    // Ver cartas del usuario
     Image(
         painter = painterResource(id = card.imageRes),
         contentDescription = "Card ${card.id}",
