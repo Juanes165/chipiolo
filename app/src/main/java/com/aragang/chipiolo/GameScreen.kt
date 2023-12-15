@@ -1,5 +1,6 @@
 package com.aragang.chipiolo
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -33,6 +34,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -63,9 +65,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.aragang.chipiolo.ui.theme.MyApplicationTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.random.Random
 
 @Composable
 fun GameScreen() {
@@ -90,8 +94,16 @@ fun GameScreen() {
     // jugador
     var userCards by remember { mutableStateOf(allCards.drop(9).take(3)) }
 
+    // delete card taks of the allCards list
+    
+
     // Puntaje inicial del aragang
     var userScore = getUserScores(userCards) as MutableList<Int>
+
+    // instancias para bots
+    var bot1 = Bot("KPEOTA", bot1cards)
+    var bot2 = Bot("Salsatoru", bot2cards)
+    var bot3 = Bot("Migueeeel", bot3cards)
 
     // puntajes de los bots
     var bot1Score = getUserScores(bot1cards) as MutableList<Int>
@@ -101,6 +113,10 @@ fun GameScreen() {
     // cartas en la mesa
     var tableCard by remember { mutableStateOf(Card(53, 0, "", R.drawable.card_back)) }
     var droppedCard by remember { mutableStateOf(allCards.drop(12).take(1)[0]) }
+
+    var cardTrash by remember {
+        mutableStateOf(droppedCard)
+    }
 
 
     // NO SE POR QUE ESTA LINEA ME DA PROBLEMAS PERO SI LA PONGO NO FUNCIONA EL CODIGO
@@ -116,7 +132,7 @@ fun GameScreen() {
 
     // VARIABLES IMPORTANTES PARA EL JUEGO
     // Turno
-    var turn by remember { mutableIntStateOf(1) }
+    var turn = remember { mutableStateOf(1) }
 
     // Se pidio carta
     var cardPicked by remember { mutableStateOf(false) }
@@ -136,36 +152,116 @@ fun GameScreen() {
 //    bot2.printCards()
 //    bot3.printCards()
 //    println("user cards:")
-//    userCards.value.forEach { card ->
+//    userCards.forEach { card ->
 //        println(card)
 //    }
 
     // CAMBIOS DE TURNO
-    when (turn) {
+    when (turn.value) {
         1 -> {
             // Turno del usuario
             println("Turno del usuario")
             println(allCards.size)
+
         }
 
         2 -> {
             // Turno del bot 1
-            println("Turno del bot 1")
-            turn = 3
+            var contador = 0
+            val blockTime = Random.nextInt(1, 2)
+            LaunchedEffect(turn.value) {
+                while (contador < blockTime) {
+                    delay(1000)
+                    contador++
+                }
+                println("Turno del bot 1")
+                //bot1.pickCard(allCards.toMutableList())
+
+
+                val dropCardLessF = bot1.pickCard(allCards.toMutableList())
+
+                if(droppedCard != null) {
+                    droppedCard = dropCardLessF!!
+                    Log.d("dropped card", dropCardLessF!!.toString())
+
+
+                    println("KPOETA cards DESPUES :")
+                    bot1.cards.forEach { card ->
+                        println(card)
+                    }
+
+                    turn.value = 3
+                } else {
+                    Log.e("ME PLANTO", "KPEOTA SE PLANTO")
+                }
+            }
         }
 
         3 -> {
             // Turno del bot 2
-            println("Turno del bot 2")
-            turn = 4
+
+            var contador = 0
+            val blockTime = Random.nextInt(1, 2)
+            LaunchedEffect(turn.value) {
+                while (contador < blockTime) {
+                    delay(1000)
+                    contador++
+                }
+                println("Turno del bot 2")
+//            bot2.pickCard(allCards.toMutableList())
+//            bot2.dropCard()
+                val dropCardLessF = bot2.pickCard(allCards.toMutableList())
+
+                if(droppedCard != null) {
+                    droppedCard = dropCardLessF!!
+                    Log.d("dropped card", dropCardLessF!!.toString())
+
+
+                    println("SATORU cards DESPUES :")
+                    bot1.cards.forEach { card ->
+                        println(card)
+                    }
+
+                    turn.value = 4
+                } else {
+                    Log.d("ME PLANTO", "SATORU SE PLANTO")
+                }
+            }
         }
 
         4 -> {
             // Turno del bot 3
-            println("Turno del bot 3")
-            cardPicked = false
-            cardDropped = false
-            turn = 1
+            var contador = 0
+            val blockTime = Random.nextInt(1, 2)
+            LaunchedEffect(turn.value) {
+                while (contador < blockTime) {
+                    delay(1000)
+                    contador++
+                }
+                println("Turno del bot 3")
+//            bot3.pickCard(allCards.toMutableList())
+//            bot3.dropCard()
+
+                val dropCardLessF = bot3.pickCard(allCards.toMutableList())
+
+                if(droppedCard != null) {
+                    droppedCard = dropCardLessF!!
+                    Log.d("dropped card", dropCardLessF!!.toString())
+
+
+                    println("SATORU cards DESPUES :")
+                    bot1.cards.forEach { card ->
+                        println(card)
+                    }
+
+                    cardPicked = false
+                    cardDropped = false
+                    turn.value = 1
+                } else {
+                    Log.d("ME PLANTO", "SATORU SE PLANTO")
+                }
+
+            }
         }
     }
 
@@ -195,7 +291,7 @@ fun GameScreen() {
             verticalAlignment = Alignment.Bottom
         ) {
             BotView(name = "KPEOTA", profilePic = R.drawable.avatar3)
-            Column (
+            Column(
                 modifier = Modifier
                     .padding(bottom = 50.dp)
 
@@ -308,6 +404,7 @@ fun GameScreen() {
                                 userCards = userCards.drop(1)
                                 cardPicked = true
                                 userScore = getUserScores(userCards) as MutableList<Int>
+                                turn.value = 2
                             }
                         }
                 )
@@ -329,6 +426,7 @@ fun GameScreen() {
                                     .drop(2)
                                 cardPicked = true
                                 userScore = getUserScores(userCards) as MutableList<Int>
+                                turn.value = 2
                             }
                         }
                 )
@@ -355,6 +453,7 @@ fun GameScreen() {
                                     .drop(3)
                                 cardPicked = true
                                 userScore = getUserScores(userCards) as MutableList<Int>
+                                turn.value = 2
                             }
                         }
                 )
@@ -365,6 +464,7 @@ fun GameScreen() {
         // ================================ BOTONES DE ABAJO ======================================
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .fillMaxWidth()
                 .padding(bottom = 10.dp)
                 .align(Alignment.BottomCenter),
@@ -439,7 +539,7 @@ fun GameScreen() {
                 Button(
                     onClick = {
                         canPlant = canUserPlant(userScore)
-                        turn = 2
+                        turn.value = 2
                     }, colors = ButtonDefaults.buttonColors(
                         containerColor = colorDarkGray,
                         contentColor = colorWhite
@@ -509,9 +609,9 @@ fun canUserPlant(
 // VISTA DEL BOT
 @Composable
 fun BotView(name: String, profilePic: Int) {
-    Column (
+    Column(
         verticalArrangement = Arrangement.Center,
-    ){
+    ) {
         Text(
             text = name,
             color = Color.White,
