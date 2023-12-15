@@ -14,11 +14,17 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.key
@@ -42,6 +48,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.aragang.chipiolo.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
@@ -54,8 +61,16 @@ fun GameScreen() {
     val density = LocalDensity.current
 
     val cards = remember {
-        mutableStateOf(Data.cardList)
+        mutableStateOf(Data.cardList.take(3))
     }
+
+//    mezclar las cartas y las guarda en una lista
+    val allCards = remember {
+        mutableStateOf(Data.cardList.shuffled())
+    }
+
+
+
     val cardsSpreadDegree = remember {
         mutableStateOf(10f)
     }
@@ -66,6 +81,16 @@ fun GameScreen() {
         mutableListOf<Card>()
     }
 
+//    bots
+
+    val bot1 = remember { Bot("Chostoy", allCards.value.take(3)) }
+    val bot2 = remember { Bot("Satoru", allCards.value.drop(3).take(3)) }
+    val bot3 = remember { Bot("IronWolf", allCards.value.drop(6).take(3)) }
+    val userCards = remember { mutableStateOf(allCards.value.drop(9).take(3)) }
+
+//    aqui se elimina las cartas asinadas de la lista de cartas disponibles
+    allCards.value = allCards.value.drop(12)
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -74,18 +99,48 @@ fun GameScreen() {
             )
     ) {
 
-        Data.cardList.indices.forEach { index ->
-            CardItem(
-                card = Card(id = index, imageRes = R.drawable.card_back),
-                index = index,
-                nonDroppedCardsSize = cards.value.size,
-                transformOrigin = TransformOrigin(1f, 0f),
-                enableDrag = false,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(x = (-60).dp, y = 100.dp)
-            )
-        }
+//        Bot 1 (izquierda)
+        BotView(
+            bot = bot1,
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .offset(x = 20.dp, y = (-10).dp)
+                .zIndex((droppedCards.size + cards.value.size).toFloat())
+        )
+
+//        Bot 2 (derecha)
+        BotView(
+            bot = bot2,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .offset(x = (-20).dp, y = (-10).dp)
+                .zIndex((droppedCards.size + cards.value.size).toFloat())
+        )
+
+//        Bot 3 (arriba)
+        BotView(
+            bot = bot3,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(x = (-20).dp, y = 100.dp)
+                .zIndex((droppedCards.size + cards.value.size).toFloat())
+        )
+
+//        Data.cardList.indices.forEach { index ->
+//            if(index < 3){  // LIMITE LAS CARTAS A 3 BOCA ABAJO
+//                CardItem(
+//                    card = Card(id = index, imageRes = R.drawable.card_back),
+//                    index = index,
+//                    nonDroppedCardsSize = cards.value.size,
+//                    transformOrigin = TransformOrigin(1f, 0f),
+//                    enableDrag = false,
+//                    modifier = Modifier
+//                        .align(Alignment.TopCenter)
+//                        .offset(x = (-60).dp, y = 100.dp)
+//                )
+//            }
+//        }
+
 
         cards.value.forEachIndexed { index, card ->
             key(card.id) {
@@ -150,6 +205,39 @@ fun GameScreen() {
 
 }
 
+// VISTA DEL BOT
+@Composable
+fun BotView(bot: Bot, modifier: Modifier = Modifier) {
+    if (bot.name == "IronWolf") { // Si es el bot 3
+        Row(modifier = modifier) {
+            Text(bot.name, color = Color.White, fontSize = 20.sp)
+
+            bot.cards.forEach { card ->
+                Image(
+                    painter = painterResource(id = R.drawable.card_back),
+                    contentDescription = "Card back",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(2.dp)
+                )
+            }
+        }
+    } else {
+        Column(modifier = modifier) {
+            Text(bot.name, color = Color.White, fontSize = 20.sp)
+
+            bot.cards.forEach { card ->
+                Image(
+                    painter = painterResource(id = R.drawable.card_back),
+                    contentDescription = "Card back",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(2.dp)
+                )
+            }
+        }
+    }
+}
 @Composable
 fun CardItem(
     card: Card,
