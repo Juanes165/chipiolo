@@ -72,7 +72,9 @@ import kotlin.math.min
 import kotlin.random.Random
 
 @Composable
-fun GameScreen() {
+fun GameScreen(
+    goToMenu: () -> Unit = {}
+) {
 
     // colores
     val colorGreenPrimary = colorResource(id = R.color.green_primary)
@@ -148,6 +150,7 @@ fun GameScreen() {
     // Se planta
     var canPlant by remember { mutableStateOf(canUserPlant(userScore)) }
     var planted by remember { mutableStateOf(false) }
+    var giveCards by remember { mutableStateOf(false) }
 
     println("canPlant: $canPlant")
     println("cardsTrash: $cardTrash")
@@ -187,7 +190,7 @@ fun GameScreen() {
                 allCards = allCards.drop(1)
                 Log.e("Numero cartas Bot1", droppedCard.toString())
 
-                if(dropCardLessF != null) {
+                if (dropCardLessF != null) {
                     cardTrash = cardTrash.plus(droppedCard)
                     droppedCard = dropCardLessF!!
                     Log.d("dropped card", dropCardLessF!!.toString())
@@ -222,7 +225,7 @@ fun GameScreen() {
                 allCards = allCards.drop(1)
                 Log.e("Numero cartas Bot2", droppedCard.toString())
 
-                if(dropCardLessF != null) {
+                if (dropCardLessF != null) {
                     cardTrash = cardTrash.plus(droppedCard)
                     droppedCard = dropCardLessF!!
 
@@ -258,7 +261,7 @@ fun GameScreen() {
                 allCards = allCards.drop(1)
                 Log.e("Numero cartas Bot3", droppedCard.toString())
 
-                if(dropCardLessF != null) {
+                if (dropCardLessF != null) {
                     cardTrash = cardTrash.plus(droppedCard)
                     droppedCard = dropCardLessF!!
                     Log.d("dropped card", dropCardLessF!!.toString())
@@ -280,55 +283,67 @@ fun GameScreen() {
         }
     }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color(0xFF266B35)
-            )
-    ) {
+    if (planted) {
 
-        Text(
-            text = "Turno: $turn",
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .offset(16.dp)
+        if (!giveCards) {
+            println("planted")
+            println("bot1 cards: ${bot1.cards}")
+//            bot1cards = bot1.cards.plus(allCards[0])
+//            bot2cards = bot2.cards.plus(allCards[1])
+//            bot3cards = bot3.cards.plus(allCards[2])
+//            allCards = allCards.drop(3)
+            giveCards = true
+        }
+        ResultsScreen(
+            bot1 = bot1,
+            bot2 = bot2,
+            bot3 = bot3,
+            userCards = userCards,
+            plantedPlayer = 1,
+            goToMenu = goToMenu
         )
+    } else {
 
-        Row(
+        BoxWithConstraints(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 25.dp)
-                .align(Alignment.TopCenter),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.Bottom
+                .fillMaxSize()
+                .background(
+                    color = Color(0xFF266B35)
+                )
         ) {
-            BotView(name = "KPEOTA", profilePic = R.drawable.avatar3)
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 50.dp)
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 25.dp)
+                    .align(Alignment.TopCenter),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Bottom
             ) {
-                BotView(name = "Salsatoru", profilePic = R.drawable.avatar4)
+                BotView(name = "KPEOTA", profilePic = R.drawable.avatar3)
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 50.dp)
+
+                ) {
+                    BotView(name = "Salsatoru", profilePic = R.drawable.avatar4)
+                }
+
+                BotView(name = "Migueeeel", profilePic = R.drawable.avatar5)
             }
 
-            BotView(name = "Migueeeel", profilePic = R.drawable.avatar5)
-        }
 
-
-        // ================================== ANUNCIOS ======================================
-        if (planted) {
-            Text(
-                text = "Te plantaste",
-                color = Color.White,
-                fontSize = 32.sp,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 200.dp)
-            )
-        }
+            // ================================== ANUNCIOS ======================================
+            if (planted) {
+                Text(
+                    text = "Te plantaste",
+                    color = Color.White,
+                    fontSize = 32.sp,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 200.dp)
+                )
+            }
 //        Text(
 //            text = "Selecciona una carta",
 //            color = Color.White,
@@ -339,240 +354,241 @@ fun GameScreen() {
 //        )
 
 
-        // ============================ CARTA EN LA MESA ======================================
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 150.dp)
-                .align(Alignment.Center),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Image(
-                painter = painterResource(droppedCard.imageRes),
-                contentDescription = "Card back",
+            // ============================ CARTA EN LA MESA ======================================
+            Row(
                 modifier = Modifier
-                    .size(170.dp)
-                    .padding(start = 40.dp)
-            )
-            Image(
-                painter = painterResource(tableCard.imageRes),
-                contentDescription = "Card back",
-                modifier = Modifier
-                    .size(170.dp)
-                    .padding(end = 40.dp)
-            )
-        }
-
-
-        // ================================== PUNTUACION =========================================
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 320.dp)
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            if (userScore[0] != 0) {
-                SuitPoints(suit = R.drawable.logo_trebol, points = userScore[0])
-            }
-            if (userScore[1] != 0) {
-                SuitPoints(suit = R.drawable.logo_diamante, points = userScore[1])
-            }
-            if (userScore[2] != 0) {
-                SuitPoints(suit = R.drawable.logo_corazon, points = userScore[2])
-            }
-            if (userScore[3] != 0) {
-                SuitPoints(suit = R.drawable.logo_pica, points = userScore[3])
-            }
-        }
-
-        // ============================ CARTAS DEL JUGADOR ======================================
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 100.dp)
-                .align(Alignment.BottomCenter),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.BottomCenter
+                    .fillMaxWidth()
+                    .padding(bottom = 150.dp)
+                    .align(Alignment.Center),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                // CARTA 1 (IZQUIERDA)
                 Image(
-                    painter = painterResource(id = userCards[0].imageRes),
-                    contentDescription = "Card 3",
+                    painter = painterResource(droppedCard.imageRes),
+                    contentDescription = "Card back",
                     modifier = Modifier
-                        //.align(Alignment.BottomCenter)
-                        .size(200.dp)
-                        .offset((-60).dp, (10).dp)
-                        .padding(horizontal = 30.dp)
-                        .zIndex(1f)
-                        .graphicsLayer {
-                            this.transformOrigin = transformOrigin
-                            rotationZ = -10f
-                        }
-                        .clickable {
-                            if (!cardDropped) {
-                                userCards = userCards.plus(droppedCard)
-                                droppedCard = userCards[0]
-                                userCards = userCards.drop(1)
-                                cardPicked = true
-                                userScore = getUserScores(userCards) as MutableList<Int>
-                                turn.value = 2
-                            }
-                        }
+                        .size(170.dp)
+                        .padding(start = 40.dp)
                 )
-
-                // CARTA 2 (CENTRO)
                 Image(
-                    painter = painterResource(id = userCards[1].imageRes),
-                    contentDescription = "Card 1",
+                    painter = painterResource(tableCard.imageRes),
+                    contentDescription = "Card back",
                     modifier = Modifier
-                        .size(200.dp)
-                        .zIndex(2f)
-                        .padding(horizontal = 30.dp)
-                        .clickable {
-                            if (!cardDropped) {
-                                userCards = userCards.plus(droppedCard)
-                                droppedCard = userCards[1]
-                                userCards = userCards
-                                    .plus(userCards[0])
-                                    .drop(2)
-                                cardPicked = true
-                                userScore = getUserScores(userCards) as MutableList<Int>
-                                turn.value = 2
-                            }
-                        }
+                        .size(170.dp)
+                        .padding(end = 40.dp)
                 )
-
-                // CARTA 3 (DERECHA)
-                Image(
-                    painter = painterResource(id = userCards[2].imageRes),
-                    contentDescription = "Card 2",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .offset(60.dp, (10).dp)
-                        .padding(horizontal = 30.dp)
-                        .zIndex(3f)
-                        .graphicsLayer {
-                            this.transformOrigin = transformOrigin
-                            rotationZ = 10f
-                        }
-                        .clickable {
-                            if (!cardDropped) {
-                                userCards = userCards.plus(droppedCard)
-                                droppedCard = userCards[2]
-                                userCards = userCards
-                                    .plus(userCards.take(2))
-                                    .drop(3)
-                                cardPicked = true
-                                userScore = getUserScores(userCards) as MutableList<Int>
-                                turn.value = 2
-                            }
-                        }
-                )
-
             }
-        }
 
-        // ================================ BOTONES DE ABAJO ======================================
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxWidth()
-                .padding(bottom = 10.dp)
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            if (!cardPicked) {
 
-                // =============== PEDIR CARTA ===============
-                Button(
-                    onClick = {
-                        cardTrash = cardTrash.plus(droppedCard)
-                        droppedCard = allCards[0]
-                        allCards = allCards.drop(1)
-                        println(allCards.size)
-                        cardPicked = true
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorDarkGray,
-                        contentColor = colorWhite
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    contentPadding = PaddingValues(
-                        bottom = 15.dp,
-                        top = 15.dp,
-                        start = 30.dp,
-                        end = 30.dp
-                    )
-                ) {
-                    Text(
-                        text = "Pedir carta",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+            // ================================== PUNTUACION =========================================
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 320.dp)
+                    .align(Alignment.BottomCenter),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (userScore[0] != 0) {
+                    SuitPoints(suit = R.drawable.logo_trebol, points = userScore[0])
                 }
-
-                // =============== PLANTARSE ===============
-                Button(
-                    onClick = {
-                        if (canPlant) {
-                            planted = true
-                            bot1cards = bot1cards.plus(allCards[0])
-                            bot1Score = getUserScores(bot1cards) as MutableList<Int>
-
-                            bot2cards = bot2cards.plus(allCards[1])
-                            bot2Score = getUserScores(bot2cards) as MutableList<Int>
-
-                            bot3cards = bot3cards.plus(allCards[2])
-                            bot3Score = getUserScores(bot3cards) as MutableList<Int>
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorDarkGray,
-                        contentColor = colorWhite
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    contentPadding = PaddingValues(
-                        bottom = 15.dp,
-                        top = 15.dp,
-                        start = 30.dp,
-                        end = 30.dp
-                    )
-                ) {
-                    Text(
-                        text = "Plantarse", color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                if (userScore[1] != 0) {
+                    SuitPoints(suit = R.drawable.logo_diamante, points = userScore[1])
                 }
-            } else {
+                if (userScore[2] != 0) {
+                    SuitPoints(suit = R.drawable.logo_corazon, points = userScore[2])
+                }
+                if (userScore[3] != 0) {
+                    SuitPoints(suit = R.drawable.logo_pica, points = userScore[3])
+                }
+            }
 
-                // =============== SEGUIR CON EL OTRO JUGADOR ===============
-                Button(
-                    onClick = {
-                        canPlant = canUserPlant(userScore)
-                        turn.value = 2
-                    }, colors = ButtonDefaults.buttonColors(
-                        containerColor = colorDarkGray,
-                        contentColor = colorWhite
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    contentPadding = PaddingValues(
-                        bottom = 15.dp,
-                        top = 15.dp,
-                        start = 30.dp,
-                        end = 30.dp
-                    )
+            // ============================ CARTAS DEL JUGADOR ======================================
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 100.dp)
+                    .align(Alignment.BottomCenter),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    Text(
-                        text = "Continuar", color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
+                    // CARTA 1 (IZQUIERDA)
+                    Image(
+                        painter = painterResource(id = userCards[0].imageRes),
+                        contentDescription = "Card 3",
+                        modifier = Modifier
+                            //.align(Alignment.BottomCenter)
+                            .size(200.dp)
+                            .offset((-60).dp, (10).dp)
+                            .padding(horizontal = 30.dp)
+                            .zIndex(1f)
+                            .graphicsLayer {
+                                this.transformOrigin = transformOrigin
+                                rotationZ = -10f
+                            }
+                            .clickable {
+                                if (!cardDropped) {
+                                    userCards = userCards.plus(droppedCard)
+                                    droppedCard = userCards[0]
+                                    userCards = userCards.drop(1)
+                                    cardPicked = true
+                                    userScore = getUserScores(userCards) as MutableList<Int>
+                                    //turn.value = 2
+                                }
+                            }
                     )
+
+                    // CARTA 2 (CENTRO)
+                    Image(
+                        painter = painterResource(id = userCards[1].imageRes),
+                        contentDescription = "Card 1",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .zIndex(2f)
+                            .padding(horizontal = 30.dp)
+                            .clickable {
+                                if (!cardDropped) {
+                                    userCards = userCards.plus(droppedCard)
+                                    droppedCard = userCards[1]
+                                    userCards = userCards
+                                        .plus(userCards[0])
+                                        .drop(2)
+                                    cardPicked = true
+                                    userScore = getUserScores(userCards) as MutableList<Int>
+                                    //turn.value = 2
+                                }
+                            }
+                    )
+
+                    // CARTA 3 (DERECHA)
+                    Image(
+                        painter = painterResource(id = userCards[2].imageRes),
+                        contentDescription = "Card 2",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .offset(60.dp, (10).dp)
+                            .padding(horizontal = 30.dp)
+                            .zIndex(3f)
+                            .graphicsLayer {
+                                this.transformOrigin = transformOrigin
+                                rotationZ = 10f
+                            }
+                            .clickable {
+                                if (!cardDropped) {
+                                    userCards = userCards.plus(droppedCard)
+                                    droppedCard = userCards[2]
+                                    userCards = userCards
+                                        .plus(userCards.take(2))
+                                        .drop(3)
+                                    cardPicked = true
+                                    userScore = getUserScores(userCards) as MutableList<Int>
+                                    //turn.value = 2
+                                }
+                            }
+                    )
+
+                }
+            }
+
+            // ================================ BOTONES DE ABAJO ======================================
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp)
+                    .align(Alignment.BottomCenter),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (!cardPicked) {
+
+                    // =============== PEDIR CARTA ===============
+                    Button(
+                        onClick = {
+                            cardTrash = cardTrash.plus(droppedCard)
+                            droppedCard = allCards[0]
+                            allCards = allCards.drop(1)
+                            println(allCards.size)
+                            cardPicked = true
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorDarkGray,
+                            contentColor = colorWhite
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                        contentPadding = PaddingValues(
+                            bottom = 15.dp,
+                            top = 15.dp,
+                            start = 30.dp,
+                            end = 30.dp
+                        )
+                    ) {
+                        Text(
+                            text = "Pedir carta",
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    // =============== PLANTARSE ===============
+                    Button(
+                        onClick = {
+                            if (canPlant) {
+                                planted = true
+                                bot1cards = bot1cards.plus(allCards[0])
+                                bot1Score = getUserScores(bot1cards) as MutableList<Int>
+
+                                bot2cards = bot2cards.plus(allCards[1])
+                                bot2Score = getUserScores(bot2cards) as MutableList<Int>
+
+                                bot3cards = bot3cards.plus(allCards[2])
+                                bot3Score = getUserScores(bot3cards) as MutableList<Int>
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorDarkGray,
+                            contentColor = colorWhite
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                        contentPadding = PaddingValues(
+                            bottom = 15.dp,
+                            top = 15.dp,
+                            start = 30.dp,
+                            end = 30.dp
+                        )
+                    ) {
+                        Text(
+                            text = "Plantarse", color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                } else {
+
+                    // =============== SEGUIR CON EL OTRO JUGADOR ===============
+                    Button(
+                        onClick = {
+                            canPlant = canUserPlant(userScore)
+                            turn.value = 2
+                        }, colors = ButtonDefaults.buttonColors(
+                            containerColor = colorDarkGray,
+                            contentColor = colorWhite
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                        contentPadding = PaddingValues(
+                            bottom = 15.dp,
+                            top = 15.dp,
+                            start = 30.dp,
+                            end = 30.dp
+                        )
+                    ) {
+                        Text(
+                            text = "Continuar", color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }
@@ -679,7 +695,7 @@ fun SuitPoints(
         Text(
             text = "$points",
             modifier = Modifier
-                .padding(end = 15.dp, top = 5.dp, bottom = 5.dp),
+                .padding(end = 20.dp, top = 5.dp, bottom = 5.dp),
             color = Color.Black,
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold

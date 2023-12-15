@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "results") {
+                    NavHost(navController = navController, startDestination = "first_screen") {
 
                         // FIRST SCREEN - LOGO CHIPIOLO
                         composable("first_screen") {
@@ -241,39 +241,28 @@ class MainActivity : ComponentActivity() {
 
                         // GAME SCREEN - JUEGO
                         composable("game") {
-                            GameScreen()
-                        }
-
-                        // PANTALLA DE RESULTADOS
-                        composable("results") {
-                            ResultsScreen(
-                                listOf(
-                                    Card(1, 1, "Hearts", R.drawable.corazon_card_1),
-                                    Card(2, 2, "Hearts", R.drawable.corazon_card_2),
-                                    Card(3, 3, "Hearts", R.drawable.corazon_card_3),
-                                    Card(4, 4, "Hearts", R.drawable.corazon_card_4)
-                                ),
-                                listOf(
-                                    Card(1, 1, "Spades", R.drawable.pica_card_1),
-                                    Card(2, 2, "Spades", R.drawable.pica_card_2),
-                                    Card(3, 3, "Spades", R.drawable.pica_card_3),
-                                    Card(4, 4, "Spades", R.drawable.pica_card_4)
-                                ),
-                                listOf(
-                                    Card(1, 1, "Diamonds", R.drawable.diamante_card_1),
-                                    Card(2, 2, "Diamonds", R.drawable.diamante_card_2),
-                                    Card(3, 3, "Diamonds", R.drawable.diamante_card_3),
-                                    Card(4, 4, "Diamonds", R.drawable.diamante_card_4)
-                                ),
-                                listOf(
-                                    Card(1, 1, "Clubs", R.drawable.trebol_card_1),
-                                    Card(2, 2, "Clubs", R.drawable.trebol_card_2),
-                                    Card(3, 3, "Clubs", R.drawable.trebol_card_3),
-                                    Card(4, 4, "Clubs", R.drawable.trebol_card_4)
-                                ),
-                                plantedPlayer = 2,
+                            GameScreen(
+                                goToMenu = {
+                                    navController.navigate("home")
+                                },
                             )
                         }
+
+//                        // PANTALLA DE RESULTADOS
+//                        composable("results/{bot1}/{bot2}/{bot3}/{userCards}/plantedPlayer") {
+//                            ResultsScreen(
+//                                bot1,
+//                                bot2,
+//                                bot3,
+//                                listOf(
+//                                    Card(1, 1, "Clubs", R.drawable.trebol_card_1),
+//                                    Card(2, 2, "Clubs", R.drawable.trebol_card_2),
+//                                    Card(3, 3, "Clubs", R.drawable.trebol_card_3),
+//                                    Card(4, 4, "Clubs", R.drawable.trebol_card_4)
+//                                ),
+//                                plantedPlayer = 2,
+//                            )
+//                        }
                     }
                 }
             }
