@@ -12,4 +12,15 @@ class GameScreenTest {
         assert(userScore2 == listOf<Int>(0,7,5,0))
         assert(userScore3 == listOf<Int>(0,7,15,11))
     }
+
+    @Test
+    fun getWinnerTest() {
+        val plant1 = canUserPlant(listOf<Int>(18,0,0,0))
+        val plant2 = canUserPlant(listOf<Int>(0,7,5,0))
+        val plant3 = canUserPlant(listOf<Int>(0,0,29,0))
+
+        assert(plant1 == false)
+        assert(plant2 == false)
+        assert(plant3 == true)
+    }
 }
