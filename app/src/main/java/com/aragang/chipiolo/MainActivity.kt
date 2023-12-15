@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
+
                     NavHost(navController = navController, startDestination = "first_screen") {
 
                         // FIRST SCREEN - LOGO CHIPIOLO
@@ -78,9 +79,9 @@ class MainActivity : ComponentActivity() {
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             HomeScreen(
-                                onProfile = { navController.navigate("profile_home") },
-                                onSinglePlayer = { navController.navigate("game") },
-                                onMultiPlayer = { navController.navigate("game") },
+                                onProfile = {navController.navigate("profile_home")},
+                                onSinglePlayer = {navController.navigate("game")},
+                                onMultiPlayer = {navController.navigate("online_game")},
                             )
                         }
 
@@ -89,12 +90,14 @@ class MainActivity : ComponentActivity() {
                             ProfileHome(
                                 viewModel = you_view,
                                 userData = googleAuthUiClient.getSignedInUser(),
-                                onProfile = { navController.navigate("profile") },
+                                onProfile = {navController.navigate("profile")},
                             )
                             //ProfileHome()
                         }
 
+
                         // PERFIL DEL USUARIO
+
                         composable("profile") {
                             ProfileScreen(
                                 userData = googleAuthUiClient.getSignedInUser(),
@@ -247,22 +250,9 @@ class MainActivity : ComponentActivity() {
                                 },
                             )
                         }
-
-//                        // PANTALLA DE RESULTADOS
-//                        composable("results/{bot1}/{bot2}/{bot3}/{userCards}/plantedPlayer") {
-//                            ResultsScreen(
-//                                bot1,
-//                                bot2,
-//                                bot3,
-//                                listOf(
-//                                    Card(1, 1, "Clubs", R.drawable.trebol_card_1),
-//                                    Card(2, 2, "Clubs", R.drawable.trebol_card_2),
-//                                    Card(3, 3, "Clubs", R.drawable.trebol_card_3),
-//                                    Card(4, 4, "Clubs", R.drawable.trebol_card_4)
-//                                ),
-//                                plantedPlayer = 2,
-//                            )
-//                        }
+                        composable("online_game") {
+                            OnlineGameScreen()
+                        }
                     }
                 }
             }

@@ -60,8 +60,12 @@ android {
 
 dependencies {
 
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-database")
+
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation("androidx.compose.ui:ui-test-junit4:1.4.1")
     // CAMERA
