@@ -113,9 +113,9 @@ fun GameScreen(
     var userScore = getUserScores(userCards) as MutableList<Int>
 
     // instancias para bots
-    var bot1 = Bot("KPEOTA", bot1cards)
-    var bot2 = Bot("Salsatoru", bot2cards)
-    var bot3 = Bot("Migueeeel", bot3cards)
+    var bot1 = Bot("Bot1", bot1cards)
+    var bot2 = Bot("Bot2", bot2cards)
+    var bot3 = Bot("Bot3", bot3cards)
 
     // puntajes de los bots
     var bot1Score = getUserScores(bot1cards) as MutableList<Int>
@@ -201,10 +201,11 @@ fun GameScreen(
                         println(card)
                     }
 
-                    turn.value = 3
+
                 } else {
                     Log.e("ME PLANTO", "KPEOTA SE PLANTO")
                 }
+                turn.value = 3
             }
         }
 
@@ -237,10 +238,11 @@ fun GameScreen(
                         println(card)
                     }
 
-                    turn.value = 4
+
                 } else {
                     Log.d("ME PLANTO", "SATORU SE PLANTO")
                 }
+                turn.value = 4
             }
         }
 
@@ -274,10 +276,11 @@ fun GameScreen(
 
                     cardPicked = false
                     cardDropped = false
-                    turn.value = 1
+
                 } else {
                     Log.d("ME PLANTO", "SATORU SE PLANTO")
                 }
+                turn.value = 1
 
             }
         }
