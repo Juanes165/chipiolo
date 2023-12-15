@@ -14,15 +14,24 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,9 +55,15 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.aragang.chipiolo.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
@@ -61,7 +76,15 @@ import com.google.firebase.database.*
 
 @Composable
 fun OnlineGameScreen() {
-    val playerName = remember{mutableStateOf("placeholder")}
+
+    val colorDarkGray = colorResource(id = R.color.dark_gray)
+    val colorLightGray = colorResource(id = R.color.light_gray)
+    val colorWhite = colorResource(id = R.color.white)
+    val colorGreenPrimary = colorResource(id = R.color.green_primary)
+    val colorBlack = colorResource(id = R.color.black)
+    val focusManager = LocalFocusManager.current
+
+    val playerName = remember{mutableStateOf("")}
     val roomId = remember{mutableStateOf("")}
     val loading = remember {
         mutableStateOf(false)
@@ -212,9 +235,71 @@ fun OnlineGameScreen() {
         }
         )
     }
-    Column {
-        TextField(value = playerName.value, onValueChange = {playerName.value = it})
-        TextField(value = roomId.value, onValueChange = {roomId.value = it})
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorDarkGray)
+            .padding(start = 60.dp, end = 60.dp, top = 10.dp, bottom = 10.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        OutlinedTextField(
+            value = playerName.value,
+            onValueChange = {playerName.value = it},
+            label = { Text(text = stringResource(R.string.name_placeholder), fontSize = 16.sp) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorWhite,
+                unfocusedBorderColor = colorLightGray,
+                focusedLabelColor = colorWhite,
+                unfocusedLabelColor = colorLightGray,
+                cursorColor = colorWhite,
+                focusedTextColor = colorWhite,
+                unfocusedTextColor = colorLightGray,
+            ),
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                autoCorrect = true,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
+            singleLine = true,)
+
+        OutlinedTextField(
+            value = roomId.value,
+            onValueChange = {roomId.value = it},
+            label = { Text(text = stringResource(R.string.room_placeholder), fontSize = 16.sp) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorWhite,
+                unfocusedBorderColor = colorLightGray,
+                focusedLabelColor = colorWhite,
+                unfocusedLabelColor = colorLightGray,
+                cursorColor = colorWhite,
+                focusedTextColor = colorWhite,
+                unfocusedTextColor = colorLightGray,
+            ),
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                autoCorrect = true,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
+            singleLine = true,)
         Button(onClick = {
             loading.value=true
             lookForLobby()
@@ -223,7 +308,16 @@ fun OnlineGameScreen() {
             val myRef = database.getReference("message")*/
 
             //firebase.child("tests").setValue("Hello, World!")
-        }) {
+        },
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorGreenPrimary,
+                contentColor = colorWhite
+            ),
+            shape = MaterialTheme.shapes.medium,
+            contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp)) {
             Text(text = "Unirse/Crear partida")
         }
         if (!loading.value) return

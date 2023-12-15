@@ -97,4 +97,11 @@
 \tCambios en los Términos:\nNos reservamos el derecho de actualizar o cambiar estos Términos en cualquier momento. Tu uso continuado del Juego después de la publicación de cualquier cambio constituye la aceptación de esos cambios.\n\n
 \tInformación de Contacto:\nSi tienes alguna pregunta o inquietud sobre estos Términos, contáctanos en chipiolo@gmail.com.\n\nAl utilizar el Juego de Chipiolo, reconoces que has leído, comprendido y aceptas quedar sujeto a estos Términos y Condiciones y Política de Privacidad.
 </string>
+
+    <!--    Multiplayer -->
+    <string name="name_multiplayer">Nombre</string>
+    <string name="name_placeholder">Nombre</string>
+    <string name="room_multiplayer">Numero de sala</string>
+    <string name="room_placeholder">Numero de sala</string>
+
 </resources>

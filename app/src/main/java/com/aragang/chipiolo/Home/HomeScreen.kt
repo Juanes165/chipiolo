@@ -120,7 +120,7 @@ fun HomeScreen(
 
             // Boton multi player
             Button(
-                onClick = { onSinglePlayer() },
+                onClick = { onMultiPlayer() },
                 modifier = Modifier
                     .padding(bottom = 20.dp, top = 20.dp)
                     .fillMaxWidth(),
@@ -130,7 +130,7 @@ fun HomeScreen(
                 ),
                 shape = MaterialTheme.shapes.medium,
                 contentPadding = PaddingValues(bottom = 15.dp, top = 15.dp),
-                enabled = false
+                enabled = true
             ) {
 
                 Image(
