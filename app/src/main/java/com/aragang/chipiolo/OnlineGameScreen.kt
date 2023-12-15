@@ -66,7 +66,6 @@ fun OnlineGameScreen() {
     val loading = remember {
         mutableStateOf(false)
     }
-    var player1UniqueId = "0"
     var player2UniqueId = "0"
     var player3UniqueId = "0"
     var player4UniqueId = "0"
@@ -74,6 +73,7 @@ fun OnlineGameScreen() {
     var status = "waiting"
     var playerTurn = ""
     var connectionId = ""
+
     var turnsEventListener = object: ValueEventListener{
         override fun onDataChange(snapshot: DataSnapshot) {
             for (dataSnapshot in snapshot.children){
@@ -100,17 +100,129 @@ fun OnlineGameScreen() {
     }
 
 
-   val firebase = FirebaseDatabase.getInstance().getReferenceFromUrl("https://chipiolo-c6c7c-default-rtdb.firebaseio.com/")
+    val firebase = FirebaseDatabase.getInstance().getReferenceFromUrl("https://chipiolo-c6c7c-default-rtdb.firebaseio.com/")
+    val player1UniqueId = System.currentTimeMillis().toString()
+    fun lookForLobby(){
+        firebase.child("connections").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(!lobbyExists){
 
+                    if(snapshot.hasChildren()){
+                        for(connection in snapshot.children) {
+                            var conId = connection.key
+                            var getPlayerCount = connection.childrenCount.toInt()
+                            if(roomId.value == snapshot.key.toString())
+                            {
+                                //Found matching room
+                                if(getPlayerCount<4){
+                                    connection.child(player1UniqueId).child("player_name").ref.setValue(playerName.value)
+                                    for(player in connection.children){
+                                        var player1Found = false
+                                        var player2Found = false
+                                        var player3Found = false
+                                        if(!player1Found)
+                                        {
+                                            var opponentName = player.child("player_name").value
+                                            player2UniqueId = player.key.toString()
+                                            player1Found = true
+                                        }
+                                        if(player1Found){
+                                            var opponentName = player.child("player_name").value
+                                            player3UniqueId = player.key.toString()
+                                            player2Found = true
+                                        }
+                                        if(player2Found){
+                                            var opponentName = player.child("player_name").value
+                                            player4UniqueId = player.key.toString()
+                                            player3Found = true
+                                        }
+                                        playerTurn = player2UniqueId
+                                        connectionId = conId.toString()
+                                        firebase.child("turns").child(connectionId).addValueEventListener(turnsEventListener)
+                                        firebase.child("winner").child(connectionId).addValueEventListener(winnerEventListener)
+                                        if(loading.value) !loading.value
+                                        firebase.child("connections").removeEventListener(this)
+
+                                    }
+                                    !lobbyExists
+                                }
+                            }
+                            else{
+                                if(getPlayerCount == 4){
+                                    playerTurn = player1UniqueId
+                                    var player1Found = false
+                                    var player2Found = false
+                                    var player3Found = false
+
+                                    for (player in connection.children){
+                                        var getPlayerUniqueId = player.key
+                                        if (getPlayerUniqueId == player1UniqueId)
+                                        {
+                                            player1Found = true
+                                        }
+                                        else if (player1Found){
+                                            var opponentName = player.child("player_name").value
+                                            player2UniqueId = player.key.toString()
+                                            player2Found = true
+                                        }
+                                        else if (player2Found){
+                                            var opponentName = player.child("player_name").value
+                                            player3UniqueId = player.key.toString()
+                                            player3Found = true
+                                        }
+                                        else if (player3Found){
+                                            var opponentName = player.child("player_name").value
+                                            player4UniqueId = player.key.toString()
+                                            connectionId = conId.toString()
+                                            firebase.child("turns").child(connectionId).addValueEventListener(turnsEventListener)
+                                            firebase.child("winner").child(connectionId).addValueEventListener(winnerEventListener)
+                                            if(loading.value) !loading.value
+                                            firebase.child("connections").removeEventListener(this)
+
+                                        }
+                                    }
+                                    !lobbyExists
+                                }
+                            }
+                        }
+
+                    }
+                    if(!lobbyExists && status=="waiting")
+                    {
+                        //val connectionUniqueId = System.currentTimeMillis().toString()
+                        val connectionUniqueId = roomId.value
+
+                        snapshot.child(connectionUniqueId).child(player1UniqueId).child("player_name").ref.setValue(playerName.value)
+                        //snapshot.child(connectionUniqueId).child(player1UniqueId).child("player1_name").ref.setValue(playerName)
+                        status = "waiting"
+                        !lobbyExists
+                    }
+
+                }
+                /*else{
+                    val connectionUniqueId = System.currentTimeMillis().toString()
+                    snapshot.child(connectionUniqueId).child(player1UniqueId).child("player1_name").ref.setValue(playerName.value)
+                    status = "waiting"
+                }*/
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+        )
+    }
     Column {
         TextField(value = playerName.value, onValueChange = {playerName.value = it})
         TextField(value = roomId.value, onValueChange = {roomId.value = it})
         Button(onClick = {
             loading.value=true
+            lookForLobby()
+
             /*val database = Firebase.database
             val myRef = database.getReference("message")*/
 
-            firebase.child("tests").setValue("Hello, World!")
+            //firebase.child("tests").setValue("Hello, World!")
         }) {
             Text(text = "Unirse/Crear partida")
         }
@@ -121,115 +233,9 @@ fun OnlineGameScreen() {
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
         )
     }
-    player1UniqueId = System.currentTimeMillis().toString()
-    firebase.child("connections").addValueEventListener(object: ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            if(!lobbyExists){
-                if(snapshot.hasChildren()){
-                    for(connection in snapshot.children) {
-                        var conId = connection.key
-                        var getPlayerCount = connection.childrenCount.toInt()
-                        if(roomId.value == connection.key)
-                        {
-                            //Found matching room
-                        }
-                    }
 
-                    for(connection in snapshot.children){
 
-                        var conId = connection.key
-                        var getPlayerCount = connection.childrenCount.toInt()
-                        if(status == "waiting"){
-                            if(getPlayerCount == 4){
-                                playerTurn = player1UniqueId
-                                var player1Found = false
-                                var player2Found = false
-                                var player3Found = false
 
-                                for (player in connection.children){
-                                    var getPlayerUniqueId = player.key
-                                    if (getPlayerUniqueId == player1UniqueId)
-                                    {
-                                        player1Found = true
-                                    }
-                                    else if (player1Found){
-                                        var opponentName = player.child("player_name").value
-                                        player2UniqueId = player.key.toString()
-                                        player2Found = true
-                                    }
-                                    else if (player2Found){
-                                        var opponentName = player.child("player_name").value
-                                        player3UniqueId = player.key.toString()
-                                        player3Found = true
-                                    }
-                                    else if (player3Found){
-                                        var opponentName = player.child("player_name").value
-                                        player4UniqueId = player.key.toString()
-                                        connectionId = conId.toString()
-                                        firebase.child("turns").child(connectionId).addValueEventListener(turnsEventListener)
-                                        firebase.child("winner").child(connectionId).addValueEventListener(winnerEventListener)
-                                        if(loading.value) !loading.value
-                                        firebase.child("connections").removeEventListener(this)
-                                    }
-                                }
-                            }
-                        }
-                        else{
-                            if(getPlayerCount<4){
-                                connection.child(player1UniqueId).child("player1_name").ref.setValue(playerName.value)
-                                for(player in connection.children){
-                                    var player1Found = false
-                                    var player2Found = false
-                                    var player3Found = false
-                                    if(!player1Found)
-                                    {
-                                        var opponentName = player.child("player1_name").value
-                                        player2UniqueId = player.key.toString()
-                                        player1Found = true
-                                    }
-                                    if(player1Found){
-                                        var opponentName = player.child("player1_name").value
-                                        player3UniqueId = player.key.toString()
-                                        player2Found = true
-                                    }
-                                    if(player2Found){
-                                        var opponentName = player.child("player1_name").value
-                                        player4UniqueId = player.key.toString()
-                                        player3Found = true
-                                    }
-                                    playerTurn = player2UniqueId
-                                    connectionId = conId.toString()
-                                    firebase.child("turns").child(connectionId).addValueEventListener(turnsEventListener)
-                                    firebase.child("winner").child(connectionId).addValueEventListener(winnerEventListener)
-                                    if(loading.value) !loading.value
-                                    firebase.child("connections").removeEventListener(this)
-                                }
-                            }
-                        }
-                    }
-                }
-                if(!lobbyExists && status=="waiting")
-                {
-                    //val connectionUniqueId = System.currentTimeMillis().toString()
-                    val connectionUniqueId = roomId.value
-
-                    snapshot.child(connectionUniqueId).child(player1UniqueId).child("player1_name").ref.setValue(playerName.value)
-                    //snapshot.child(connectionUniqueId).child(player1UniqueId).child("player1_name").ref.setValue(playerName)
-                    status = "waiting"
-                }
-            }
-            else{
-                val connectionUniqueId = System.currentTimeMillis().toString()
-                snapshot.child(connectionUniqueId).child(player1UniqueId).child("player1_name").ref.setValue(playerName.value)
-                status = "waiting"
-            }
-        }
-
-        override fun onCancelled(error: DatabaseError) {
-
-        }
-    }
-    )
     /*val context = LocalContext.current
     val density = LocalDensity.current
 
