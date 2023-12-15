@@ -323,16 +323,16 @@ fun GameScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.Bottom
             ) {
-                BotView(name = "KPEOTA", profilePic = R.drawable.avatar3)
+                BotView(name = bot1.name, profilePic = R.drawable.avatar3)
                 Column(
                     modifier = Modifier
                         .padding(bottom = 50.dp)
 
                 ) {
-                    BotView(name = "Salsatoru", profilePic = R.drawable.avatar4)
+                    BotView(name = bot2.name, profilePic = R.drawable.avatar4)
                 }
 
-                BotView(name = "Migueeeel", profilePic = R.drawable.avatar5)
+                BotView(name = bot3.name, profilePic = R.drawable.avatar5)
             }
 
 

@@ -8,13 +8,11 @@
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
             <value value="C:\Users\Juanes\.android\avd\Pixel_6a_API_UpsideDownCakePrivacySandbox.avd" />
-            <value value="C:\Users\MIGUEL ANGEL VELASCO\.android\avd\Pixel_5_API_31.avd" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-12-15T22:21:48.841351100Z" />
-    <timeTargetWasSelectedWithDropDown value="2023-12-15T22:40:17.619817Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-12-15T23:20:27.985270500Z" />
     <runningDeviceTargetsSelectedWithDialog>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
